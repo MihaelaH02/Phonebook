@@ -26,6 +26,7 @@ class CCitiesDialog : public CDialog
 // ----------------
 public:
 	CCitiesDialog(CWnd* pParent = nullptr);   // standard constructor
+	CCitiesDialog(const CString& strCityName, const CString& strRegion);
 	virtual ~CCitiesDialog();
 
 
@@ -52,17 +53,27 @@ private:
 // ----------------
 public:
 	/// <summary>
+	/// Достъп до стойности за стринговите член променливи
+	/// </summary>
+	/// <param name="strCityName">Параметър за име на град</param>
+	/// <param name="strRegion">Параметър за област</param>
+	void GetControlsData(CString& strCityName, CString& strRegion);
+
+	/// <summary>
 	/// Метод за забрана за писане по контролите
 	/// </summary>
 	/// <param name="bBooleanFlag">Приема TRUE-FALSE, в зависимост дали контролите трябва да са активни или не</param>
 	void EnableControls(BOOL bBooleanFlag);
 
+private:
+	/// <summary>
+	/// Метод за валидация на данни
+	/// </summary>
+	/// <returns>Връща TRUE, ако са валидни данните и FALSE</returns>
+	BOOL ValidateStringData();
 
 // Members
 // ----------------
-public:
-	CString m_strName;
-	CString m_strRegion;
 private:
 	CEdit m_edbName;
 	CComboBox m_cmbRegion;

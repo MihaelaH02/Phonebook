@@ -79,14 +79,10 @@ BOOL CCitiesDoc::SelectWhereID(const long lID, CITIES& recCity)
 	return TRUE;
 }
 
-BOOL CCitiesDoc::UpdateWhereID(const long lID, const CString& strCityName, const CString& strCityRegion)
+BOOL CCitiesDoc::UpdateWhereID(const CITIES& recCity)
 {
-	CITIES recCity;
-	_tcscpy_s(recCity.szCityName, strCityName);
-	_tcscpy_s(recCity.szRegion, strCityRegion);
-
 	//Редакция в базата данни
-	if (!m_oCitiesData.UpdateWhereID(lID, recCity))
+	if (!m_oCitiesData.UpdateWhereID(recCity.lId, recCity))
 	{
 		return FALSE;
 	}
@@ -95,7 +91,7 @@ BOOL CCitiesDoc::UpdateWhereID(const long lID, const CString& strCityName, const
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
 	{
 		CITIES* pCity = m_oCitiesArray.GetAt(nIndex);
-		if (pCity->lId == lID)
+		if (pCity->lId == recCity.lId)
 		{
 			pCity->lUpdateCounter = recCity.lUpdateCounter;
 			_tcscpy_s(pCity->szCityName, recCity.szCityName);
@@ -145,7 +141,7 @@ BOOL CCitiesDoc::Delete(const long lId)
 	return TRUE;
 }
 
-CCitiesArray& CCitiesDoc::GetCitiesArray()
+const CCitiesArray& CCitiesDoc::GetCitiesArray() const
 {
 	return m_oCitiesArray;
 }

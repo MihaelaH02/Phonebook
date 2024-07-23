@@ -37,6 +37,8 @@
 #define IDC_STT_CITIES_REGION           1002
 #define IDC_                            1003
 #define IDC_CMB_CITIES_REGION           1003
+#define IDC_STT_CITIES_NAME_ERROR_MSG   1004
+#define IDC_STT_CITIES_REGION_ERROR_MSG 1005
 #define ID_EDIT_DATA_UPDATE             32775
 #define ID_EDIT_DATA_DELETE             32776
 #define ID_CONTEXT_MANU_DATA_INSERT     32777
@@ -52,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32783
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

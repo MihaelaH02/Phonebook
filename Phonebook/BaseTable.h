@@ -58,7 +58,7 @@ public:
 		while ((hResult = MoveNext()) == S_OK)
 		{
 			//Добавяне на елемент към масива с дании от таблицата
-			CStruct recStruct = GetTableData();
+			CStruct recStruct = GetRowData();
 			oTableArray.AddElement(recStruct);
 		}
 
@@ -103,7 +103,7 @@ public:
 			DoMesgStatusExit(_T("Failed to read data from database! Error: %d"), hResult);
 			return FALSE;
 		}
-		recStruct = GetTableData();
+		recStruct = GetRowData();
 
 		//Затваряне на заявката и сесията
 		DoMesgStatusExit();
@@ -192,7 +192,7 @@ public:
 		}
 
 		//Променяме данните в селектирания запис
-		SetTableData(recStruct);
+		SetRowData(recStruct);
 
 		//Увеличаване на брояча
 		IncrementUpdateCounter();
@@ -251,9 +251,7 @@ public:
 		}
 
 		//Задаваме данни, които ще се добавят към таблицата
-		SetTableData(recStruct);
-
-		HROW hRow = NULL;
+		SetRowData(recStruct);
 
 		//Добавяме нов запис
 		hResult = __super::Insert(ACCESSOR_FOR_DATA,TRUE);
@@ -262,25 +260,15 @@ public:
 			DoMesgStatusExit(_T("Failed to insert data! Error: %d"), hResult);
 			return FALSE;	
 		}
-		HROW* phRow = &hRow;
-		//вземаме селектирания запси
-		hResult = m_spRowset->GetNextRows(NULL, 0, 1,NULL, &phRow);
 
-		//Указател, към подадената структура
-		CStruct* recStructInserted = &recStruct;
-
-		//Аксесор за селектирания запси
-		CAccessor oAssessor;
-		
-		//Вземаме данните от хандлера, преобразуваме го според аксесора и връщаме резултата структурата
-		hResult = m_spRowset->GetData(hRow,(HACCESSOR) &oAssessor, recStructInserted);
-		if (FAILED(hResult))
+		//Залеждаме данни в буфера - аксесор
+		if (MoveFirst() != S_OK)
 		{
-			DoMesgStatusExit(_T("Failed to insert data! Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to read id for row! Error: %d"), hResult);
 			return FALSE;
 		}
-
-		//recStruct.lId = recStructInserted->lId;
+		recStruct.lId = GetRowId();
+	
 		//Затваряме заявката и сесията
 		DoMesgStatusExit(_T("Successfuly insert data!"));
 		return TRUE;
@@ -351,19 +339,19 @@ private:
 	/// Достъп до записа
 	/// </summary>
 	/// <returns>Връща запис от подадения тип</returns>
-	virtual CStruct GetTableData() = 0;
+	virtual CStruct GetRowData() = 0;
 
 	/// <summary>
 	/// Задава данни за запис
 	/// </summary>
 	/// <param name="oStruct">Променлива, която да укаже данните за запис в таблицата</param>
-	virtual void SetTableData(const CStruct& oStruct) = 0;
+	virtual void SetRowData(const CStruct& oStruct) = 0;
 
 	/// <summary>
 	/// Достъп до ИД на записа
 	/// </summary>
-	/// <returns>ИД на записа</returns>
-	//virtual long BindRowData() = 0;
+	/// <returns>Връща ИД на записа</returns>
+	virtual long GetRowId() = 0;
 
 	/// <summary>
 	/// Увеличава брояча за модификация на запис от таблицата

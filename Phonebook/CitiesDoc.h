@@ -66,7 +66,7 @@ public:
 	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
 	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL UpdateWhereID(const long lID, const CString& strCityName, const CString& strCityRegion);
+	BOOL UpdateWhereID(const CITIES& recCity);
 
 	/// <summary>
 	/// Добавяне на нов запис в таблицата с градове
@@ -77,7 +77,7 @@ public:
 	BOOL Insert(const CString& strCityName, const CString& strCityRegion);
 
 	/// <summary>
-	/// 
+	/// Изтриване на запис от таблицата с градове
 	/// </summary>
 	/// <param name="lId">ИД, по което ще се търси запис за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
@@ -87,7 +87,7 @@ public:
 	/// Достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с данните от таблицата с градов</returns>
-	CDynamicArray<CITIES>& GetCitiesArray();
+	const CDynamicArray<CITIES>& GetCitiesArray() const;
 
 
 // Members

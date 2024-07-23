@@ -44,7 +44,7 @@ private:
 	/// Метод за достъп до член променливата в клас CCitiesAccessor
 	/// </summary>
 	/// <returns>Връща структура от тип CITIES</returns>
-	CITIES GetTableData() override
+	CITIES GetRowData() override
 	{
 		return m_recCities;
 	}
@@ -53,9 +53,18 @@ private:
 	/// Метод за промяна на стойностите на член променливата в клас CCitiesAccessor
 	/// </summary>
 	/// <param name="recCity">Променлива от тип структура CITIES, с чиито стойности ще се замени член променливата</param>
-	void SetTableData(const CITIES& recCity) override
+	void SetRowData(const CITIES& recCity) override
 	{
 		m_recCities = recCity;
+	}
+
+	/// <summary>
+	/// Метод за достъп до ИД на записа
+	/// </summary>
+	/// <returns>Връща ИД на записа</returns>
+	long GetRowId() override
+	{
+		return m_recCities.lId;
 	}
 
 	/// <summary>
