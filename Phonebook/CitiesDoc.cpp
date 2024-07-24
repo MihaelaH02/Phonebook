@@ -90,15 +90,19 @@ BOOL CCitiesDoc::UpdateWhereID(const CITIES& recCity)
 	//Редакция в масива с данни
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
 	{
-		CITIES* pCity = m_oCitiesArray.GetAt(nIndex);
-		if (pCity->lId == recCity.lId)
-		{
-			pCity->lUpdateCounter = recCity.lUpdateCounter;
-			_tcscpy_s(pCity->szCityName, recCity.szCityName);
-			_tcscpy_s(pCity->szRegion, recCity.szRegion);
+		//Превъщаме указател от масива в променлива от тип структура с градове
+		CITIES* pCurrentCityFromArray = m_oCitiesArray.GetAt(nIndex);
 
-			//Редакция на вютата, подаване на параметър за добавяне и обект, който е засегнат
-			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)pCity);
+		//Търсим ИД на текущия елемент от масива дали отговаря на подадения, който трябва да се редактира
+		if (pCurrentCityFromArray->lId == recCity.lId)
+		{
+			//Редактираме стойностите на елемента в масива, с тези на подадения като пакаметър структура
+			pCurrentCityFromArray->lUpdateCounter = recCity.lUpdateCounter;
+			_tcscpy_s(pCurrentCityFromArray->szCityName, recCity.szCityName);
+			_tcscpy_s(pCurrentCityFromArray->szRegion, recCity.szRegion);
+
+			//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
+			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)&recCity);
 			return TRUE;
 		}
 	}
@@ -119,10 +123,9 @@ BOOL CCitiesDoc::Insert(const CString& strCityName, const CString& strCityRegion
 
 	//Добавяне на елемента в масива
 	m_oCitiesArray.AddElement(recNewCity);
-	CITIES* pCity = m_oCitiesArray.GetAt(m_oCitiesArray.GetCount()-1);
 
 	//Редакция на вютата, подаване на параметър за добавяне и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_INSERT, (CObject*)pCity);
+	UpdateAllViews(nullptr, LPARAM_INSERT, (CObject*)&recNewCity);
 	return TRUE;
 }
 

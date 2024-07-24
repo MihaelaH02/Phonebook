@@ -14,21 +14,17 @@ IMPLEMENT_DYNAMIC(CCitiesDialog, CDialog)
 // Constructor / Destructor
 // ----------------
 
-CCitiesDialog::CCitiesDialog(CWnd* pParent /*=nullptr*/)
+CCitiesDialog::CCitiesDialog(CWnd* pParent /*=nullptr*/,const CString& strCityName /*=NULL*/, const CString& strRegion /*=NULL*/, BOOL bEnableControls /*TRUE*/)
 	: CDialog(IDD_CITIES_DIALOG, pParent)
 {
+	//При подаване на параметри, стринговите член променливи да приемат стойността им
+	if (strCityName && strRegion)
+	{
+		m_strName = strCityName;
+		m_strRegion = strRegion;
+	}
+	m_bEnableControls = bEnableControls;
 }
-
-CCitiesDialog::CCitiesDialog(const CString& strCityName, const CString& strRegion)
-{
-	//Задаване на стойности за контролите
-	m_edbName.SetWindowTextW(strCityName);
-	//m_edbRegion.SetWindowTextW(strRegion);
-
-	int nIndex = m_cmbRegion.AddString(strRegion);
-	m_cmbRegion.SetCurSel(nIndex);
-}
-
 
 CCitiesDialog::~CCitiesDialog()
 {
@@ -42,18 +38,26 @@ void CCitiesDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDB_CITIES_NAME, m_edbName);
-	DDX_Control(pDX, IDC_CMB_CITIES_REGION, m_cmbRegion);
-	//DDV_MaxChars(pDX, m_edbName, 128);
-	//DDV_MaxChars(pDX, m_cmbRegion, 128);
-
+	DDX_Control(pDX, IDC_EDB_CITIES_REGION, m_edbRegion);
 }
 
 BOOL CCitiesDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	//Активираме контролите за писане
-	EnableControls(TRUE);
+	//Задаване на максимална дължина на полетата
+	m_edbName.SetLimitText(MAX_LENGTH_STRING);
+	m_edbRegion.SetLimitText(MAX_LENGTH_STRING);
+
+	//Задаване на стойности за контролите, ако стринговите член променливи не са нелеви
+	if (m_strName && m_strRegion)
+	{
+		m_edbName.SetWindowTextW(m_strName);
+		m_edbRegion.SetWindowTextW(m_strRegion);
+	}
+
+	//Активираме или деактивираме контролите за писане
+	EnableControls(m_bEnableControls);
 
 	return TRUE;
 }
@@ -61,6 +65,10 @@ BOOL CCitiesDialog::OnInitDialog()
 BEGIN_MESSAGE_MAP(CCitiesDialog, CDialog)
 	ON_BN_CLICKED(IDOK, &CCitiesDialog::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CCitiesDialog::OnBnClickedCancel)
+	ON_EN_KILLFOCUS(IDC_EDB_CITIES_NAME, &CCitiesDialog::OnEnKillfocusName)
+	ON_EN_KILLFOCUS(IDC_EDB_CITIES_REGION, &CCitiesDialog::OnEnKillfocusRegion)
+	ON_EN_CHANGE(IDC_EDB_CITIES_NAME, &CCitiesDialog::OnEnChangeName)
+	ON_EN_CHANGE(IDC_EDB_CITIES_REGION, &CCitiesDialog::OnEnChangeRegion)
 END_MESSAGE_MAP()
 
 
@@ -69,24 +77,18 @@ END_MESSAGE_MAP()
 
 void CCitiesDialog::OnBnClickedOk()
 {
-	
-	if (ValidateStringData()) 
-	{
-		CDialog::OnOK();
-	}
+	//Превръщаме въведените данни в коректи
+	ValidateDataUpperLetter(m_strName);
+	ValidateDataUpperLetter(m_strRegion);
+
+	CDialog::OnOK();
 }
 
 
 void CCitiesDialog::OnBnClickedCancel()
 {
-	//Зануляване на член променливите
-	m_edbName.Clear();
-	m_cmbRegion.Clear();
-
 	CDialog::OnCancel();
 }
-
-
 // Overrides
 // ----------------
 
@@ -94,48 +96,155 @@ void CCitiesDialog::OnBnClickedCancel()
 // Methods
 // ---------------
 
-void CCitiesDialog::EnableControls(BOOL bBooleanFlag)
+void CCitiesDialog::EnableControls(BOOL bEnableControls)
 {
-	m_edbName.EnableWindow(bBooleanFlag);
-	m_cmbRegion.EnableWindow(bBooleanFlag);
+	m_edbName.EnableWindow(bEnableControls);
+	m_edbRegion.EnableWindow(bEnableControls);
 }
 
-BOOL CCitiesDialog::ValidateStringData()
+void CCitiesDialog::OnEnChangeName()
 {
+	//Времаме данните от котролата
+	m_edbName.GetWindowTextW(m_strName);
 
-	//int nIndex = m_cmbRegion.GetCurSel();
-	//m_cmbRegion.GetLBText(nIndex, m_strRegion);
+	//Визуализираме съобщение за грешка, ако е намерена такава
+	CString strResivedMgs = SendStatusMsgForValidStringFormat(m_strName);
+	SetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, strResivedMgs);
+}
 
-	//смени цветове, стилове големина на буквите
+void CCitiesDialog::OnEnChangeRegion()
+{
+	//Времаме данните от котролата
+	m_edbRegion.GetWindowTextW(m_strRegion);
+
+	//Визуализираме съобщение за грешка, ако е намерена такава
+	CString strResivedMgs = SendStatusMsgForValidStringFormat(m_strRegion);
+	SetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, strResivedMgs);
+}
+
+CString CCitiesDialog::SendStatusMsgForValidStringFormat(const CString& strText)
+{
 	//Проверка за празни полета
-	/*if (m_edbName.Clear() || m_cmbRegion.Clear())
+	if (IsEmptyString(strText))
 	{
-		SetDlgItem(IDC_STATIC, myString);
-		IDC_STT_CITIES_NAME_ERROR_MSG.SetWindowText("Field can not be empty!");
-		IDC_STT_CITIES_REGION_ERROR_MSG.SetWindowText("Field can not be empty!");
-		return FALSE;
-	}*/
-
-	//Проверка дали са въведени само букви 
-	/*if (m_strName)
-	{
-		//IDC_STT_CITIES_NAME_ERROR_MSG.SetWindowText("Field must contain only letters!");
-		return FALSE;
+		return _T("Filed can not be empty!");
 	}
 
-	//Проверка дали са въведени само букви 
-	if (m_strRegion)
+	//Проверка дали са въведени само букви
+	if (!IsOnlyLettersCString(strText))
 	{
-		//IDC_STT_CITIES_REGION_ERROR_MSG.SetWindowText("Field must contain only letters!");
-		return FALSE;
-	}*/
+		return _T("Field must contain only letters!");
+	}
 
-	//Направи пълвата буква да е главна преди да се предадат данните нататъка
-	return TRUE;
+	//Не е открита грешка
+	return _T("");
+}
+
+void CCitiesDialog::OnEnKillfocusName()
+{	
+	//Променлива, която съдържа текста от контролата
+	CString strErrorMsg;
+	//strErrorMsg.SetTextColor(RGB(255, 0, 0));
+	GetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, strErrorMsg);
+
+	//Проверка е визуалиризано съобщение за грешка
+	if(!IsEmptyString(strErrorMsg))
+	{
+		m_edbName.SetFocus();
+	}
+}
+
+void CCitiesDialog::OnEnKillfocusRegion()
+{
+	//Променлива, която съдържа текста от контролата
+	CString strErrorMsg;
+	//strErrorMsg.SetTextColor(RGB(255, 0, 0));
+	GetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, strErrorMsg);
+
+	//Проверка е визуалиризано съобщение за грешка
+	if (!IsEmptyString(strErrorMsg))
+	{
+		m_edbRegion.SetFocus();
+	}
 }
 
 void CCitiesDialog::GetControlsData(CString& strCityName , CString& strRegion)
 {
-	m_edbName.GetWindowTextW(strCityName);
-	m_cmbRegion.GetWindowTextW(strRegion);
+	strCityName = m_strName;
+	strRegion = m_strRegion;
+}
+
+void CCitiesDialog::ValidateDataUpperLetter(CString& strText) 
+{
+	//Променлива, която проверява колко празни символа имаме преди въведените букви
+	int nFindStartSpaces = 0;
+
+	//Цикъл, който брои колко са спейсовете преди началото на буквите
+	for (int nIndex = 0; nIndex < strText.GetLength(); ++nIndex)
+	{
+		if (isspace(strText[nIndex]))
+		{
+			nFindStartSpaces++;
+			continue;
+		}
+		break;
+	}
+	//Премахваме спейсовете само в началото
+	strText.Mid(nFindStartSpaces);
+
+	//Превръщаме първата буква в главна, ако първата буква е малка
+	if (islower(strText[0]))
+	{
+		strText.SetAt(0, towupper(strText[0]));
+	}
+
+	//Цикъл, който ще премине през всеки символ на текста за проверка дали е главна
+	for (int nIndex = 1; nIndex < strText.GetLength(); ++nIndex)
+	{
+		//Ако се открие такава, се превръща в малка
+		if (isupper(strText[nIndex]))
+		{
+			strText.SetAt(nIndex, towlower(strText[nIndex]));
+		}
+
+		//Ако имаме някоко думи, буквата след спейса да стане главна
+		if (isspace(strText[nIndex]))
+		{
+			strText.SetAt(++nIndex, towupper(strText[nIndex]));
+		}
+	}
+}
+
+BOOL CCitiesDialog::IsEmptyString(const CString& strText)
+{
+	//Проверка, дали подадения стринг е празен
+	if (strText.IsEmpty())
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+	//Проверка дали не са въведени само спейсове
+	for (int nIndex = 0; nIndex < strText.GetLength(); ++nIndex)
+	{
+		if (!isspace(strText[nIndex]))
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+BOOL CCitiesDialog::IsOnlyLettersCString(const CString& strText)
+{
+	//Цикъл, който преминава през всички символи на стринга
+	for (int nIndex = 0; nIndex < strText.GetLength(); ++nIndex)
+	{
+		//Ако се открие семвол, който не не буква или спейс
+		if (!isalpha(strText[nIndex]) && !isspace(strText[nIndex]))
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
 }

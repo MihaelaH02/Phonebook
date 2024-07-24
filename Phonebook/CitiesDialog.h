@@ -4,6 +4,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesDialog dialog
 
+#define MAX_LENGTH_STRING 128
+
 /// <summary>
 /// Диалог за изпълнение на опирации свързани със структура Градове
 /// </summary>
@@ -17,6 +19,7 @@ class CCitiesDialog : public CDialog
 
 // Constants
 // ----------------
+
  #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_CITIES_DIALOG };
 #endif
@@ -25,8 +28,7 @@ class CCitiesDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
-	CCitiesDialog(CWnd* pParent = nullptr);   // standard constructor
-	CCitiesDialog(const CString& strCityName, const CString& strRegion);
+	CCitiesDialog(CWnd* pParent = nullptr, const CString& strCityName = NULL, const CString& strRegion = NULL, BOOL bEnableControls = TRUE);
 	virtual ~CCitiesDialog();
 
 
@@ -59,22 +61,67 @@ public:
 	/// <param name="strRegion">Параметър за област</param>
 	void GetControlsData(CString& strCityName, CString& strRegion);
 
+private:
+
+	/// <summary>
+	/// Метод хандлер, който управлява промените в контролата за име
+	/// </summary>
+	void OnEnChangeName();
+
+	/// <summary>
+	/// Метод хандлер, който управлява промените в контролата за област
+	/// </summary>
+	void OnEnChangeRegion();
+
+	/// <summary>
+	/// Метод хандлер, който управлява фокуса в контролата за име
+	/// </summary>
+	void OnEnKillfocusName();
+
+	/// <summary>
+	/// Метод хандлер, който управлява фокуса в контролата за област
+	/// </summary>
+	void OnEnKillfocusRegion();
+
 	/// <summary>
 	/// Метод за забрана за писане по контролите
 	/// </summary>
-	/// <param name="bBooleanFlag">Приема TRUE-FALSE, в зависимост дали контролите трябва да са активни или не</param>
-	void EnableControls(BOOL bBooleanFlag);
+	void EnableControls(BOOL bEnableControls);
 
-private:
 	/// <summary>
-	/// Метод за валидация на данни
+	/// Метод, който проверява дали стринга е във валиден формат 
 	/// </summary>
-	/// <returns>Връща TRUE, ако са валидни данните и FALSE</returns>
-	BOOL ValidateStringData();
+	/// <param name="strText">Параметър за текст, който ще се проверява</param>
+	/// <returns>Връща съобщение за грешката или празен стренг</returns>
+	CString SendStatusMsgForValidStringFormat(const CString& strText);
+
+	/// <summary>
+	/// Метод, който задава само първия символ да е главна буква
+	/// </summary>
+	/// <param name="strText">Параметър за текст, който ще се модифицира</param>
+	void ValidateDataUpperLetter(CString& strText);
+
+	/// <summary>
+	/// Метод за валидация на празни полета
+	/// </summary>
+	/// <param name="strText">Параметър за текст, който ще се валидира</param>
+	/// <returns>Връща TRUE, ако данните са с нулева стойност и FALSE, ако не са</returns>
+	BOOL IsEmptyString(const CString& strText);
+
+	/// <summary>
+	/// Метода за валидация дали стренга се състои само от букви
+	/// </summary>
+	/// <param name="strText">Параметър за текст, който ще се валидира</param>
+	/// <returns>Връща TRUE, ако данните са с коректни и FALSE, ако не са</returns>
+	BOOL IsOnlyLettersCString(const CString& strText);
+
 
 // Members
 // ----------------
 private:
 	CEdit m_edbName;
-	CComboBox m_cmbRegion;
+	CEdit m_edbRegion;
+	CString m_strName;
+	CString m_strRegion;
+	BOOL m_bEnableControls;
 };
