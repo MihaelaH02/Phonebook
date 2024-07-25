@@ -91,41 +91,36 @@ BOOL CCitiesDoc::UpdateWhereID(const CITIES& recCity)
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
 	{
 		//Превъщаме указател от масива в променлива от тип структура с градове
-		CITIES* pCurrentCityFromArray = m_oCitiesArray.GetAt(nIndex);
+		CITIES& pCurrentCityFromArray = *m_oCitiesArray.GetAt(nIndex);
 
 		//Търсим ИД на текущия елемент от масива дали отговаря на подадения, който трябва да се редактира
-		if (pCurrentCityFromArray->lId == recCity.lId)
+		if (pCurrentCityFromArray.lId == recCity.lId)
 		{
 			//Редактираме стойностите на елемента в масива, с тези на подадения като пакаметър структура
-			pCurrentCityFromArray->lUpdateCounter = recCity.lUpdateCounter;
-			_tcscpy_s(pCurrentCityFromArray->szCityName, recCity.szCityName);
-			_tcscpy_s(pCurrentCityFromArray->szRegion, recCity.szRegion);
+			pCurrentCityFromArray.lUpdateCounter = recCity.lUpdateCounter;
+			_tcscpy_s(pCurrentCityFromArray.szCityName, recCity.szCityName);
+			_tcscpy_s(pCurrentCityFromArray.szRegion, recCity.szRegion);
 
 			//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
-			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)&recCity);
+			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)&pCurrentCityFromArray);
 			return TRUE;
 		}
 	}
 	return FALSE;
 }
 
-BOOL CCitiesDoc::Insert(const CString& strCityName, const CString& strCityRegion)
+BOOL CCitiesDoc::Insert(CITIES& recCity)
 {
-	//Инициализация на нова структура с подадените данни
-	CITIES recNewCity;
-	_tcscpy_s(recNewCity.szCityName, strCityName);
-	_tcscpy_s(recNewCity.szRegion, strCityRegion);
-
-	if (!m_oCitiesData.Insert(recNewCity))
+	if (!m_oCitiesData.Insert(recCity))
 	{
 		return FALSE;
 	}
 
 	//Добавяне на елемента в масива
-	m_oCitiesArray.AddElement(recNewCity);
+	m_oCitiesArray.AddElement(recCity);
 
 	//Редакция на вютата, подаване на параметър за добавяне и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_INSERT, (CObject*)&recNewCity);
+	UpdateAllViews(nullptr, LPARAM_INSERT, (CObject*)&recCity);
 	return TRUE;
 }
 

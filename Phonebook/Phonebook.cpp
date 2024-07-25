@@ -15,7 +15,7 @@
 
 #include "DatabaseConnection.h"
 #include "CitiesTable.h"
-#include "DynamicArray.h"
+#include "TableDataArray.h"
 
 
 #ifdef _DEBUG

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <afxtempl.h>
-#include "DynamicArray.h"
+#include "TableDataArray.h"
 
 #define TCHAR_SIZE_FOR_STRUCT_MEMBERS 128
 #define TCHAR_SIZE_FOR_PERSON_EGN 16
@@ -51,7 +51,7 @@ struct CITIES
 		_tcsncpy_s(szCityName, recCity.szCityName, _TRUNCATE);
 		_tcsncpy_s(szRegion, recCity.szRegion, _TRUNCATE);
 	}
-}; typedef CDynamicArray<CITIES> CCitiesArray;
+}; typedef CTableDataArray<CITIES> CCitiesArray;
 
 
 /// <summary> 
@@ -74,7 +74,7 @@ struct PHONE_TYPES
 };
 
 ///<summary> Псевдоним на CTypedPtrArray с тип PHONE_TYPES</summary> 
-typedef CDynamicArray<PHONE_TYPES> CPhoneTypesArray;
+typedef CTableDataArray<PHONE_TYPES> CPhoneTypesArray;
 
 /// <summary> 
 /// Дискова структура по таблица Клиенти 
@@ -106,7 +106,7 @@ struct PERSONS
 };
 
 ///<summary> Псевдоним на PERSONS с тип CITIES</summary> 
-typedef CDynamicArray<PERSONS> CPersonsArray;
+typedef CTableDataArray<PERSONS> CPersonsArray;
 
 
 /// <summary> 
@@ -133,4 +133,4 @@ struct PHONE_NUMBERS
 };
 
 ///<summary> Псевдоним на CTypedPtrArray с тип PHONE_NUMBERS</summary> 
-typedef CDynamicArray<PHONE_NUMBERS> CPhoneNumbersArray;
+typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;

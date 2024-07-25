@@ -1,9 +1,10 @@
 #pragma once
 #include <atldbcli.h>
 #include <typeinfo>
+
 #include "Session.h"
 #include "BaseTableArray.h"
-#include "DynamicArray.h"
+#include "TableDataArray.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,7 @@ public:
 	/// </summary>
 	/// <param name="oTableArray">Параметър масив за съответната дискова структура</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectAll(CDynamicArray<CStruct>& oTableArray)
+	BOOL SelectAll(CTableDataArray<CStruct>& oTableArray)
 	{
 		//Отваряне на нова на сесията
 		if (!m_oSession.OpenSession())
@@ -50,7 +51,7 @@ public:
 		HRESULT hResult = Open(m_oSession.GetSession(), strQuery);
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Error executing query. Error: %d. Query: %s"), hResult, strQuery);
+			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuery);
 			return FALSE;
 		}
 
@@ -64,7 +65,7 @@ public:
 
 		if (hResult != DB_S_ENDOFROWSET)
 		{
-			DoMesgStatusExit(_T("Error in reading all records in table."));
+			DoMesgStatusExit(_T("Error in reading all records in table.\n Error: %d."), hResult);
 			return FALSE;
 		}
 
@@ -93,14 +94,14 @@ public:
 		HRESULT hResult = Open(m_oSession.GetSession(), strQuery);
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Error executing query. Error: %d. Query: %s"), hResult, strQuery);
+			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuery);
 			return FALSE;
 		}
 
 		//Проверка за селектиран запис
 		if (MoveFirst() != S_OK)
 		{
-			DoMesgStatusExit(_T("Failed to read data from database! Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to read data from database!\n Error: %d"), hResult);
 			return FALSE;
 		}
 		recStruct = GetRowData();
@@ -132,14 +133,14 @@ public:
 		HRESULT hResult = Open(m_oSession.GetSession(), strQuerySelectWithNolock);
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Error executing query. Error: %d. Query: %s"), hResult, strQuerySelectWithNolock);
+			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuerySelectWithNolock);
 			return FALSE;
 		}
 
 		//Вземаме първия запис
 		if (MoveFirst() != S_OK)
 		{
-			DoMesgStatusExit(_T("Fail to select data. Error: %d."), hResult);
+			DoMesgStatusExit(_T("Fail to select data.\n Error: %d."), hResult);
 			return FALSE;
 		}
 
@@ -151,7 +152,7 @@ public:
 		hResult = m_oSession.GetSession().StartTransaction();
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Failed to start transaction!. Error: %d. Query: %s"), hResult);
+			DoMesgStatusExit(_T("Failed to start transaction!.\n Error: %d. Query: %s"), hResult);
 			return FALSE;
 		}
 		//Селект на записа със заключване
@@ -170,7 +171,7 @@ public:
 		if (FAILED(hResult))
 		{
 			m_oSession.GetSession().Abort();
-			DoMesgStatusExit(_T("Error executing query. Error: %d. Query: %s"), hResult, strQuerySelectWithNolock);
+			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuerySelectWithNolock);
 			return FALSE;
 		}
 
@@ -179,7 +180,7 @@ public:
 		if (FAILED(hResult))
 		{
 			m_oSession.GetSession().Abort();
-			DoMesgStatusExit(_T("Fail to select data. Error: %d."), hResult);
+			DoMesgStatusExit(_T("Fail to select data.\n Error: %d."), hResult);
 			return FALSE;
 		}
 
@@ -202,16 +203,16 @@ public:
 		if (FAILED(hResult))
 		{
 			m_oSession.GetSession().Abort();
-			DoMesgStatusExit(_T("Failed to update data!"));
+			DoMesgStatusExit(_T("Failed to update data!\n Error: %d."), hResult);
 			return FALSE;
 		}
 
 		//Запазване на промените, затваряне на заявката и сесията
-		hResult=m_oSession.GetSession().Commit();
+		hResult = m_oSession.GetSession().Commit();
 		if (FAILED(hResult))
 		{
 			m_oSession.GetSession().Abort();
-			DoMesgStatusExit(_T("Failed to commit data!"));
+			DoMesgStatusExit(_T("Failed to commit data!\n Error: % d."), hResult);
 			return FALSE;
 		}
 		DoMesgStatusExit(_T("Successfuly update data!"));
@@ -246,7 +247,7 @@ public:
 		HRESULT hResult = Open(m_oSession.GetSession(), strQuerySelect, &oInsertDBPropSet);
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Failed to select data from database Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to select data from database.\n Error: %d"), hResult);
 			return FALSE;
 		}
 
@@ -257,14 +258,14 @@ public:
 		hResult = __super::Insert(ACCESSOR_FOR_DATA,TRUE);
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Failed to insert data! Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to insert data!\n Error: %d"), hResult);
 			return FALSE;	
 		}
 
 		//Залеждаме данни в буфера - аксесор
 		if (MoveFirst() != S_OK)
 		{
-			DoMesgStatusExit(_T("Failed to read id for row! Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to read id for row!\n Error: %d"), hResult);
 			return FALSE;
 		}
 		recStruct.lId = GetRowId();
@@ -302,22 +303,28 @@ public:
 		HRESULT hResult = Open(m_oSession.GetSession(), strQuerySelect, &oDeleteDBPropSet);
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Failed to select data from database!  Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to select data from database!\n  Error: %d"), hResult);
 			return FALSE;
 		}
 
 		//Селектираме записа
 		if (MoveFirst() != S_OK)
 		{
-			DoMesgStatusExit(_T("Failed to read data from database! Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to read data from database!\n Error: %d"), hResult);
 			return FALSE;
 		}
 
 		//Изтриване на записа
 		hResult = __super::Delete();
+		if ((hResult))
+		{
+			DoMesgStatusExit(_T("Fail to delete data!\n This row is conected to another record in database!\n Error: %d"), hResult);
+			return FALSE;
+		}
+
 		if (FAILED(hResult))
 		{
-			DoMesgStatusExit(_T("Failed to delete data! Error: %d"), hResult);
+			DoMesgStatusExit(_T("Failed to delete data!\n Error: %d"), hResult);
 			return FALSE;
 		}
 

@@ -10,10 +10,6 @@
 #include "CitiesView.h"
 #include "Resource.h"
 
-#define LIST_CONTROL_HEADER_WIDTH 200
-#define LIST_CONTROL_NUMBER_COLUMN_CITY_NAME 0
-#define LIST_CONTROL_NUMBER_COLUMN_CITY_REGION 1
-
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,9 +25,9 @@ BEGIN_MESSAGE_MAP(CCitiesView, CListView)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_KEYDOWN()
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CCitiesView::OnContexMenuDataInsert)
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CCitiesView::OnContexMenuDataUpdate)
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CCitiesView::OnContexMenuDataDelete)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CCitiesView::OperationInsertData)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CCitiesView::OperationUpdateData)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CCitiesView::OperationDeleteData)
 
 END_MESSAGE_MAP()
 
@@ -65,6 +61,7 @@ void CCitiesView::OnInitialUpdate()
 {
 	CListView::OnInitialUpdate();
 
+	//Достъп до лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Добавяне на допълнителни стилове за лист контролата
@@ -89,41 +86,61 @@ void CCitiesView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CView::OnLButtonDblClk(nFlags, point);
 
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Индекс на селектирания запис
-	int nIndexItem = GetIndexListCtr();
-
-	//Проверка за избран елемент
-	if (nIndexItem == -1)
-	{
-		AfxMessageBox(_T("Failed to select index of data from list!"));
-		return;
-	}
-
-	//Достъпваме данните от колоните
-	CString strItemCityName = lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME);
-	CString strItemCityRegion = lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION);
-
-	//Проверка за предадени стойносит от диалога
-	if (strItemCityName.IsEmpty() || strItemCityRegion.IsEmpty())
-	{
-		AfxMessageBox(_T("Failed to select index of data from list!"));
-		return;
-	}
-
-	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CCitiesDialog oDialog(NULL,strItemCityName, strItemCityRegion, FALSE);
-
-	//Визуализираме диалога
-	oDialog.DoModal();
+	OperationSelectData();
 }
 
 void CCitiesView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 {	
 	ClientToScreen(&point);
 	OnContextMenu(this, point);
+}
+
+void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	//При натискане на бутон Ctrl + I да се добави нов запис
+	if (nChar == 'I')
+	{
+		OperationInsertData();
+	}
+
+	//Другите опрерации са вързможни само ако има избран елемент
+	else if (GetIndexListCtr() == -1)
+	{
+		return;
+	}
+
+	//При натискане на бутон Delete да се изтрие записа
+	if (nChar == VK_DELETE) 
+	{
+		OperationDeleteData();
+	}
+	
+	//При натискане на бутона Enter да се изведе в режим преглед записа
+	if (nChar == VK_RETURN)
+	{
+		OperationSelectData();
+	}
+
+	//При натискане на Ctrl + U да се редактира селектирания запис
+	if (nChar == 'U')
+	{
+		OperationUpdateData();
+	}
+
+	//При натискане на бутон за нагоре да се маркира предишен елемент
+	if (nChar == VK_UP)
+	{
+		ChangeSelectItemListCtr();
+	}
+
+	//При натискане на бутон за надолу да се маркира следващ елемент
+	if (nChar == VK_DOWN)
+	{
+		ChangeSelectItemListCtr();
+	}
+
+	CView::OnKeyDown(nChar, nRepCnt, nFlags); // Call the base class handler
+
 }
 
 void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
@@ -162,8 +179,14 @@ void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 
 void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
+	//Проверка, при първоначално извикване на метода
+	if (pHint == nullptr)
+	{
+		return;
+	}
+
 	//Обект, който ще се обработва
-	CITIES* pCity = (CITIES*)pHint;
+	CITIES& pCity = *(CITIES*)pHint;
 
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
@@ -171,7 +194,7 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	//Проверка за изпълнение на опирация добавяне на елемент
 	if(LPARAM_INSERT == lHint)
 	{
-		AddItemInListCtr(*pCity);
+		AddItemInListCtr(pCity);
 		return;
 	}
 
@@ -182,8 +205,8 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	if(LPARAM_UPDATE == lHint)
 	{
 		//Редактираме, по открития индекс, данните
-		lscCities.SetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME, pCity->szCityName);
-		lscCities.SetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION, pCity->szRegion);
+		lscCities.SetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME, pCity.szCityName);
+		lscCities.SetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION, pCity.szRegion);
 		return;
 	}
 
@@ -199,11 +222,46 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 // Generated message map functions
 // ---------------
+void CCitiesView::OperationSelectData()
+{
+	//Инстанция на лист контролата
+	CListCtrl& lscCities = GetListCtrl();
 
-void CCitiesView::OnContexMenuDataInsert()
+	//Индекс на селектирания запис
+	int nIndexItem = GetIndexListCtr();
+
+	//Проверка за избран елемент
+	if (nIndexItem == -1)
+	{
+		AfxMessageBox(_T("Failed to select index of data from list!"));
+		return;
+	}
+
+	//Достъпваме данните от колоните
+	CString strItemCityName = lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME);
+	CString strItemCityRegion = lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION);
+
+	//Проверка за предадени стойносит от диалога
+	if (strItemCityName.IsEmpty() || strItemCityRegion.IsEmpty())
+	{
+		AfxMessageBox(_T("Failed to select index of data from list!"));
+		return;
+	}
+
+	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
+	CCitiesDialog oDialog(NULL, strItemCityName, strItemCityRegion, FALSE);
+
+	//Визуализираме диалога
+	oDialog.DoModal();
+}
+
+void CCitiesView::OperationInsertData()
 {
 	//Достъпваме диалога
 	CCitiesDialog oDialog;
+
+	//Нова структура, която ще съдържа данни за новия запис
+	CITIES recCity;
 
 	//При натиснат бутон ОК
 	if (oDialog.DoModal() == IDOK)
@@ -221,24 +279,28 @@ void CCitiesView::OnContexMenuDataInsert()
 			return;
 		}
 
+		//Задаване на данни в стуктурата по тези от диалога
+		_tcscpy_s(recCity.szCityName, strNewItemCityName);
+		_tcscpy_s(recCity.szRegion, strNewItemCityRegion);
+
 		//Добавяме данните в документа
-		if (!(GetDocument() && GetDocument()->Insert(strNewItemCityName, strNewItemCityRegion)))
+		if (!(GetDocument() && GetDocument()->Insert(recCity)))
 		{
 			AfxMessageBox(_T("Failed to insert new city."));
 		}
 	}
  }
 
-void CCitiesView::OnContexMenuDataUpdate()
+void CCitiesView::OperationUpdateData()
 {
 	//Достъп до индекса на селектирания запис
 	int nIndexItem = GetIndexListCtr();
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
-	CITIES* recCity = &GetItemFromListCtr(nIndexItem);
+	CITIES recCity = GetItemFromListCtr(nIndexItem);
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CCitiesDialog oDialog(NULL, recCity->szCityName, recCity->szRegion);
+	CCitiesDialog oDialog(nullptr, recCity.szCityName, recCity.szRegion);
 
 	//Проверка за натиснат бутон OK
 	if (oDialog.DoModal() == IDOK)
@@ -255,24 +317,24 @@ void CCitiesView::OnContexMenuDataUpdate()
 		}
 
 		//Проверка за направени промени по данните
-		if (strNewItemCityName == recCity->szCityName && strNewItemCityRegion == recCity->szRegion)
+		if (strNewItemCityName == recCity.szCityName && strNewItemCityRegion == recCity.szRegion)
 		{
 			return;
 		}
 
 		//Променяме стойностите в структурата с града
-		_tcscpy_s(recCity->szCityName, strNewItemCityName);
-		_tcscpy_s(recCity->szCityName, strNewItemCityRegion);
+		_tcscpy_s(recCity.szCityName, strNewItemCityName);
+		_tcscpy_s(recCity.szRegion, strNewItemCityRegion);
 
 		//Редактираме данните в документа като подаваме стуртура с обновени данни
-		if (!(GetDocument() && GetDocument()->UpdateWhereID(*recCity)))
+		if (!(GetDocument() && GetDocument()->UpdateWhereID(recCity)))
 		{
 			AfxMessageBox(_T("Failed to update city."));
 		} 
 	}
 }
 
-void CCitiesView::OnContexMenuDataDelete()
+void CCitiesView::OperationDeleteData()
 {
 	//Допълнително потвърждение за изтриване
 	int result = AfxMessageBox(_T("Are you sure you want to delete data!"), MB_YESNO | MB_ICONQUESTION);
@@ -285,13 +347,6 @@ void CCitiesView::OnContexMenuDataDelete()
 
 	//Достъпваме индекса на селектирания запис
 	int nIndexItem = GetIndexListCtr();
-
-	//Проверка за успешен селект на индекс
-	if (nIndexItem == NULL)
-	{
-		AfxMessageBox(_T("Failed to select index of data from list!"));
-		return;
-	}
 
 	//Достъпваме ИД на записа от лист контролата по подаден индекс
 	long lItemCityId = GetListCtrl().GetItemData(nIndexItem);
@@ -310,14 +365,6 @@ void CCitiesView::OnContexMenuDataDelete()
 	}
 }
 
-void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	//При натискане на бутон Delete
-	if (nChar == VK_DELETE) 
-	{
-		OnContexMenuDataDelete();
-	}
-}
 
 // Methods
 // ---------------
@@ -345,21 +392,33 @@ void CCitiesView::AddItemInListCtr(const CITIES& pCity)
 	lscCities.SetItemData(nNewIndex, pCity.lId);
 }
 
-CITIES& CCitiesView::GetItemFromListCtr(const int nIndexItem)
+CITIES CCitiesView::GetItemFromListCtr(const int nIndexItem)
 {
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Нов обект от тип структура с градове
-	CITIES* recCity = new CITIES();
+	CITIES recCity;
 
 	//Задаване на стойности от лист контролата към стуктурата с градове
-	recCity->lId = lscCities.GetItemData(nIndexItem);
-	_tcscpy_s(recCity->szCityName, lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME));
-	_tcscpy_s(recCity->szRegion, lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION));
+	recCity.lId = lscCities.GetItemData(nIndexItem);
+	_tcscpy_s(recCity.szCityName, lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME));
+	_tcscpy_s(recCity.szRegion, lscCities.GetItemText(nIndexItem, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION));
 
 	//Връщаме пълната структура
-	return *recCity;
+	return recCity;
+}
+
+void CCitiesView::ChangeSelectItemListCtr()
+{
+	//Инстанция на лист контролата
+	CListCtrl& lscCities = GetListCtrl();
+
+	//Вземаме индекса на селектирания елемент
+	int nSelected = lscCities.GetNextItem(-1, LVNI_SELECTED);
+
+	//Задаваме следващия елемент да е селектиран
+	lscCities.SetItemState(nSelected, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 }
 
 

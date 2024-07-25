@@ -9,7 +9,7 @@
 ///Темплейт клас отгоравящ за обработката на CTypedPtrArrays
 /// </summary>
 template<class CStruct>
-class CDynamicArray : public CTypedPtrArray<CPtrArray, CStruct*>
+class CTableDataArray : public CTypedPtrArray<CPtrArray, CStruct*>
 {
 
 // Constants
@@ -19,10 +19,10 @@ class CDynamicArray : public CTypedPtrArray<CPtrArray, CStruct*>
 // Constructor / Destructor
 // ----------------
 public:
-	CDynamicArray() {};
+	CTableDataArray() {};
 
 	//Динамично се освобождава заделената памет
-	virtual ~CDynamicArray()
+	virtual ~CTableDataArray()
 	{
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
 		{
@@ -30,6 +30,7 @@ public:
 			if (pElement != nullptr)
 			{
 				delete pElement;
+				pElement = NULL;
 			}
 		}
 		RemoveAll();
@@ -43,10 +44,10 @@ public:
 	/// Добавяне на елемент динамично
 	/// </summary>
 	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
-	void AddElement(const CStruct& recStructData)
+	INT_PTR AddElement(const CStruct& recStructData)
 	{
 		CStruct* pStruct = new CStruct(recStructData);
-		Add(pStruct);
+		return Add(pStruct);
 	}
 
 	/// <summary>
@@ -61,6 +62,7 @@ public:
 			if ( pElement->lId == lId)
 			{
 				delete pElement;
+				pElement = NULL;
 				RemoveAt(nIndex);
 			}
 		}

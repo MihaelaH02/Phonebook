@@ -187,7 +187,7 @@
     <ClInclude Include="CitiesDialog.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CitiesAccessor.h" />
-    <ClInclude Include="DynamicArray.h" />
+    <ClInclude Include="TableDataArray.h" />
     <ClInclude Include="CitiesDoc.h" />
     <ClInclude Include="Structures.h" />
     <ClInclude Include="CitiesTable.h" />
@@ -201,6 +201,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ValidateStringData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCitiesDialog.cpp" />
@@ -218,6 +219,7 @@
     </ClCompile>
     <ClCompile Include="Phonebook.cpp" />
     <ClCompile Include="Session.cpp" />
+    <ClCompile Include="ValidateStringData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Phonebook.rc" />

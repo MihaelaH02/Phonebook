@@ -74,7 +74,7 @@ public:
 	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
 	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Insert(const CString& strCityName, const CString& strCityRegion);
+	BOOL Insert(CITIES& recCity);
 
 	/// <summary>
 	/// Изтриване на запис от таблицата с градове
@@ -87,7 +87,7 @@ public:
 	/// Достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с данните от таблицата с градов</returns>
-	const CDynamicArray<CITIES>& GetCitiesArray() const;
+	const CTableDataArray<CITIES>& GetCitiesArray() const;
 
 
 // Members
