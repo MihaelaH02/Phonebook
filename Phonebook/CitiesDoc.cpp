@@ -29,8 +29,6 @@ END_MESSAGE_MAP()
 
 CCitiesDoc::CCitiesDoc() noexcept
 {
-	// TODO: add one-time construction code here
-
 }
 
 CCitiesDoc::~CCitiesDoc()

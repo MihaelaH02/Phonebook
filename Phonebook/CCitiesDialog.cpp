@@ -42,9 +42,6 @@ BOOL CCitiesDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	//Флаг, който забранява изпълнението на валидация за полетата при стартирането на диалога
-	m_bFlagInitDialog = true;
-
 	//Задаване на максимална дължина на полетата
 	m_edbName.SetLimitText(MAX_LENGTH_STRING);
 	m_edbRegion.SetLimitText(MAX_LENGTH_STRING);
@@ -75,12 +72,9 @@ END_MESSAGE_MAP()
 
 void CCitiesDialog::OnBnClickedOk()
 {
-	//Флага за инициализация е деактивиран
-	m_bFlagInitDialog = false;
-
-	//Допълнителна проверка за празни полета, ако не е въвеждано в тах
-	OnEnChangeName();
-	OnEnChangeRegion();
+	//Ако не е бил фонусиран нито един едит бокс да се визуализира грешка за празни полета
+	GetDlgItem(IDC_STT_CITIES_NAME_ERROR_MSG)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_STT_CITIES_REGION_ERROR_MSG)->ShowWindow(SW_SHOW);
 
 	//Проверка за визуалиризано съобщение за грешка
 	if (!m_oValidateStringData.IsFinedError())
@@ -114,8 +108,8 @@ void CCitiesDialog::EnableControls(BOOL bEnableControls)
 
 void CCitiesDialog::OnEnChangeName()
 {
-	//При инициализация на диалога да не се правят проверки
-	if (m_bFlagInitDialog)
+	//Проверка дали контролата е на фокус
+	if (GetFocus()->m_hWnd != m_edbName.m_hWnd)
 	{
 		return;
 	}
@@ -126,12 +120,15 @@ void CCitiesDialog::OnEnChangeName()
 	//Визуализираме съобщение за грешка, ако е намерена такава, от класа валидатор
 	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidStringFormat(m_strName);
 	SetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, strResivedMgs);
+
+	//Правим статичния текст за грешката видим
+	GetDlgItem(IDC_STT_CITIES_NAME_ERROR_MSG)->ShowWindow(SW_SHOW);
 }
 
 void CCitiesDialog::OnEnChangeRegion()
 {
-	//При инициализация на диалога да не се правят проверки
-	if (m_bFlagInitDialog)
+	//Проверка дали контролата е на фокус
+	if (GetFocus()->m_hWnd != m_edbRegion.m_hWnd)
 	{
 		return;
 	}
@@ -142,6 +139,9 @@ void CCitiesDialog::OnEnChangeRegion()
 	//Визуализираме съобщение за грешка, ако е намерена такава с класа валидатор
 	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidStringFormat(m_strRegion);
 	SetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, strResivedMgs);
+
+	//Правим статичния текст за грешката видим
+	GetDlgItem(IDC_STT_CITIES_REGION_ERROR_MSG)->ShowWindow(SW_SHOW);
 }
 
 void CCitiesDialog::GetControlsData(CString& strCityName , CString& strRegion)

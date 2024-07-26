@@ -41,7 +41,7 @@ public:
 	/// Метод, който връща дали е открита грешка
 	/// </summary>
 	/// <returns>Връща TRUE при открита грешка и FALSE при липса на такава</returns>
-	const BOOL IsFinedError() const;
+	const BOOL& IsFinedError() const;
 
 private:
 	/// <summary>

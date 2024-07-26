@@ -108,11 +108,6 @@ private:
 	BOOL m_bFlagEnableControls;
 
 	/// <summary>
-	/// Член променлива флаг за начална инициялизация, който забранява изпълнението на някои методи свързани с контролите
-	/// </summary>
-	BOOL m_bFlagInitDialog;
-
-	/// <summary>
 	/// Инстанция на клас заверификация на данни
 	/// </summary>
 	CValidateStringData m_oValidateStringData;

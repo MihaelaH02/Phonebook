@@ -50,7 +50,7 @@ CString CValidateStringData::SendStatusMsgForValidStringFormat(const CString& st
 	return _T("");
 }
 
-const BOOL CValidateStringData::IsFinedError() const
+const BOOL& CValidateStringData::IsFinedError() const
 {
 	return m_bFlagHasError;
 }

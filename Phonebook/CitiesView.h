@@ -3,8 +3,12 @@
 // CitiesView.h : interface of the CCitiesView class
 
 #define LIST_CONTROL_HEADER_WIDTH 200
-#define LIST_CONTROL_NUMBER_COLUMN_CITY_NAME 0
-#define LIST_CONTROL_NUMBER_COLUMN_CITY_REGION 1
+
+enum ListControlColumn
+{
+	LIST_CONTROL_NUMBER_COLUMN_CITY_NAME = 0,
+	LIST_CONTROL_NUMBER_COLUMN_CITY_REGION = 1
+};
 
 #pragma once
 #include "CitiesDialog.h"
@@ -97,11 +101,8 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 
 	/// <summary>
-	/// Метод, който управлява действия свързани с  натискане на бетон от клавиатурата
+	/// Метод, който управлява действия свързани с натискане на бетон от клавиатурата
 	/// </summary>
-	/// <param name="nChar"></param>
-	/// <param name="nRepCnt"></param>
-	/// <param name="nFlags"></param>
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 	DECLARE_MESSAGE_MAP()
