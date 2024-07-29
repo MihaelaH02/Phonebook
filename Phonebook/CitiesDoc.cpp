@@ -42,13 +42,16 @@ CCitiesDoc::~CCitiesDoc()
 BOOL CCitiesDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
+	{
 		return FALSE;
+	}
 
 	//Зареждане на данните от базата данни в масив
 	if (!m_oCitiesData.SelectAll(m_oCitiesArray))
 	{
 		return FALSE;
 	}
+
 	return TRUE;
 }
 
@@ -68,7 +71,7 @@ void CCitiesDoc::Serialize(CArchive& ar)
 // Methods
 // ----------------
 
-BOOL CCitiesDoc::SelectWhereID(const long lID, CITIES& recCity)
+BOOL CCitiesDoc::SelectCity(const long lID, CITIES& recCity)
 {
 	if (!m_oCitiesData.SelectWhereID(lID, recCity))
 	{
@@ -77,7 +80,7 @@ BOOL CCitiesDoc::SelectWhereID(const long lID, CITIES& recCity)
 	return TRUE;
 }
 
-BOOL CCitiesDoc::UpdateWhereID(const CITIES& recCity)
+BOOL CCitiesDoc::UpdateCity(const CITIES& recCity)
 {
 	//Редакция в базата данни
 	if (!m_oCitiesData.UpdateWhereID(recCity.lId, recCity))
@@ -95,9 +98,7 @@ BOOL CCitiesDoc::UpdateWhereID(const CITIES& recCity)
 		if (pCurrentCityFromArray.lId == recCity.lId)
 		{
 			//Редактираме стойностите на елемента в масива, с тези на подадения като пакаметър структура
-			pCurrentCityFromArray.lUpdateCounter = recCity.lUpdateCounter;
-			_tcscpy_s(pCurrentCityFromArray.szCityName, recCity.szCityName);
-			_tcscpy_s(pCurrentCityFromArray.szRegion, recCity.szRegion);
+			pCurrentCityFromArray = recCity;
 
 			//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
 			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)&pCurrentCityFromArray);
@@ -133,7 +134,8 @@ BOOL CCitiesDoc::Delete(const long lId)
 	m_oCitiesArray.RemoveElemetById(lId);
 
 	//Редакция на вютата, подаване на параметър за изтриване и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_DELETE, (CObject*)lId);
+	UpdateAllViews(nullptr, LPARAM_DELETE);
+
 	return TRUE;
 }
 

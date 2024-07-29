@@ -39,7 +39,6 @@
 #define IDC_STT_CITIES_NAME_ERROR_MSG   1004
 #define IDC_STT_CITIES_REGION_ERROR_MSG 1005
 #define IDC_EDB_CITIES_REGION           1006
-#define IDC_TAB1                        1007
 #define ID_EDIT_DATA_UPDATE             32775
 #define ID_EDIT_DATA_DELETE             32776
 #define ID_CONTEXT_MANU_DATA_INSERT     32777
@@ -48,13 +47,22 @@
 #define ID_CONTEXT_MANU_DATA_UPDATE     32780
 #define ID_CONTEXT_MENU_DATA_UPDATE     32781
 #define ID_CONTEXT_MENU_DATA_DELETE     32782
+#define ID_VIEW_DATA                    32783
+#define ID_DATA_CITIES                  32784
+#define ID_DATA_PHONETYPES              32785
+#define ID_DATA_CLIENTS                 32786
+#define ID_CITIES_ALL                   32787
+#define ID_CITIES_FIND                  32788
+#define ID_NEW_CITIES                   32789
+#define ID_NEW_PHONETYPES               32790
+#define ID_NEW_CLIENTS                  32791
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
-#define _APS_NEXT_COMMAND_VALUE         32783
+#define _APS_NEXT_COMMAND_VALUE         32792
 #define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

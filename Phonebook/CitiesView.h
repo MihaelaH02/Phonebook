@@ -28,7 +28,7 @@ protected:
 // Constructor / Destructor
 // ----------------
 protected:
-	CCitiesView() noexcept;// create from serialization only
+	CCitiesView() noexcept;
 public:
 	virtual ~CCitiesView();
 
@@ -37,12 +37,14 @@ public:
 // ----------------
 public:
 	CCitiesDoc* GetDocument() const;
+
 private:
 	/// <summary>
 	/// Метод за добавяне на елемент към лист контролата
 	/// </summary>
-	/// <param name="pCity">Параметър оти тип структура град, с данни които да се добавят</param>
-	void AddItemInListCtr(const CITIES& pCity);
+	/// <param name="pCity">Параметър от тип структура град, с данни които да се добавят</param>
+	/// <param name="nIndex">Параметър за индек, по който ще се редактират данни ви контролата</param>
+	void AddOrEditItemInListCtr(const CITIES& pCity, int nIndex = -1);
 
 	/// <summary>
 	/// Метод за достъп до елемент в лист контролата
@@ -55,7 +57,7 @@ private:
 	/// Метод за достъп до индекс на селектиран елемент от лист констролата
 	/// </summary>
 	/// <returns>Връща индекс на елемент от лист контролата</returns>
-	int GetIndexListCtr();
+	int GetSelectedItemListCtrByIndex();
 
 	/// <summary>
 	/// Метод за променяне на селектирания елемент
@@ -105,27 +107,35 @@ protected:
 	/// </summary>
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pNMHDR"></param>
+	/// <param name="pResult"></param>
+	//afx_msg void GridLinesListCtr(NMHDR* pNMHDR, LRESULT* pResult);
+
 	DECLARE_MESSAGE_MAP()
+
 public:
 	/// <summary>
-	/// Метод за селект на запис от лест контролата
+	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void OperationSelectData();
+	afx_msg void SelectCityListCtr();
 
 	/// <summary>
-	/// Метод за добавяне на запис в лист контролата
+	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void OperationInsertData();
+	afx_msg void InsertCityListCtrl();
 
 	/// <summary>
-	/// Метод за редакция на запис в лист контролата
+	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void OperationUpdateData();
+	afx_msg void UpdateCityListCtr();
 
 	/// <summary>
-	/// Метод за изтриване на зипис в лист контролата
+	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void OperationDeleteData();
+	afx_msg void DeleteCityListCtr();
 
 
 // Members

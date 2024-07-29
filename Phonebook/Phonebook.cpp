@@ -150,26 +150,6 @@ BOOL CPhonebookApp::InitInstance()
 	pMainFrame->ShowWindow(m_nCmdShow);
 	pMainFrame->UpdateWindow();
 
-
-	/*CCitiesTable oCitiesTable;
-
-	//Декларация на масив, при успешна операция се извежда съдържанието му, след което се изчисва паметта
-	CCitiesArray oCitiesArray;
-	oCitiesTable.SelectAll(oCitiesArray);
-
-	CITIES* pFindCity = new CITIES();
-	oCitiesTable.SelectWhereID(1, *pFindCity);
-	delete pFindCity;
-
-	CITIES* pInsertCity = new CITIES(_T("Ruse"), _T("Ruse"));
-	oCitiesTable.Insert(*pInsertCity);
-	delete pInsertCity;
-
-	CITIES* pUpdateCity = new CITIES(_T("Tutrakan"), _T("Silistra"));
-	oCitiesTable.UpdateWhereID(1, *pUpdateCity);
-	delete pUpdateCity;
-
-	oCitiesTable.DeleteWhereID(3);*/
 	return TRUE;
 }
 

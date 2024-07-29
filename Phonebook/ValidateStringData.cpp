@@ -132,8 +132,11 @@ BOOL CValidateStringData::IsOnlyLettersCString(const CString& strText)
 	}
 
 	//При открита поне една буква, е не само спейсове
-	if (bFlagOneFinedLetter)
+	if (!bFlagOneFinedLetter)
 	{
-		return TRUE;
+		return FALSE;
 	}
+
+	return TRUE;
+
 }

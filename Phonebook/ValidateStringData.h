@@ -28,6 +28,7 @@ public:
 	/// Метод, който проверява дали стринга е във валиден формат 
 	/// </summary>
 	/// <param name="strText">Параметър за текст, който ще се проверява</param>
+	/// <param name="strAddText">Параметър за допълнителен текст, който ще се проверява, ако е подаден</param> 
 	/// <returns>Връща съобщение за грешката или празен стренг</returns>
 	CString SendStatusMsgForValidStringFormat(const CString& strText);
 

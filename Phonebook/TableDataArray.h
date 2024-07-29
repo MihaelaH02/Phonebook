@@ -24,24 +24,15 @@ public:
 	//Динамично се освобождава заделената памет
 	virtual ~CTableDataArray()
 	{
-		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
-		{
-			CStruct* pElement = GetAt(nIndex);
-			if (pElement != nullptr)
-			{
-				delete pElement;
-				pElement = NULL;
-			}
-		}
-		RemoveAll();
+		RemoveAllElements();
 	};
 
 
 // Methods
 // ----------------
-
+public:
 	/// <summary>
-	/// Добавяне на елемент динамично
+	/// Метод за добавяне на елемент динамично
 	/// </summary>
 	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
 	INT_PTR AddElement(const CStruct& recStructData)
@@ -51,7 +42,7 @@ public:
 	}
 
 	/// <summary>
-	/// Премахване на елемент от масива динамично 
+	/// Метод за премахване на елемент от масива динамично 
 	/// </summary>
 	/// <param name="lId">ИД на елемент, който да се премахне</param>
 	void RemoveElemetById(const long lId)
@@ -68,6 +59,22 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Метод за премахване на всички елементи от масива динамично
+	/// </summary>
+	void RemoveAllElements()
+	{
+		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
+		{
+			CStruct* pElement = GetAt(nIndex);
+			if (pElement != nullptr)
+			{
+				delete pElement;
+				pElement = NULL;
+			}
+		}
+		RemoveAll();
+	}
 // Overrides
 // ----------------
 

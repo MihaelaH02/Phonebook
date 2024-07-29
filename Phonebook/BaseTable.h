@@ -6,9 +6,9 @@
 #include "BaseTableArray.h"
 #include "TableDataArray.h"
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CBaseTable
+
 
 /// <summary>
 /// Базов клас изпълняващ CRUD операции с базата данни
@@ -22,6 +22,7 @@ public:
 // Constants
 // ----------------
 	
+
 // Constructor / Destructor
 // ----------------
 	CBaseTable() {};
@@ -65,7 +66,7 @@ public:
 
 		if (hResult != DB_S_ENDOFROWSET)
 		{
-			DoMesgStatusExit(_T("Error in reading all records in table.\n Error: %d."), hResult);
+			DoMesgStatusExit(_T("Failed to read data from database!\n Error: %d"), hResult);
 			return FALSE;
 		}
 

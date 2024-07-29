@@ -3,9 +3,12 @@
 #include "CitiesData.h"
 #include "Structures.h"
 
-#define LPARAM_INSERT  1
-#define LPARAM_UPDATE  2
-#define LPARAM_DELETE  3
+enum LPARAM_FLAGS
+{
+	LPARAM_INSERT = 1,
+	LPARAM_UPDATE = 2,
+	LPARAM_DELETE = 3
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // CitiesDoc.h : interface of the CCitiesDoc class
@@ -57,7 +60,7 @@ public:
 	/// <param name="lID">ИД, по което ще се търси запис</param>
 	/// <param name="recCity">Структура, която ще съдържа намерения запис</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL SelectWhereID(const long lID, CITIES& recCity);
+	BOOL SelectCity(const long lID, CITIES& recCity);
 
 	/// <summary>
 	/// Редакция на един запис от таблицата с градове
@@ -66,7 +69,7 @@ public:
 	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
 	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL UpdateWhereID(const CITIES& recCity);
+	BOOL UpdateCity(const CITIES& recCity);
 
 	/// <summary>
 	/// Добавяне на нов запис в таблицата с градове
