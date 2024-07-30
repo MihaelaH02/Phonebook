@@ -187,6 +187,7 @@
     <ClInclude Include="CitiesDialog.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CitiesAccessor.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="TableDataArray.h" />
     <ClInclude Include="CitiesDoc.h" />
     <ClInclude Include="Structures.h" />

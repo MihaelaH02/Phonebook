@@ -10,24 +10,21 @@ IMPLEMENT_DYNAMIC(CCitiesDialog, CDialog)
 
 // Constructor / Destructor
 // ----------------
-CCitiesDialog::CCitiesDialog(CWnd* pParent /*=nullptr*/)
+CCitiesDialog::CCitiesDialog(LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_CITIES_DIALOG, pParent)
 {
 	m_strName = "";
 	m_strRegion = "";
-	//Инициализация на член променливи
-	m_bFlagEnableControls = TRUE;
+	m_oEnableControlsParam = oEnableControls;
 }
 
-CCitiesDialog::CCitiesDialog(const CITIES& recCity, BOOL bEnableControls /*=TRUE*/, CWnd* pParent /*=nullptr*/)
+CCitiesDialog::CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls,/*= ENABLE_CONTROLS_FLAG_ALL*/ CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_CITIES_DIALOG, pParent)
 {
-	//При подаване на параметри, стринговите член променливи да приемат стойности от подадената структура
+	//Подаване на параметри
 	m_strName = recCity.szCityName;
 	m_strRegion = recCity.szRegion;
-
-	//Задаване на член променливата флаг, за активност на контролите, да е със стойност подадената
-	m_bFlagEnableControls = bEnableControls;
+	m_oEnableControlsParam = oEnableControls;
 }
 
 CCitiesDialog::~CCitiesDialog()
@@ -57,9 +54,15 @@ BOOL CCitiesDialog::OnInitDialog()
 	m_edbName.SetWindowTextW(m_strName);
 	m_edbRegion.SetWindowTextW(m_strRegion);
 
-	//Активираме или деактивираме контролите за писане
-	EnableControls(m_bFlagEnableControls);
+	if (!m_strName.IsEmpty() && !m_strRegion.IsEmpty())
+	{
+		//Задаване на начална празна стойност на контролите за съобщения за грешки  
+		SetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, _T(""));
+		SetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, _T(""));
+	}
 
+	//Промяна на активността на контролите, според подадения параметър
+	EnableControls(m_oEnableControlsParam);
 	return TRUE;
 }
 
@@ -76,22 +79,19 @@ END_MESSAGE_MAP()
 
 void CCitiesDialog::OnBnClickedOk()
 {
-	//Ако контролите за диалога са в режим на четене
-	if (!m_bFlagEnableControls)
-	{
-		CDialog::OnOK();
-	}
-
-	//Визуализация на контролите, съдържащи грешки
-	GetDlgItem(IDC_STT_CITIES_NAME_ERROR_MSG)->ShowWindow(SW_SHOW);
-	GetDlgItem(IDC_STT_CITIES_REGION_ERROR_MSG)->ShowWindow(SW_SHOW);
-
 	//Проверка за визуалиризано съобщение за грешка
-	if (!m_oValidateStringData.IsFinedError())
+	if (!HasErrorMsg())
 	{
 		//Превръщаме въведените данни в коректни с валидатора
-		m_oValidateStringData.ValidateDataUpperLetter(m_strName);
-		m_oValidateStringData.ValidateDataUpperLetter(m_strRegion);
+		if (m_edbName.IsWindowEnabled())
+		{
+			m_oValidateStringData.ValidateDataUpperLetter(m_strName);
+		}
+
+		if (m_edbRegion.IsWindowEnabled())
+		{
+			m_oValidateStringData.ValidateDataUpperLetter(m_strRegion);
+		}
 
 		CDialog::OnOK();
 	}
@@ -110,10 +110,37 @@ void CCitiesDialog::OnBnClickedCancel()
 // Methods
 // ---------------
 
-void CCitiesDialog::EnableControls(BOOL bEnableControls)
+void CCitiesDialog::EnableControls(LPARAM oEnableControls)
 {
-	m_edbName.EnableWindow(bEnableControls);
-	m_edbRegion.EnableWindow(bEnableControls);
+	switch (oEnableControls)
+	{
+		case ENABLE_CONTROLS_FLAG_ALL:
+		{
+			m_edbName.EnableWindow(TRUE);
+			m_edbRegion.EnableWindow(TRUE);
+		}
+		break;
+
+		case ENABLE_CONTROLS_FLAG_NONE:
+		{
+			m_edbName.EnableWindow(FALSE);
+			m_edbRegion.EnableWindow(FALSE);
+		}
+		break;
+
+		case ENABLE_CONTROLS_FLAG_ONLY_NAME:
+		{
+			m_edbName.EnableWindow(TRUE);
+			m_edbRegion.EnableWindow(FALSE);
+		}
+		break;
+
+		case ENABLE_CONTROLS_FLAG_ONLY_REGION:
+		{
+			m_edbName.EnableWindow(FALSE);
+			m_edbRegion.EnableWindow(TRUE);
+		}
+	}
 }
 
 void CCitiesDialog::OnEnChangeName()
@@ -197,4 +224,32 @@ void CCitiesDialog::PrintErrorMsg(const CString& strText, int nControlaID)
 
 	//Правим контролата видима
 	GetDlgItem(nControlaID)->ShowWindow(SW_SHOW);
+}
+
+BOOL CCitiesDialog::HasErrorMsg()
+{
+	//Стренгови променливи, които съдържат празни низове(липса на открита грешка)
+	CString strName, strRegion;
+
+	//Визуализация на контролите, съдържащи грешки, само ако са активни, като се присвоява съобещението от контролата
+	if (m_edbName.IsWindowEnabled())
+	{
+		GetDlgItem(IDC_STT_CITIES_NAME_ERROR_MSG)->ShowWindow(SW_SHOW);
+		GetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, strName);
+	}
+
+	if (m_edbRegion.IsWindowEnabled())
+	{
+		GetDlgItem(IDC_STT_CITIES_REGION_ERROR_MSG)->ShowWindow(SW_SHOW);
+		GetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, strRegion);
+	}
+
+	//Проверка за празни контроли, съдържащи грешката
+	if (strName.IsEmpty() && strRegion.IsEmpty())
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+
 }

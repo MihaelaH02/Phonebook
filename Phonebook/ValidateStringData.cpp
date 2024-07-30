@@ -13,8 +13,6 @@
 
 CValidateStringData::CValidateStringData() 
 {
-	//Задаване на начална стойност, на флага за валидация на данните
-	m_bFlagHasError = true;
 }
 
 CValidateStringData::~CValidateStringData() 
@@ -34,27 +32,18 @@ CString CValidateStringData::SendStatusMsgForValidStringFormat(const CString& st
 	//Проверка за празни полета
 	if (IsEmptyString(strText))
 	{
-		m_bFlagHasError = TRUE;
 		return _T("Filed can not be empty!");
 	}
 
 	//Проверка дали са въведени само букви
 	if (!IsOnlyLettersCString(strText))
 	{
-		m_bFlagHasError = TRUE;
 		return _T("Field must contain only letters!");
 	}
 
 	//Не е открита грешка
-	m_bFlagHasError = FALSE;
 	return _T("");
 }
-
-const BOOL& CValidateStringData::IsFinedError() const
-{
-	return m_bFlagHasError;
-}
-
 
 void CValidateStringData::ValidateDataUpperLetter(CString& strText)
 {

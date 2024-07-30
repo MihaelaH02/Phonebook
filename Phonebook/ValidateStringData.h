@@ -38,12 +38,6 @@ public:
 	/// <param name="strText">Параметър за текст, който ще се модифицира</param>
 	void ValidateDataUpperLetter(CString& strText);
 
-	/// <summary>
-	/// Метод, който връща дали е открита грешка
-	/// </summary>
-	/// <returns>Връща TRUE при открита грешка и FALSE при липса на такава</returns>
-	const BOOL& IsFinedError() const;
-
 private:
 	/// <summary>
 	/// Метод за валидация на празни полета
@@ -63,6 +57,4 @@ private:
 
 // Members
 // ----------------
-private:
-	BOOL m_bFlagHasError;
 };

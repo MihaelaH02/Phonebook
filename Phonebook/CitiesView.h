@@ -4,14 +4,10 @@
 
 #define LIST_CONTROL_HEADER_WIDTH 200
 
-enum ListControlColumn
-{
-	LIST_CONTROL_NUMBER_COLUMN_CITY_NAME = 0,
-	LIST_CONTROL_NUMBER_COLUMN_CITY_REGION = 1
-};
 
 #pragma once
 #include "CitiesDialog.h"
+#include "Enums.h"
 
 class CCitiesView : public CListView
 {
@@ -62,7 +58,24 @@ private:
 	/// <summary>
 	/// Метод за променяне на селектирания елемент
 	/// </summary>
-	void ChangeSelectItemListCtr();
+	void ChangeSelectionItemListCtr();
+
+	/// <summary>
+	/// Метод за зареждане на всички данни от документа в лист контролата
+	/// </summary>
+	void LoadDataInListCtrFromDoc();
+
+	/// <summary>
+	/// Метод за търсене на всички елементи по даден критерий
+	/// </summary>
+	/// <param name="recCity">Структура, по която ще се търсият записи</param>
+	void FindItemsFromListCtr(const CITIES& recCity);
+
+	/// <summary>
+	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните в документа
+	/// </summary>
+	/// <returns>Връща TRUE при равенство и FALSE при разминалане</returns>
+	BOOL IsAllDataLoadFromDoc();
 
 // Overrides
 // ----------------
@@ -107,12 +120,6 @@ protected:
 	/// </summary>
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="pNMHDR"></param>
-	/// <param name="pResult"></param>
-	//afx_msg void GridLinesListCtr(NMHDR* pNMHDR, LRESULT* pResult);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -137,6 +144,21 @@ public:
 	/// </summary>
 	afx_msg void DeleteCityListCtr();
 
+	/// <summary>
+	/// Метод, който филтрира градовете по подаден регион
+	/// </summary>
+	/// <param name="strRegion">Променла струнг, по който ще ке фелтрират градовете</param>
+	afx_msg void FilterCitiesByRegion();
+
+	/// <summary>
+	/// Метод, който търси даден град по подадени данни
+	/// </summary>
+	afx_msg void FindOneCity();
+
+	/// <summary>
+	/// Метод за зареждане на всички градове
+	/// </summary>
+	afx_msg void ReloadCities();
 
 // Members
 // ----------------

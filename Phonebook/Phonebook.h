@@ -34,6 +34,8 @@ public:
 	virtual void SaveCustomState();
 
 	afx_msg void OnAppAbout();
+	//afx_msg void OnFileNewCities();
+
 	DECLARE_MESSAGE_MAP()
 };
 

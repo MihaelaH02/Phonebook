@@ -6,6 +6,7 @@
 #include "Phonebook.h"
 #endif
 
+#include "Enums.h"
 #include "CitiesDoc.h"
 #include "CitiesView.h"
 #include "Resource.h"
@@ -28,9 +29,9 @@ BEGIN_MESSAGE_MAP(CCitiesView, CListView)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CCitiesView::InsertCityListCtrl)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CCitiesView::UpdateCityListCtr)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CCitiesView::DeleteCityListCtr)
-
-	//ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CCitiesView::GridLinesListCtr)
-
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_FILTERBYREGION, &CCitiesView::FilterCitiesByRegion)
+	ON_COMMAND(ID_CONTEXT_MANU_DATA_FIND, &CCitiesView::FindOneCity)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_RELOAD, &CCitiesView::ReloadCities)
 END_MESSAGE_MAP()
 
 
@@ -69,19 +70,11 @@ void CCitiesView::OnInitialUpdate()
 	//Добавяне на допълнителни стилове за лист контролата
 	lscCities.SetExtendedStyle( LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
 	
-	//Достъпваме документа
-	CCitiesDoc* pCitiesDoc = GetDocument();
-
 	//Добавяме колони в лист контролата с ляво подравяване и размер на полето
 	lscCities.InsertColumn(1, _T("City name"), LVCFMT_LEFT, LIST_CONTROL_HEADER_WIDTH);
 	lscCities.InsertColumn(2, _T("Region"), LVCFMT_LEFT, LIST_CONTROL_HEADER_WIDTH);
 
-	//Добавяме данните от таблицата в лист контролата
-	for (INT_PTR i = 0; i < pCitiesDoc->GetCitiesArray().GetCount(); ++i)
-	{
-		CITIES& pCity = *pCitiesDoc->GetCitiesArray().GetAt(i);
-		AddOrEditItemInListCtr(pCity);
-	}
+	LoadDataInListCtrFromDoc();
 }
 
 void CCitiesView::OnLButtonDblClk(UINT nFlags, CPoint point)
@@ -99,46 +92,81 @@ void CCitiesView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 
 void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	//При натискане на бутон Ctrl + I да се добави нов запис
-	if (nChar == 'I')
+
+	switch (nChar)
+	{
+		//При натискане на бутон Ctrl + I да се добави нов запис
+	case 'I':
 	{
 		InsertCityListCtrl();
+		return;
+	}
+	break;
+
+	//При натискане на бутон Ctrl + F да се търси запис
+	case 'F':
+	{
+		FindOneCity();
+		return;
+	}
+	break;
+
+	//При натискане на бутон Ctrl + R да се презаредят записите
+	case 'R':
+	{
+		ReloadCities();
+		return;
+	}
+	break;
 	}
 
 	//Другите опрерации са вързможни само ако има избран елемент
-	else if (GetSelectedItemListCtrByIndex() == -1)
+	if (GetSelectedItemListCtrByIndex() == -1)
 	{
 		return;
 	}
 
-	//При натискане на бутон Delete да се изтрие записа
-	if (nChar == VK_DELETE) 
+	switch (nChar)
+	{
+		//При натискане на бутон Delete да се изтрие записа
+	case VK_DELETE:
 	{
 		DeleteCityListCtr();
+		return;
 	}
-	
+	break;
+
 	//При натискане на бутона Enter да се изведе в режим преглед записа
-	if (nChar == VK_RETURN)
+	case VK_RETURN:
 	{
 		SelectCityListCtr();
+		return;
 	}
+	break;
 
 	//При натискане на Ctrl + U да се редактира селектирания запис
-	if (nChar == 'U')
+	case 'U':
 	{
 		UpdateCityListCtr();
+		return;
 	}
+	break;
 
 	//При натискане на бутон за нагоре да се маркира предишен елемент
-	if (nChar == VK_UP)
+	case VK_UP:
 	{
-		ChangeSelectItemListCtr();
+		ChangeSelectionItemListCtr();
+		return;
 	}
+	break;
 
 	//При натискане на бутон за надолу да се маркира следващ елемент
-	if (nChar == VK_DOWN)
+	case VK_DOWN:
 	{
-		ChangeSelectItemListCtr();
+		ChangeSelectionItemListCtr();
+		return;
+	}
+	break;
 	}
 
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
@@ -177,7 +205,7 @@ void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
 	//Проверка, при първоначално извикване на метода
-	if (pHint == nullptr)
+	if (lHint == NULL)
 	{
 		return;
 	}
@@ -237,7 +265,7 @@ void CCitiesView::SelectCityListCtr()
 	CITIES recCity = GetItemFromListCtr(nIndexItem);
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CCitiesDialog oDialog(recCity, FALSE);
+	CCitiesDialog oDialog(recCity, ENABLE_CONTROLS_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -324,6 +352,49 @@ void CCitiesView::DeleteCityListCtr()
 	}
 }
 
+void CCitiesView::FilterCitiesByRegion()
+{
+	//Достъпваме диалога
+	CCitiesDialog oDialog(ENABLE_CONTROLS_FLAG_ONLY_REGION);
+
+	//Нова структура, която ще съдържа данни за новия запис
+	CITIES recCity;
+
+	//При натиснат бутон ОК
+	if (oDialog.DoModal() == IDOK)
+	{
+		//Вземаме данните от контролите от диалога
+		recCity = oDialog.GetControlsData();
+
+		//Филтрираме елементите от лист контролата
+		FindItemsFromListCtr(recCity);
+	}
+}
+
+void CCitiesView::FindOneCity()
+{
+	//Достъпваме диалога
+	CCitiesDialog oDialog;
+
+	//Нова структура, която ще съдържа данни за новия запис
+	CITIES recCity;
+
+	//При натиснат бутон ОК
+	if (oDialog.DoModal() == IDOK)
+	{
+		//Вземаме данните от контролите от диалога
+		recCity = oDialog.GetControlsData();
+
+		//Филтрираме елементите от лист контролата
+		FindItemsFromListCtr(recCity);
+	}
+}
+
+void CCitiesView::ReloadCities()
+{
+	//Зареждане на всички данни
+	LoadDataInListCtrFromDoc();
+}
 
 // Methods
 // ---------------
@@ -375,7 +446,7 @@ CITIES CCitiesView::GetItemFromListCtr(const int nIndexItem)
 	return recCity;
 }
 
-void CCitiesView::ChangeSelectItemListCtr()
+void CCitiesView::ChangeSelectionItemListCtr()
 {
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
@@ -387,6 +458,81 @@ void CCitiesView::ChangeSelectItemListCtr()
 	lscCities.SetItemState(nSelected, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 }
 
+void CCitiesView::LoadDataInListCtrFromDoc()
+{//Вариант за проверка на остналото и само да се добавят липсите от масива
+
+	//Инстанция на лист контролата
+	CListCtrl& lscCities = GetListCtrl();
+
+	//Изтриваве на всички останали данни
+	lscCities.DeleteAllItems();
+
+	//Достъпваме документа
+	CCitiesDoc* pCitiesDoc = GetDocument();
+
+	//Добавяме данните от таблицата в лист контролата
+	for (INT_PTR i = 0; i < pCitiesDoc->GetCitiesArray().GetCount(); ++i)
+	{
+		CITIES& pCity = *pCitiesDoc->GetCitiesArray().GetAt(i);
+		AddOrEditItemInListCtr(pCity);
+	}
+}
+
+void CCitiesView::FindItemsFromListCtr(const CITIES& recCity)
+{
+	//Проверка дали всички данни от документа са налични
+	if (!IsAllDataLoadFromDoc())
+	{
+		LoadDataInListCtrFromDoc();
+	}
+
+	//Инстанция на лист контролата
+	CListCtrl& lscCities = GetListCtrl();
+
+	CString strRegionToFind = recCity.szRegion;
+	CString strCityNameToFind = recCity.szCityName;
+
+	int nListCrtCountItems = lscCities.GetItemCount();
+
+	//Премахва всички елементи, които не са с елемент, като подадения
+	for (int nIndex = nListCrtCountItems - 1; nIndex >= 0; --nIndex)
+	{
+		CString strCurrentRegion = lscCities.GetItemText(nIndex, LIST_CONTROL_NUMBER_COLUMN_CITY_REGION);
+
+		if (strRegionToFind != strCurrentRegion)
+		{
+			lscCities.DeleteItem(nIndex);
+			continue;
+		}
+		if (strCityNameToFind.IsEmpty())
+		{
+			continue;
+		}
+
+		CString strCurrentName = lscCities.GetItemText(nIndex, LIST_CONTROL_NUMBER_COLUMN_CITY_NAME);
+		if (strCityNameToFind != strCurrentName)
+		{
+			lscCities.DeleteItem(nIndex);
+			continue;
+		}
+	}
+}
+
+BOOL CCitiesView::IsAllDataLoadFromDoc()
+{
+	//Инстанция на лист контролата
+	CListCtrl& lscCities = GetListCtrl();
+
+	//Достъпваме документа
+	CCitiesDoc* pCitiesDoc = GetDocument();
+
+	if (lscCities.GetItemCount() != pCitiesDoc->GetCitiesArrayElementsCount())
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 // CCitiesView diagnostics
 #ifdef _DEBUG

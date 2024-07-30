@@ -144,6 +144,11 @@ const CCitiesArray& CCitiesDoc::GetCitiesArray() const
 	return m_oCitiesArray;
 }
 
+int CCitiesDoc::GetCitiesArrayElementsCount()
+{
+	return m_oCitiesArray.GetCount();
+}
+
 #ifdef SHARED_HANDLERS
 
 // Support for thumbnails

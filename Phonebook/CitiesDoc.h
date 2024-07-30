@@ -2,13 +2,7 @@
 
 #include "CitiesData.h"
 #include "Structures.h"
-
-enum LPARAM_FLAGS
-{
-	LPARAM_INSERT = 1,
-	LPARAM_UPDATE = 2,
-	LPARAM_DELETE = 3
-};
+#include "Enums.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CitiesDoc.h : interface of the CCitiesDoc class
@@ -92,6 +86,7 @@ public:
 	/// <returns>Връща масива с данните от таблицата с градов</returns>
 	const CTableDataArray<CITIES>& GetCitiesArray() const;
 
+	int GetCitiesArrayElementsCount();
 
 // Members
 // ----------------

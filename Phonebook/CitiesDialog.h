@@ -2,6 +2,7 @@
 #include "afxdialogex.h"
 #include "Structures.h"
 #include "ManageDialogControls.h"
+#include "Enums.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesDialog dialog
@@ -30,8 +31,8 @@ class CCitiesDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
-	CCitiesDialog(CWnd* pParent = nullptr);
-	CCitiesDialog(const CITIES& recCity, BOOL bEnableControls = TRUE, CWnd* pParent = nullptr);
+	CCitiesDialog(LPARAM oEnableControls = ENABLE_CONTROLS_FLAG_ALL, CWnd* pParent = nullptr);
+	CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls = ENABLE_CONTROLS_FLAG_ALL, CWnd* pParent = nullptr);
 	virtual ~CCitiesDialog();
 
 
@@ -77,7 +78,7 @@ private:
 	/// <summary>
 	/// Метод за забрана за писане по контролите
 	/// </summary>
-	void EnableControls(BOOL bEnableControls);
+	void EnableControls(LPARAM oEnableControls);
 
 	/// <summary>
 	/// Метод за извеждане на съобщение в контрола
@@ -99,6 +100,10 @@ private:
 	/// <returns>При направена редакция в някоя от контролите се връща TRUE, а при липса на такава FALSE</returns>
 	BOOL IsEnteredDataDiferent();
 
+	/// <summary>
+	/// Метод, който проверява дали е намерена грешка
+	/// </summary>
+	BOOL HasErrorMsg();
 
 // Members
 // ----------------
@@ -124,9 +129,9 @@ private:
 	CString m_strRegion;
 
 	/// <summary>
-	/// Флаг за активация или деактивация на контролите
+	/// Член променлива, която съдържа параметъра за активност на контролите
 	/// </summary>
-	BOOL m_bFlagEnableControls;
+	LPARAM m_oEnableControlsParam;
 
 	/// <summary>
 	/// Инстанция на клас за верификация на данни

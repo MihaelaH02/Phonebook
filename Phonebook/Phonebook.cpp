@@ -54,6 +54,10 @@ CPhonebookApp::CPhonebookApp() noexcept
 
 CPhonebookApp theApp;
 
+//Инстанция на връзката към базата данни
+CDatabaseConnection* pDatabaseConnection = CDatabaseConnection::getInstance();
+
+
 // CPhonebookApp initialization
 
 BOOL CPhonebookApp::InitInstance()
@@ -106,8 +110,7 @@ BOOL CPhonebookApp::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
-	//Инстанция на връзката към базата данни
-	CDatabaseConnection* pDatabaseConnection = CDatabaseConnection::getInstance();
+	
 	/// Отваряне на връзка с базата данни
 	if (!pDatabaseConnection->ConnectToDatabaseSource())
 	{
@@ -158,9 +161,6 @@ int CPhonebookApp::ExitInstance()
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
 
-
-	//Инстанция на връзката към базата данни
-	CDatabaseConnection* pDatabaseConnection = CDatabaseConnection::getInstance();
 	//Прекратяваме връзката към базата данни
 	pDatabaseConnection->CloseDatabaseSource();
 
