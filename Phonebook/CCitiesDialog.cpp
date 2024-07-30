@@ -50,10 +50,11 @@ BOOL CCitiesDialog::OnInitDialog()
 	m_edbName.SetLimitText(MAX_LENGTH_STRING);
 	m_edbRegion.SetLimitText(MAX_LENGTH_STRING);
 
-	//Задаване на стойности за контролите, ако стринговите член променливи не са нелеви
+	//Задаване на стойности за контролите
 	m_edbName.SetWindowTextW(m_strName);
 	m_edbRegion.SetWindowTextW(m_strRegion);
 
+	//Проверка дали са поданени стойности за текстовите променливи
 	if (!m_strName.IsEmpty() && !m_strRegion.IsEmpty())
 	{
 		//Задаване на начална празна стойност на контролите за съобщения за грешки  
@@ -63,6 +64,7 @@ BOOL CCitiesDialog::OnInitDialog()
 
 	//Промяна на активността на контролите, според подадения параметър
 	EnableControls(m_oEnableControlsParam);
+
 	return TRUE;
 }
 
@@ -79,10 +81,10 @@ END_MESSAGE_MAP()
 
 void CCitiesDialog::OnBnClickedOk()
 {
-	//Проверка за визуалиризано съобщение за грешка
+	//Проверка за визуализирано съобщение за грешка
 	if (!HasErrorMsg())
 	{
-		//Превръщаме въведените данни в коректни с валидатора
+		//Превръщаме въведените данни в коректни с валидатора, ако контролата е активна за писане
 		if (m_edbName.IsWindowEnabled())
 		{
 			m_oValidateStringData.ValidateDataUpperLetter(m_strName);
@@ -112,6 +114,7 @@ void CCitiesDialog::OnBnClickedCancel()
 
 void CCitiesDialog::EnableControls(LPARAM oEnableControls)
 {
+	//В зависимост от поданета стойност от тип енъм, се активират/деактивират контролите за писане
 	switch (oEnableControls)
 	{
 		case ENABLE_CONTROLS_FLAG_ALL:
@@ -145,32 +148,29 @@ void CCitiesDialog::EnableControls(LPARAM oEnableControls)
 
 void CCitiesDialog::OnEnChangeName()
 {
-	//Проверка за фокус на контролата
-	if (!IsControlOnFocus(m_edbName))
-	{
-		return;
-	}
-
-	//Вземаме данните от котролата
-	m_edbName.GetWindowTextW(m_strName);
-
-	//Извеждаме подходящо съобщение за грешка
-	PrintErrorMsg(m_strName, IDC_STT_CITIES_NAME_ERROR_MSG);
+	//Извърване на необходими действия свързани със засичане на грешка
+	DoOnEnChangeEdbControla(m_edbName, m_strName, IDC_STT_CITIES_NAME_ERROR_MSG);
 }
 
 void CCitiesDialog::OnEnChangeRegion()
 {
+	//Извърване на необходими действия свързани със засичане на грешка
+	DoOnEnChangeEdbControla(m_edbRegion, m_strRegion, IDC_STT_CITIES_REGION_ERROR_MSG);
+}
+
+void CCitiesDialog::DoOnEnChangeEdbControla(CWnd& oControla, CString strText, int nControlaIDWithErroe)
+{
 	//Проверка за фокус на контролата
-	if (!IsControlOnFocus(m_edbRegion))
+	if (!IsControlOnFocus(oControla))
 	{
 		return;
 	}
 
 	//Времаме данните от котролата
-	m_edbRegion.GetWindowTextW(m_strRegion);
-	
+	oControla.GetWindowTextW(strText);
+
 	//Извеждаме подходящо съобщение за грешка
-	PrintErrorMsg(m_strRegion, IDC_STT_CITIES_REGION_ERROR_MSG);
+	PrintErrorMsg(strText, nControlaIDWithErroe);
 }
 
 CITIES& CCitiesDialog::GetControlsData()
@@ -181,26 +181,6 @@ CITIES& CCitiesDialog::GetControlsData()
 	_tcscpy_s(recCity.szRegion, m_strRegion);
 
 	return recCity;
-}
-
-BOOL CCitiesDialog::IsEnteredDataDiferent()
-{
-	//Променливи за новите стойности
-	/*CString strNewName, strNewRegion;
-
-	//Вземаме данните от котролата
-	m_edbName.GetWindowTextW(strNewName);
-	m_edbRegion.GetWindowTextW(strNewRegion);
-
-	for (int i = 0; i < str.GetLength(); ++i)
-	{
-		if (!islower(str[i]))
-		{
-			return false;
-		}
-	}*/
-
-	return FALSE;
 }
 
 BOOL CCitiesDialog::IsControlOnFocus(CWnd& oControla)
@@ -231,7 +211,7 @@ BOOL CCitiesDialog::HasErrorMsg()
 	//Стренгови променливи, които съдържат празни низове(липса на открита грешка)
 	CString strName, strRegion;
 
-	//Визуализация на контролите, съдържащи грешки, само ако са активни, като се присвоява съобещението от контролата
+	//Визуализация на контролите, съдържащи грешки, само ако са активни, като се присвоява съобещението от променливите
 	if (m_edbName.IsWindowEnabled())
 	{
 		GetDlgItem(IDC_STT_CITIES_NAME_ERROR_MSG)->ShowWindow(SW_SHOW);
@@ -244,7 +224,7 @@ BOOL CCitiesDialog::HasErrorMsg()
 		GetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, strRegion);
 	}
 
-	//Проверка за празни контроли, съдържащи грешката
+	//Проверка за празни контроли, съдържащи грешки
 	if (strName.IsEmpty() && strRegion.IsEmpty())
 	{
 		return FALSE;

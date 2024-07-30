@@ -31,7 +31,10 @@ class CCitiesDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
+	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
 	CCitiesDialog(LPARAM oEnableControls = ENABLE_CONTROLS_FLAG_ALL, CWnd* pParent = nullptr);
+
+	/// <param name="recCity">Параметър структура с градове, чиито стойности ще се визуализират в контролите на диалога</param>
 	CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls = ENABLE_CONTROLS_FLAG_ALL, CWnd* pParent = nullptr);
 	virtual ~CCitiesDialog();
 
@@ -66,12 +69,12 @@ public:
 
 private:
 	/// <summary>
-	/// Метод хандлер, който управлява промените в контролата за име
+	/// Метод, който управлява промените в контролата за име
 	/// </summary>
 	void OnEnChangeName();
 
 	/// <summary>
-	/// Метод хандлер, който управлява промените в контролата за област
+	/// Метод, който управлява промените в контролата за област
 	/// </summary>
 	void OnEnChangeRegion();
 
@@ -83,7 +86,7 @@ private:
 	/// <summary>
 	/// Метод за извеждане на съобщение в контрола
 	/// </summary>
-	/// <param name="strText">Контрола, чиийто текст ще се валидира</param>
+	/// <param name="strText">Контрола, чийто текст ще се валидира</param>
 	/// <param name="nControlaID">Контрола, в която ще се съдържа текста</param>
 	void PrintErrorMsg(const CString& strText, int nControlaID);
 
@@ -95,15 +98,18 @@ private:
 	BOOL IsControlOnFocus(CWnd& oControla);
 
 	/// <summary>
-	/// Метод за проверка, дали са въведени нови данни
-	/// </summary>
-	/// <returns>При направена редакция в някоя от контролите се връща TRUE, а при липса на такава FALSE</returns>
-	BOOL IsEnteredDataDiferent();
-
-	/// <summary>
-	/// Метод, който проверява дали е намерена грешка
+	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
 	/// </summary>
 	BOOL HasErrorMsg();
+
+	/// <summary>
+	/// Метод, който извършва действия за направена промяна в контрола
+	/// </summary>
+	/// <param name="oControla">Параметър за контрола, в която е направена промяна</param>
+	/// <param name="strText">Параметър за текста, който се намира в контролата</param>
+	/// <param name="nControlaIDWithErroe">Параметър ИД на контрола, в която да се извезе со.ъобщение за грешка</param>
+	void DoOnEnChangeEdbControla(CWnd& oControla, CString strText, int nControlaIDWithErroe);
+
 
 // Members
 // ----------------

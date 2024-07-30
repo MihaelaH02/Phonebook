@@ -3,7 +3,6 @@
 #include <typeinfo>
 
 #include "Session.h"
-#include "BaseTableArray.h"
 #include "TableDataArray.h"
 
 /////////////////////////////////////////////////////////////////////////////

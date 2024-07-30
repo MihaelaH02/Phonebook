@@ -113,6 +113,7 @@ BOOL CPhonebookApp::InitInstance()
 	/// Отваряне на връзка с базата данни
 	if (!pDatabaseConnection->ConnectToDatabaseSource())
 	{
+		AfxMessageBox(_T("Failed to connect to database!"));
 		return FALSE;
 	}
 
