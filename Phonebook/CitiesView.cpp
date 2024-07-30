@@ -151,22 +151,6 @@ void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 	}
 	break;
-
-	//При натискане на бутон за нагоре да се маркира предишен елемент
-	case VK_UP:
-	{
-		ChangeSelectionItemListCtr();
-		return;
-	}
-	break;
-
-	//При натискане на бутон за надолу да се маркира следващ елемент
-	case VK_DOWN:
-	{
-		ChangeSelectionItemListCtr();
-		return;
-	}
-	break;
 	}
 
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
@@ -446,18 +430,6 @@ CITIES CCitiesView::GetItemFromListCtr(const int nIndexItem)
 	return recCity;
 }
 
-void CCitiesView::ChangeSelectionItemListCtr()
-{
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Вземаме индекса на селектирания елемент
-	int nSelected = lscCities.GetNextItem(-1, LVNI_SELECTED);
-
-	//Задаваме следващия елемент да е селектиран
-	lscCities.SetItemState(nSelected, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-}
-
 void CCitiesView::LoadDataInListCtrFromDoc()
 {//Вариант за проверка на остналото и само да се добавят липсите от масива
 
@@ -473,8 +445,8 @@ void CCitiesView::LoadDataInListCtrFromDoc()
 	//Добавяме данните от таблицата в лист контролата
 	for (INT_PTR i = 0; i < pCitiesDoc->GetCitiesArray().GetCount(); ++i)
 	{
-		CITIES& pCity = *pCitiesDoc->GetCitiesArray().GetAt(i);
-		AddOrEditItemInListCtr(pCity);
+		CITIES& recCity = *pCitiesDoc->GetCitiesArray().GetAt(i);
+		AddOrEditItemInListCtr(recCity);
 	}
 }
 

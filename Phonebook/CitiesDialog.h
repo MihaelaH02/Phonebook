@@ -1,7 +1,7 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "ManageDialogControls.h"
+#include "ValidateStringData.h"
 #include "Enums.h"
 
 /////////////////////////////////////////////////////////////////////////////
