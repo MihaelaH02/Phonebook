@@ -411,8 +411,6 @@ void CCitiesView::AddOrEditItemInListCtr(const CITIES& recCity, int nOldIndexExi
 	//Ако е подаден индекс на стар елемент да се изтрие
 	if (nOldIndexExistingElement != -1)
 	{
-		//Изчистване на заделената памет
-		delete 	(CITIES*)(lscCities.GetItemData(nOldIndexExistingElement));
 
 		//Премахваме елемент от лист контролата
 		lscCities.DeleteItem(nOldIndexExistingElement);	

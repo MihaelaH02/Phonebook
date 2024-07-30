@@ -108,7 +108,7 @@ private:
 	/// <param name="oControla">Параметър за контрола, в която е направена промяна</param>
 	/// <param name="strText">Параметър за текста, който се намира в контролата</param>
 	/// <param name="nControlaIDWithErroe">Параметър ИД на контрола, в която да се извезе со.ъобщение за грешка</param>
-	void DoOnEnChangeEdbControla(CWnd& oControla, CString strText, int nControlaIDWithErroe);
+	void DoOnEnChangeEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithErroe);
 
 
 // Members

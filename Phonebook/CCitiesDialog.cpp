@@ -158,7 +158,7 @@ void CCitiesDialog::OnEnChangeRegion()
 	DoOnEnChangeEdbControla(m_edbRegion, m_strRegion, IDC_STT_CITIES_REGION_ERROR_MSG);
 }
 
-void CCitiesDialog::DoOnEnChangeEdbControla(CWnd& oControla, CString strText, int nControlaIDWithErroe)
+void CCitiesDialog::DoOnEnChangeEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithErroe)
 {
 	//Проверка за фокус на контролата
 	if (!IsControlOnFocus(oControla))
