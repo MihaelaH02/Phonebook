@@ -2,7 +2,7 @@
 #include "afxdialogex.h"
 #include "Structures.h"
 #include "ValidateStringData.h"
-#include "Enums.h"
+#include "EnumsWithFlags.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesDialog dialog
@@ -55,7 +55,6 @@ private:
 
 // Overrides
 // ----------------
-private:
 
 
 // Methods

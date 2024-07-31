@@ -183,11 +183,24 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdditionInfo.h" />
     <ClInclude Include="CitiesData.h" />
     <ClInclude Include="CitiesDialog.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CitiesAccessor.h" />
-    <ClInclude Include="Enums.h" />
+    <ClInclude Include="EnumsWithFlags.h" />
+    <ClInclude Include="EnumsListCtrColumsInfo.h" />
+    <ClInclude Include="EnumsStructsAccessorsInfo.h" />
+    <ClInclude Include="PersonInfo.h" />
+    <ClInclude Include="PersonsAccessor.h" />
+    <ClInclude Include="PersonsData.h" />
+    <ClInclude Include="PersonsDialog.h" />
+    <ClInclude Include="PersonsTable.h" />
+    <ClInclude Include="PhoneNumbersAccessor.h" />
+    <ClInclude Include="PhoneNumbersTable.h" />
+    <ClInclude Include="PhoneTypesAccessor.h" />
+    <ClInclude Include="PhoneTypesData.h" />
+    <ClInclude Include="PhoneTypesTable.h" />
     <ClInclude Include="TableDataArray.h" />
     <ClInclude Include="CitiesDoc.h" />
     <ClInclude Include="Structures.h" />
@@ -205,7 +218,8 @@
     <ClInclude Include="ValidateStringData.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CCitiesDialog.cpp" />
+    <ClCompile Include="AdditionInfocpp.cpp" />
+    <ClCompile Include="CitiesDialog.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="CitiesData.cpp" />
     <ClCompile Include="CitiesDoc.cpp" />
@@ -218,7 +232,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PersonInfo.cpp" />
+    <ClCompile Include="PersonsData.cpp" />
+    <ClCompile Include="PersonsDialog.cpp" />
     <ClCompile Include="Phonebook.cpp" />
+    <ClCompile Include="PhoneTypesData.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="ValidateStringData.cpp" />
   </ItemGroup>

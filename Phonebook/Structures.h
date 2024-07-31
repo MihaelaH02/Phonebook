@@ -31,27 +31,19 @@ struct CITIES
 	}
 
 	/// <summary>
-	/// Параметризиран конструтор по избрани полета
-	/// </summary>
-	CITIES(const TCHAR szCityNameValue[TCHAR_SIZE_FOR_STRUCT_MEMBERS], const TCHAR szRegionValue[TCHAR_SIZE_FOR_STRUCT_MEMBERS])
-	{
-		lId = INIT_VALUE_UPDATE_COUNTER;
-		lUpdateCounter = INIT_VALUE_UPDATE_COUNTER;
-		_tcscpy_s(szCityName, szCityNameValue);
-		_tcscpy_s(szRegion, szRegionValue);
-	}
-
-	/// <summary>
 	/// Параметризиран констурктор по всички полета
 	/// </summary>
 	CITIES(const CITIES& recCity)
 	{
 		lId = recCity.lId;
 		lUpdateCounter = recCity.lUpdateCounter;
-		_tcsncpy_s(szCityName, recCity.szCityName, _TRUNCATE);
-		_tcsncpy_s(szRegion, recCity.szRegion, _TRUNCATE);
+		_tcscpy_s(szCityName, recCity.szCityName);
+		_tcscpy_s(szRegion, recCity.szRegion);
 	}
-}; typedef CTableDataArray<CITIES> CCitiesArray;
+
+};
+///<summary> Псевдоним на  CTableDataArray<CITIES> с тип CITIES</summary> 
+typedef CTableDataArray<CITIES> CCitiesArray;
 
 
 /// <summary> 
@@ -71,9 +63,19 @@ struct PHONE_TYPES
 	{
 		SecureZeroMemory(this, sizeof(*this));
 	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PHONE_TYPES(const PHONE_TYPES& recPhoneType)
+	{
+		lId = recPhoneType.lId;
+		lUpdateCounter = recPhoneType.lUpdateCounter;
+		_tcscpy_s(czPhoneType, recPhoneType.czPhoneType);
+	}
 };
 
-///<summary> Псевдоним на CTypedPtrArray с тип PHONE_TYPES</summary> 
+///<summary> Псевдоним на  CTableDataArray<PHONE_TYPES> с тип PHONE_TYPES</summary> 
 typedef CTableDataArray<PHONE_TYPES> CPhoneTypesArray;
 
 /// <summary> 
@@ -94,7 +96,7 @@ struct PERSONS
 	/// <summary> ЕГН член променлива </summary>
 	TCHAR szEGN[TCHAR_SIZE_FOR_PERSON_EGN];
 	/// <summary> Град член променлива </summary>
-	long lIddCity;
+	long lIdCity;
 	/// <summary> Адрес член променлива </summary>
 	TCHAR szAddress[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
 
@@ -103,9 +105,24 @@ struct PERSONS
 	{
 		SecureZeroMemory(this, sizeof(*this));
 	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PERSONS(const PERSONS& recPersons)
+	{
+		lId = recPersons.lId;
+		lUpdateCounter = recPersons.lUpdateCounter;
+		_tcscpy_s(szFirstName, recPersons.szFirstName);
+		_tcscpy_s(szSecondName, recPersons.szSecondName);
+		_tcscpy_s(szLastName, recPersons.szLastName);
+		_tcscpy_s(szEGN, recPersons.szEGN);
+		lIdCity = recPersons.lIdCity;
+		_tcscpy_s(szAddress, recPersons.szAddress);
+	}
 };
 
-///<summary> Псевдоним на PERSONS с тип CITIES</summary> 
+///<summary> Псевдоним на CTableDataArray<PERSONS> с тип PERSONS</summary> 
 typedef CTableDataArray<PERSONS> CPersonsArray;
 
 
@@ -130,7 +147,19 @@ struct PHONE_NUMBERS
 	{
 		SecureZeroMemory(this, sizeof(*this));
 	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PHONE_NUMBERS(const PHONE_NUMBERS& recPhoneNumbers)
+	{
+		lId = recPhoneNumbers.lId;
+		lUpdateCounter = recPhoneNumbers.lUpdateCounter;
+		lIdPerson = recPhoneNumbers.lIdPerson;
+		lIdPhoneType = recPhoneNumbers.lIdPhoneType;
+		_tcscpy_s(szPhone, recPhoneNumbers.szPhone);
+	}
 };
 
-///<summary> Псевдоним на CTypedPtrArray с тип PHONE_NUMBERS</summary> 
+///<summary> Псевдоним на CTableDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
 typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;

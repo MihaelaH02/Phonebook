@@ -8,8 +8,8 @@
 /// <summary>
 ///Темплейт клас отгоравящ за обработката на CTypedPtrArrays
 /// </summary>
-template<class CStruct>
-class CTableDataArray : public CTypedPtrArray<CPtrArray, CStruct*>
+template<class CClass>
+class CTableDataArray : public CTypedPtrArray<CPtrArray, CClass*>
 {
 
 // Constants
@@ -20,6 +20,11 @@ class CTableDataArray : public CTypedPtrArray<CPtrArray, CStruct*>
 // ----------------
 public:
 	CTableDataArray() {};
+
+	CTableDataArray(const CTableDataArray& oCTableDataArray)
+	{
+		AddAll(oCTableDataArray);
+	};
 
 	//Динамично се освобождава заделената памет
 	virtual ~CTableDataArray()
@@ -35,9 +40,9 @@ public:
 	/// Метод за добавяне на елемент динамично
 	/// </summary>
 	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
-	INT_PTR AddElement(const CStruct& recStructData)
+	INT_PTR AddElement(const CClass& recStructData)
 	{
-		CStruct* pStruct = new CStruct(recStructData);
+		CClass* pStruct = new CClass(recStructData);
 		return Add(pStruct);
 	}
 
@@ -49,7 +54,7 @@ public:
 	{
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); nIndex++)
 		{
-			CStruct* pElement = GetAt(nIndex);
+			CClass* pElement = GetAt(nIndex);
 			if ( pElement->lId == lId)
 			{
 				delete pElement;
@@ -66,7 +71,7 @@ public:
 	{
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
 		{
-			CStruct* pElement = GetAt(nIndex);
+			CClass* pElement = GetAt(nIndex);
 			if (pElement != nullptr)
 			{
 				delete pElement;
@@ -74,6 +79,27 @@ public:
 			}
 		}
 		RemoveAll();
+	}
+
+	/// <summary>
+	/// Метод, който търси елемент в масива
+	/// </summary>
+	/// <param name="recElement"></param>
+	/// <returns></returns>
+	int FindElement(const CClass& recElement)
+	{
+		//Цисъл, който преминава през всеки елемент
+		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
+		{
+			//Ако се намери съотведствие се връща индекса на елемента
+			CClass& recCurrentElement = *GetAt(nIndex);
+			if (recElement == recCurrentElement)
+			{
+				return nIndex;
+			}
+		}
+		//При неуспех
+		return -1;
 	}
 // Overrides
 // ----------------

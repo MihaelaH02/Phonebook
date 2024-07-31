@@ -1,4 +1,5 @@
 #pragma once
+
 //Енумерация за указване кои полета да се активират в диалога
 enum ENABLE_DIALOG_CONTROLS_FLAG
 {
@@ -16,9 +17,10 @@ enum OPERATIONS_WITH_DATA_FLAGS
 	LPARAM_DELETE = 3
 };
 
-//Енумерация за указване на броя колони и тяхната поредност в лист контролата
-enum VIEW_LIST_CONTROLA_COUNT_OF_COLUMS
+enum DATA_TO_RUN_OPERATION_FLAG
 {
-	LIST_CONTROL_NUMBER_COLUMN_CITY_REGION = 0,
-	LIST_CONTROL_NUMBER_COLUMN_CITY_NAME = 1
+	DO_OPERATION_FOR_PERSON_AND_PHONE_NUMBERS_TABLE,
+	DO_OPERATION_FOR_ONLY_PERSON_TABLE,
+	DO_OPERATION_FOR_ONLY_PHONE_NUMBERS_TABLE
 };
+

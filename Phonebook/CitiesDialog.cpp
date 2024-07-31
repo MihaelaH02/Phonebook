@@ -18,7 +18,7 @@ CCitiesDialog::CCitiesDialog(LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL
 	m_oEnableControlsParam = oEnableControls;
 }
 
-CCitiesDialog::CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls,/*= ENABLE_CONTROLS_FLAG_ALL*/ CWnd* pParent /*=nullptr*/)
+CCitiesDialog::CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_CITIES_DIALOG, pParent)
 {
 	//Подаване на параметри

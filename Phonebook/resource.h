@@ -2,6 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by Phonebook.rc
 //
+#define IDC_BTN_PHONE_NUMBERS_ADD       3
+#define IDC_BTN_PHONE_NUMBERS_EDIT      4
+#define IDC_BTN_PHONE_NUMBERS_DELETE    5
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDR_POPUP_EDIT                  119
@@ -32,13 +35,30 @@
 #define IDS_EDIT_MENU                   306
 #define IDD_CITIES_DIALOG               310
 #define IDR_CONTEXT_MANU                312
+#define IDD_PERSONS_DIALOG              316
 #define IDC_EDB_CITIES_NAME             1000
 #define IDC_STT_CITIES_NAME             1001
 #define IDC_STT_CITIES_REGION           1002
 #define IDC_                            1003
+#define IDC_LSC_PHONE_NUMBERS           1003
 #define IDC_STT_CITIES_NAME_ERROR_MSG   1004
 #define IDC_STT_CITIES_REGION_ERROR_MSG 1005
 #define IDC_EDB_CITIES_REGION           1006
+#define IDC_EDB_PERSONS_FIRTSNAME       1009
+#define IDC_EDB_PERSONS_EGN             1010
+#define IDC_EDB_PERSONS_LASTNAME        1011
+#define IDC_EDB_PERSONS_SECONDNAME      1012
+#define IDC_CMB_PERSONS_CITIY           1014
+#define IDC_CMB_PERSONS_CITIES          1014
+#define IDC_GRB_PERSON_INFO             1015
+#define IDC_GRB_PHONE_NUMBERS_INFO      1016
+#define IDC_STT_PERSONS_FIRTNAME        1017
+#define IDC_STT_PERSONS_SECONDNAME      1018
+#define IDC_STT_PERSONS_LASTNAME        1019
+#define IDC_STT_PERSONS_EGN             1020
+#define IDC_STT_PERSONS_CITY            1021
+#define IDC_REC_PERSONS_ADDRESS         1022
+#define IDC_STT_PERSONS_ADDRESS         1023
 #define ID_EDIT_DATA_UPDATE             32775
 #define ID_EDIT_DATA_DELETE             32776
 #define ID_CONTEXT_MANU_DATA_INSERT     32777
@@ -58,9 +78,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        316
+#define _APS_NEXT_RESOURCE_VALUE        318
 #define _APS_NEXT_COMMAND_VALUE         32810
-#define _APS_NEXT_CONTROL_VALUE         1008
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

@@ -6,7 +6,6 @@
 #include "Phonebook.h"
 #endif
 
-#include "Enums.h"
 #include "CitiesDoc.h"
 #include "CitiesView.h"
 #include "Resource.h"

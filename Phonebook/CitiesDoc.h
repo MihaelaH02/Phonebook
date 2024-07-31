@@ -2,7 +2,7 @@
 
 #include "CitiesData.h"
 #include "Structures.h"
-#include "Enums.h"
+#include "EnumsWithFlags.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CitiesDoc.h : interface of the CCitiesDoc class

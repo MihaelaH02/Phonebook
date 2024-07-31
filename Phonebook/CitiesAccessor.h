@@ -2,15 +2,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-
-#define	ACCESSOR_FOR_ID 0
-#define	ACCESSOR_FOR_DATA 1
-
-#define NUMBERS_OF_ACCESSORS 2
-#define ORDINAL_COLUMN_ID 1
-#define ORDINAL_COLUMN_UPDATE_COUNTED 2
-#define ORDINAL_COLUMN_CITY_NAME 3
-#define	ORDINAL_COLUMN_REGION 4
+#include "EnumsStructsAccessorsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesAccessor
@@ -53,8 +45,8 @@ protected:
 
 		BEGIN_ACCESSOR(ACCESSOR_FOR_DATA, true)
 			COLUMN_ENTRY(ORDINAL_COLUMN_UPDATE_COUNTED, m_recCities.lUpdateCounter)
-			COLUMN_ENTRY(ORDINAL_COLUMN_CITY_NAME, m_recCities.szCityName)
-			COLUMN_ENTRY(ORDINAL_COLUMN_REGION, m_recCities.szRegion)
+			COLUMN_ENTRY(ORDINAL_COLUMN_CITIES_NAME, m_recCities.szCityName)
+			COLUMN_ENTRY(ORDINAL_COLUMN_CITIES_REGION, m_recCities.szRegion)
 		END_ACCESSOR()
 	END_ACCESSOR_MAP()
 };

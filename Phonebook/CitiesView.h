@@ -2,12 +2,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // CitiesView.h : interface of the CCitiesView class
 
-#define LIST_CONTROL_HEADER_WIDTH 200
-
-
 #pragma once
 #include "CitiesDialog.h"
-#include "Enums.h"
+#include "EnumsListCtrColumsInfo.h"
 
 class CCitiesView : public CListView
 {
