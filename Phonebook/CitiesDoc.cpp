@@ -92,16 +92,20 @@ BOOL CCitiesDoc::UpdateCity(const CITIES& recCity)
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
 	{
 		//Превъщаме указател от масива в променлива от тип структура с градове
-		CITIES& pCurrentCityFromArray = *m_oCitiesArray.GetAt(nIndex);
+		CITIES* pCurrentCityFromArray = m_oCitiesArray.GetAt(nIndex);
+		if (pCurrentCityFromArray == nullptr)
+		{
+			return FALSE;
+		}
 
 		//Търсим ИД на текущия елемент от масива дали отговаря на подадения, който трябва да се редактира
-		if (pCurrentCityFromArray.lId == recCity.lId)
+		if (pCurrentCityFromArray->lId == recCity.lId)
 		{
 			//Редактираме стойностите на елемента в масива, с тези на подадения като пакаметър структура
-			pCurrentCityFromArray = recCity;
+			*pCurrentCityFromArray = recCity;
 
 			//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
-			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)&pCurrentCityFromArray);
+			UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_UPDATE, (CObject*) pCurrentCityFromArray);
 			return TRUE;
 		}
 	}
@@ -119,7 +123,7 @@ BOOL CCitiesDoc::Insert(CITIES& recCity)
 	m_oCitiesArray.AddElement(recCity);
 
 	//Редакция на вютата, подаване на параметър за добавяне и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_INSERT, (CObject*)&recCity);
+	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_INSERT, (CObject*)&recCity);
 	return TRUE;
 }
 
@@ -134,12 +138,12 @@ BOOL CCitiesDoc::Delete(const long lId)
 	m_oCitiesArray.RemoveElemetById(lId);
 
 	//Редакция на вютата, подаване на параметър за изтриване и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_DELETE);
+	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_DELETE, (CObject*)lId);
 
 	return TRUE;
 }
 
-const CCitiesArray& CCitiesDoc::GetCitiesArray() const
+const CCitiesArray& CCitiesDoc::GetCitiesArray()
 {
 	return m_oCitiesArray;
 }

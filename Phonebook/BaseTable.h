@@ -199,7 +199,7 @@ public:
 		IncrementUpdateCounter();
 
 		//Извършване на редакция
-		hResult = SetData(ACCESSOR_FOR_DATA);
+		hResult = SetData(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA);
 		if (FAILED(hResult))
 		{
 			m_oSession.GetSession().Abort();
@@ -255,7 +255,7 @@ public:
 		SetRowData(recStruct);
 
 		//Добавяме нов запис
-		hResult = __super::Insert(ACCESSOR_FOR_DATA,TRUE);
+		hResult = __super::Insert(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA,TRUE);
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Failed to insert data!\n Error: %d"), hResult);
@@ -333,6 +333,65 @@ public:
 		return TRUE;
 	};
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oTableDataArray"></param>
+	/// <returns></returns>
+	BOOL InsertAll(CTableDataArray<CStruct>& oTableDataArray)
+	{
+		//транзакции и сесия
+		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
+		{
+			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
+			if (recStruct == nullptr)
+			{
+				DoMesgStatusExit(_T("Error all selected data!"));
+				return FALSE;
+			}
+			Insert(*recStruct);
+		}
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oTableDataArray"></param>
+	/// <returns></returns>
+	BOOL UpdateAll(const CTableDataArray<CStruct>& oTableDataArray)
+	{
+		//транзакции и сесия
+		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
+		{
+			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
+			if (recStruct == nullptr)
+			{
+				DoMesgStatusExit(_T("Error all selected data!"));
+				return FALSE;
+			}
+			UpdateWhereID(recStruct->lId, *recStruct);
+		}
+	}
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oTableDataArray"></param>
+	/// <returns></returns>
+	BOOL DeleteAll(const CTableDataArray<CStruct>& oTableDataArray)
+	{
+		//транзакции и сесия
+		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
+		{
+			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
+			if (recStruct == nullptr)
+			{
+				DoMesgStatusExit(_T("Error all selected data!"));
+				return FALSE;
+			}
+			DeleteWhereID(recStruct->lId);
+		}
+	}
+
 private:
 	//Методи, които ще се имплементират от наследниците
 	
@@ -343,10 +402,10 @@ private:
 	virtual CString GetTableName() = 0;
 
 	/// <summary>
-	/// Достъп до записа
+	/// Достъп до записа в аксесора
 	/// </summary>
-	/// <returns>Връща запис от подадения тип</returns>
-	virtual CStruct GetRowData() = 0;
+	/// <returns>Връща данните от аксесора</returns>
+	virtual CStruct& GetRowData() = 0;
 
 	/// <summary>
 	/// Задава данни за запис

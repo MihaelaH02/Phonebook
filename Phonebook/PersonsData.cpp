@@ -18,7 +18,7 @@ CPersonsData::~CPersonsData()
 
 // Methods
 // ----------------
-BOOL CPersonsData::SelectAll(CTableDataArray<CPersonInfo>& oPersonsInfo)
+BOOL CPersonsData::SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsInfo)
 {
 	//Инстанция на дватата класа с табличните данни
 	CPersonsTable oPersonsTable;
@@ -28,7 +28,7 @@ BOOL CPersonsData::SelectAll(CTableDataArray<CPersonInfo>& oPersonsInfo)
 	CPersonsArray oPersonsArray;
 	CPhoneNumbersArray oPhoneNumbersArray;
 
-	//Извършване на опирация от дабата данни
+	//Извършване на опирация от базата данни
 	//транзакция + сесия
 	if (!oPersonsTable.SelectAll(oPersonsArray))
 	{
@@ -45,18 +45,16 @@ BOOL CPersonsData::SelectAll(CTableDataArray<CPersonInfo>& oPersonsInfo)
 	for (INT_PTR nIndexPersons = 0; nIndexPersons < oPersonsArray.GetCount(); nIndexPersons++)
 	{
 		//Достъпваме настоящия елемент от масива с клиенти
-		PERSONS* pPerson = oPersonsArray.GetAt(nIndexPersons);
+		PERSONS pPerson = *oPersonsArray.GetAt(nIndexPersons);
 		
-		if (pPerson == nullptr)
-		{
-			return FALSE;
-		}
-
 		//Откриваме всички телефонни номера за настоящия клиент
-		CPhoneNumbersArray oPhoneNumberArrayForOnePerson =  FindAllPhoneNumbersForPerson(nIndexPersons, oPhoneNumbersArray);
+		FindAllPhoneNumbersForPerson(nIndexPersons, oPhoneNumbersArray);
+
+		CPhoneNumbersMap oPhoneNumberMap;
+		oPhoneNumberMap.AddElement(oPhoneNumbersArray);
 
 		//Добавяме данните за клиент и масив с телефонните му номера
-		CPersonInfo oPersonInfo(*pPerson,oPhoneNumberArrayForOnePerson);
+		CPersonInfo oPersonInfo(pPerson, oPhoneNumberMap);
 
 		//Добавяме времения обект с данни към масива с данни за клиенти
 		oPersonsInfo.AddElement(oPersonInfo);
@@ -65,16 +63,16 @@ BOOL CPersonsData::SelectAll(CTableDataArray<CPersonInfo>& oPersonsInfo)
 	return TRUE;
 }
 
-BOOL CPersonsData::SelectWhereID(const long lID, CPersonInfo& oPersonInfo)
+BOOL CPersonsData::SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonInfo)
 {
 	//Инстанция на дватата класа с табличните данни
 	CPersonsTable oPersonsTable;
 	CPhoneNumbersTable oPhoneNumbersTable;
 
-	//Временна променлива 
+	//Временна променлива на клиента, който ще се селектира
 	PERSONS recPersonToFind;
 
-	//
+	//Временна променлива на масива с телефонни номера за клиента
 	CPhoneNumbersArray oPhoneNumbersArray;
 
 	//Прочитаме клиента, който се търси в базата данни и се записва във временната променлива
@@ -89,88 +87,209 @@ BOOL CPersonsData::SelectWhereID(const long lID, CPersonInfo& oPersonInfo)
 		return FALSE;
 	}
 
+	FindAllPhoneNumbersForPerson(recPersonToFind.lId, oPhoneNumbersArray);
+
 	//Откриваме всички телефонни номера за настоящия клиент
-	CPhoneNumbersArray oPhoneNumberArrayForOnePerson = FindAllPhoneNumbersForPerson(recPersonToFind.lId, oPhoneNumbersArray);
+	CPhoneNumbersMap oPhoneNumbersMapForOnePerson;
+	oPhoneNumbersMapForOnePerson.AddElement(oPhoneNumbersArray);
 
-	//Добавяме данните за клиент и масив с телефонните му номера
-	CPersonInfo oPersonInfo(recPersonToFind, oPhoneNumberArrayForOnePerson);
-
+	//Добавяме данните за клиент и масив с телефонните му номера към променвилата с всички данни за клиент
+	oPersonInfo.AddPerson(recPersonToFind);
+	oPersonInfo.AddAllPhoneNumbers(oPhoneNumbersMapForOnePerson);
 }
 
-BOOL CPersonsData::UpdateWhereID(const long lID, CPersonInfo& oPersonInfo, LPARAM oUpdateFlag)
+BOOL CPersonsData::ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag)
+{
+	//КЛАС ЗА ТРАНЗАКЦИИ И СЕСИИ
+	//Инстнация на клиент, върху който ще се извършват операции
+	PERSONS recPerson = oPersonInfo.GetPerson();
+
+	if (!ManagePersonOperations(recPerson, oOperationFlag))
+	{
+		return FALSE;
+	}
+
+	//Инстнация на масив с телефонин номера за клиент, върху който ще се извършват операции
+	CPhoneNumbersMap oPhoneNumbersMap = oPersonInfo.GetPhoneNumbers();
+
+	if (!ManagePhoneNumbersOperations(oPhoneNumbersMap))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL CPersonsData::ManagePersonOperations(PERSONS& recPerson, LPARAM oFlagOperation)
 {
 	//Инстанция на дватата класа с табличните данни
 	CPersonsTable oPersonsTable;
-	CPhoneNumbersTable oPhoneNumbersTable;
 
-	switch(oUpdateFlag)
+	switch (oFlagOperation)
 	{
-	case DO_OPERATION_FOR_PERSON_AND_PHONE_NUMBERS_TABLE:
+	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
 	{
-		if (!oCitiesTable.UpdateWhereID(lID, recCity))
-			//транзакция + сесия
-			if (!oPersonsTable.UpdateWhereID(oPersonInfo.GetPerson().lId, oPersonInfo.GetPerson()))
-			{
-				return FALSE;
-			}
-
-		if (!oPhoneNumbersTable.UpdateWhereID(oPersonInfo))
+		if (!oPersonsTable.Insert(recPerson))
 		{
 			return FALSE;
 		}
-		//край транзация
-	}break;
 	}
-}
-
-BOOL CPersonsData::Insert(CPersonInfo& oPersonInfo, LPARAM oUpdateFlag)
-{
-	//Инстанция на класа с табличните данни
-	CPersonsTable oPersonsTable;
-
-	if (!oCitiesTable.Insert(recCity))
+	break;
+	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
+	{
+		if (!oPersonsTable.DeleteWhereID(recPerson.lId))
+		{
+			return FALSE;
+		}
+	}
+	break;
+	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
+	{
+		if (!oPersonsTable.UpdateWhereID(recPerson.lId, recPerson))
+		{
+			return FALSE;
+		}
+	}
+	break;
+	default:
 	{
 		return FALSE;
 	}
+	break;
+	}
+
 	return TRUE;
 }
 
-
-BOOL CPersonsData::DeleteWhereID(const long lID, LPARAM oUpdateFlag)
+/*BOOL CPersonsData::PersonInsert(PERSONS& recPerson)
 {
-	//Инстанция на класа с табличните данни
+	//Инстанция на дватата класа с табличните данни
 	CPersonsTable oPersonsTable;
 
-	if (!oCitiesTable.DeleteWhereID(lID))
+	if (!oPersonsTable.Insert(recPerson))
 	{
 		return FALSE;
 	}
+
 	return TRUE;
 }
 
-CPhoneNumbersArray CPersonsData::FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray oPhoneNumbersArray )
+BOOL CPersonsData::PersonUpdate(const long lid, PERSONS& recPerson)
 {
-	//Масив с резултати
-	CPhoneNumbersArray oPhoneNumbersArrayWithResults;
+	//Инстанция на дватата класа с табличните данни
+	CPersonsTable oPersonsTable;
 
-	for (INT_PTR nIndexPhoneNumbers = oPhoneNumbersArray.GetCount(); nIndexPhoneNumbers >= 0; --nIndexPhoneNumbers)
+	if (!oPersonsTable.UpdateWhereID(recPerson.lId, recPerson))
 	{
-		//Достъпваме настоящия елемент от масива с телефонни номера
-		PHONE_NUMBERS* pPhoneNumber = oPhoneNumbersArray.GetAt(nIndexPhoneNumbers);
+		return FALSE;
+	}
 
+	return TRUE;
+}
+
+BOOL CPersonsData::PersonDelete(const long lId)
+{
+	//Инстанция на дватата класа с табличните данни
+	CPersonsTable oPersonsTable;
+
+	if (!oPersonsTable.DeleteWhereID(lId))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}*/
+
+BOOL CPersonsData::ManagePhoneNumbersOperations(CPhoneNumbersMap& oPhoneNumbersMap)
+{
+	//Не се очаква да се извършват операции с таблица телефонни номера
+	if (oPhoneNumbersMap.IsEmpty())
+	{
+		return TRUE;
+	}
+
+	//Променливи за обход на мап
+	POSITION oPos = oPhoneNumbersMap.GetStartPosition();
+	OPERATIONS_WITH_DATA_FLAGS oFlagOperation;
+	CPhoneNumbersArray* pPhoneNumberArray;
+
+	while (oPos != NULL)
+	{
+		//Достъпваме настоящ елемент
+		oPhoneNumbersMap.GetNextAssoc(oPos, oFlagOperation, pPhoneNumberArray);
+
+		if (pPhoneNumberArray == nullptr)
+		{
+			return FALSE;
+		}
+		//Извършваме операция връху обекта според флага
+		if (ChoosePhoneNumbersOperation(oFlagOperation, *pPhoneNumberArray))
+		{
+			return FALSE;
+		}
+	}
+	return FALSE;
+}
+
+BOOL CPersonsData::ChoosePhoneNumbersOperation(LPARAM oFlagOperation, CPhoneNumbersArray& oPhoneNumberArray)
+{
+	CPhoneNumbersTable oPhoneNumbersTable;
+
+	switch (oFlagOperation)
+	{
+	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
+	{
+		if (!oPhoneNumbersTable.InsertAll(oPhoneNumberArray))
+		{
+			return FALSE;
+		}
+	}
+	break;
+	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
+	{
+		if (!oPhoneNumbersTable.DeleteAll(oPhoneNumberArray))
+		{
+			return FALSE;
+		}
+	}
+	break;
+	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
+	{
+		if (!oPhoneNumbersTable.UpdateAll(oPhoneNumberArray))
+		{
+			return FALSE;
+		}
+	}
+	break;
+	default:
+	{
+		return FALSE;
+	}
+	break;
+	}
+
+	return TRUE;
+}
+
+BOOL CPersonsData::FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray& oPhoneNumbersArray)
+{
+	for (INT_PTR nIndex = oPhoneNumbersArray.GetCount(); nIndex >= 0; --nIndex)
+	{
+		//Достъпваме настоящ елемент
+		PHONE_NUMBERS* pPhoneNumber = oPhoneNumbersArray.GetAt(nIndex);
 		if (pPhoneNumber == nullptr)
 		{
-			return;
+			return FALSE;
 		}
-
 		//Ако ид на клиент на настоящия телефонен номер е идентично с настоящия клеинт
-		if (pPhoneNumber->lIdPerson == lId)
+		if (pPhoneNumber->lIdPerson != lId)
 		{
-			//Добавяме настоящия телефонен номер към обекта с данните за един клиент
-			oPhoneNumbersArrayWithResults.AddElement(*pPhoneNumber);
+			oPhoneNumbersArray.RemoveElement(*pPhoneNumber);
 		}
 	}
-	return oPhoneNumbersArrayWithResults;
+	return TRUE;
 }
+
+
 // Overrides
 // ----------------

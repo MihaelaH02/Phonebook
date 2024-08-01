@@ -81,7 +81,7 @@
     <ClInclude Include="PhoneTypesAccessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnumsStructsAccessorsInfo.h">
+    <ClInclude Include="EnumsStructsInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnumsListCtrColumsInfo.h">
@@ -112,6 +112,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AdditionInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionTransactionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TableDataMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

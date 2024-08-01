@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Structures.h"
-
+#include "EnumsWithFlags.h"
 /////////////////////////////////////////////////////////////////////////////
 // CPersonInfo
 class CPersonInfo
@@ -18,7 +18,7 @@ public:
 	/// <summary>
 	/// Параметризиран конструктор
 	/// </summary>
-	CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersArray& recPhoneNumbers);
+	CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap recPhoneNumbers);
 
 	~CPersonInfo();
 
@@ -35,14 +35,7 @@ public:
 	/// Метод за достъп до член променлива масив в телефонни номера
 	/// </summary>
 	/// <returns>Връща масив</returns>
-	const CPhoneNumbersArray GetPhoneNumbers() const;
-
-	/// <summary>
-	/// Метод за търсене на телефонен номер в масива
-	/// </summary>
-	/// <param name="recPhoneNumber">Параметър от тип структрура с телефонни номера, който ще се търси в масива</param>
-	/// <returns>Връща се индекса на открития елемент в масива или -1 при липса на елемент</returns>
-	int FindPhoneNumber(const PHONE_NUMBERS& recPhoneNumber);
+	const CPhoneNumbersMap GetPhoneNumbers() const;
 
 	/// <summary>
 	/// Метод за добавяне на клиент
@@ -54,10 +47,14 @@ public:
 	/// Метод за добавяне на нов телефонен номер
 	/// </summary>
 	/// <param name="recPhoneNumber"></param>
-	void AddPhoneNumber(PHONE_NUMBERS& recNewPhoneNumber);
+	void AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oPhoneNumbersMap"></param>
+	void AddAllPhoneNumbers(const CPhoneNumbersMap oPhoneNumbersMap);
 
-	//void RemovePhoneNumber(PHONE_NUMBERS& recPhoneNumber);
 // Overrides
 // ----------------
 
@@ -71,7 +68,7 @@ private:
 	PERSONS m_recPerson;
 
 	/// <summary>
-	/// Член променлива от тип масив с телефонни номера
+	/// Член променлива от тип мап, който като ключ ще съдържа записа за манипулация и като стойност това което се очаква да се направи с него
 	/// </summary>
-	CPhoneNumbersArray m_oPhoneNumbers;
+	CPhoneNumbersMap m_oPhoneNumbers;
 };

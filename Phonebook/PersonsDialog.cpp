@@ -68,7 +68,7 @@ BOOL CPersonsDialog::OnInitDialog()
 
 	if (AddItemsInCmbCities())
 	{
-		return;
+		return FALSE;
 	}
 
 	int nIndexCity = m_cmbCities.GetItemData(m_nIdCity);
@@ -149,5 +149,5 @@ BOOL CPersonsDialog::AddItemsInCmbCities()
 
 BOOL CPersonsDialog::AddItemsInListCtrPhoneNumbers()
 {
-
+	return true;
 }

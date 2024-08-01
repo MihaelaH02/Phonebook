@@ -44,7 +44,7 @@ private:
 	/// Метод за достъп до член променливата в клас CCitiesAccessor
 	/// </summary>
 	/// <returns>Връща структура от тип CITIES</returns>
-	CITIES GetRowData() override
+	CITIES& GetRowData() override
 	{
 		return m_recCities;
 	}

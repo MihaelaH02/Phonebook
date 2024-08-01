@@ -2,12 +2,8 @@
 
 #include <afxtempl.h>
 #include "TableDataArray.h"
-
-#define TCHAR_SIZE_FOR_STRUCT_MEMBERS 128
-#define TCHAR_SIZE_FOR_PERSON_EGN 16
-#define TCHAR_SIZE_FOR_PHONE_NUMBER_MEMBER 16
-#define INIT_VALUE_UPDATE_COUNTER 0
-
+#include "TableDataMap.h"
+#include "EnumsStructsInfo.h"
 
 /// <summary>
 /// Дискова структура по таблица Градове 
@@ -19,9 +15,9 @@ struct CITIES
 	/// <summary> Брояч за модификация члeн променлива </summary>
 	long lUpdateCounter;
 	/// <summary> Име на град член променлива </summary>
-	TCHAR szCityName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szCityName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> Община член променлива </summary>
-	TCHAR szRegion[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szRegion[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
 
 	/// <summary> Конструктор </summary>
@@ -56,7 +52,7 @@ struct PHONE_TYPES
 	/// <summary> Брояч за модификация член променлива </summary>
 	long lUpdateCounter;
 	/// <summary> Тип телефонен номер член променлива </summary>
-	TCHAR czPhoneType[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR czPhoneType[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
 	/// <summary> Конструктор </summary>
 	PHONE_TYPES()
@@ -88,17 +84,17 @@ struct PERSONS
 	/// <summary> Блояч за модификация член променлива </summary>
 	long lUpdateCounter;
 	/// <summary> Първо име член променлива </summary>
-	TCHAR szFirstName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szFirstName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> Второ име член променлива </summary>
-	TCHAR szSecondName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szSecondName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> Трето име член променлива </summary>
-	TCHAR szLastName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szLastName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> ЕГН член променлива </summary>
-	TCHAR szEGN[TCHAR_SIZE_FOR_PERSON_EGN];
+	TCHAR szEGN[STRUCT_MEMBER_SIZE_TYPE_TCHAR_FOR_PERSON_EGN];
 	/// <summary> Град член променлива </summary>
 	long lIdCity;
 	/// <summary> Адрес член променлива </summary>
-	TCHAR szAddress[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szAddress[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
 	/// <summary> Конструктор </summary>
 	PERSONS()
@@ -140,7 +136,7 @@ struct PHONE_NUMBERS
 	/// <summary> Тип телефон член променлива </summary>
 	long lIdPhoneType;
 	/// <summary> Телефонен номер член променлива </summary>
-	TCHAR szPhone[TCHAR_SIZE_FOR_PHONE_NUMBER_MEMBER];
+	TCHAR szPhone[STRUCT_MEMBER_SIZE_TYPE_TCHAR_FOR_PHONE_NUMBER];
 
 	/// <summary> Конструктор </summary>
 	PHONE_NUMBERS()
@@ -163,3 +159,4 @@ struct PHONE_NUMBERS
 
 ///<summary> Псевдоним на CTableDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
 typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
+typedef CTableDataMap<CPhoneNumbersArray> CPhoneNumbersMap;

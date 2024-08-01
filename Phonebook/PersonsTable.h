@@ -44,7 +44,7 @@ private:
 	/// Метод за достъп до член променливата в клас CPersonsAccessor
 	/// </summary>
 	/// <returns>Връща структура от тип PERSONS</returns>
-	PERSONS GetRowData() override
+	PERSONS& GetRowData() override
 	{
 		return m_recPersons;
 	}

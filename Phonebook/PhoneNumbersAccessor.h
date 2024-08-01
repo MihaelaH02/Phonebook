@@ -6,7 +6,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-#include "EnumsStructsAccessorsInfo.h"
+#include "EnumsStructsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsAccessor
@@ -42,16 +42,16 @@ protected:
 	/// <summary>
 	/// Свързване на мембърите на структура PHONE_NUMBERS с колоните от таблица PHONE_NUMBERS в базата данни
 	/// </summary>
-	BEGIN_ACCESSOR_MAP(CPhoneNumbersAccessor, NUMBERS_OF_ACCESSORS)
-		BEGIN_ACCESSOR(ACCESSOR_FOR_ID, true)
-		COLUMN_ENTRY(ORDINAL_COLUMN_ID, m_recPhoneNumber.lId)
+	BEGIN_ACCESSOR_MAP(CPhoneNumbersAccessor, GLOBAL_ACCESSORS_INFO_NUMBERS_OF_ACCESSORS)
+		BEGIN_ACCESSOR(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_ID, true)
+		COLUMN_ENTRY(GLOBAL_ACCESSORS_INFO_ORDINAL_COLUMN_ID, m_recPhoneNumber.lId)
+		COLUMN_ENTRY(STRUCT_PHONE_NUMBERS_ORDER_COL_ID_PERSON, m_recPhoneNumber.lIdPerson)
 		END_ACCESSOR()
 
-		BEGIN_ACCESSOR(ACCESSOR_FOR_DATA, true)
-		COLUMN_ENTRY(ORDINAL_COLUMN_UPDATE_COUNTED, m_recPhoneNumber.lUpdateCounter)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PHONE_NUMBERS_ID_PERSON, m_recPhoneNumber.lIdPerson)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PHONE_NUMBERS_ID_PHONE_TYPE, m_recPhoneNumber.lIdPhoneType)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PHONE_NUMBERS_PHONE, m_recPhoneNumber.szPhone)
+		BEGIN_ACCESSOR(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA, true)
+		COLUMN_ENTRY(GLOBAL_ACCESSORS_INFO_ORDINAL_COLUMN_UPDATE_COUNTED, m_recPhoneNumber.lUpdateCounter)
+		COLUMN_ENTRY(STRUCT_PHONE_NUMBERS_ORDER_COL_ID_PHONE_TYPE, m_recPhoneNumber.lIdPhoneType)
+		COLUMN_ENTRY(STRUCT_PHONE_NUMBERS_ORDER_COL_NUMBERS_PHONE, m_recPhoneNumber.szPhone)
 		END_ACCESSOR()
 	END_ACCESSOR_MAP()
 };

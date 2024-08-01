@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "AdditionInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -18,27 +19,16 @@ CAdditionInfo::~CAdditionInfo()
 
 // Methods
 // ----------------
-
-CCitiesDoc* CAdditionInfo::GetCitiesDocument() const 
+/*const CCitiesArray CAdditionInfo::GetAllCities() const
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CCitiesDoc)));
-	return (CCitiesDoc*)m_pDocument;
-}
+	CCitiesDoc* pCitiesDoc = ;
+	if(pCitiesDoc)
+	return pCitiesDoc->GetCitiesArray();
 
-/*CPhoneTypesDoc* CAdditionInfo::GetPhoneTypesDocument() const
-{
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CPhoneTypesDoc)));
-	return (CPhoneTypesDoc*)m_pDocument;
 }*/
-
-
-const CCitiesArray CAdditionInfo::GetAllCities() const
-{
-	return GetCitiesDocument()->GetCitiesArray();
-}
 
 /*const CPhoneTypesArray CAdditionInfo::GetAllPhoneTypes() const
 {
-	return GetPhoneTypesDocument()->GetPhoneTypesArray();
-
+	CPhoneTypesDoc* pPhoneTypesDoc;
+	return pPhoneTypesDoc->GetPhoneTypesArray();
 }*/

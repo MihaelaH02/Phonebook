@@ -22,9 +22,6 @@ public:
 
 // Methods
 // ----------------
-private:
-	CCitiesDoc* GetCitiesDocument() const;
-	//CPhoneTypes* GetPhoneTypesDocument() const;
 
 public:
 	const CCitiesArray GetAllCities() const;

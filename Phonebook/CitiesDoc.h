@@ -84,7 +84,7 @@ public:
 	/// Достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с данните от таблицата с градов</returns>
-	const CTableDataArray<CITIES>& GetCitiesArray() const;
+	const CTableDataArray<CITIES>& GetCitiesArray();
 
 	int GetCitiesArrayElementsCount();
 

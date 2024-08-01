@@ -46,7 +46,7 @@ private:
 	/// Метод за достъп до член променливата в клас CPhoneTypesAccessor
 	/// </summary>
 	/// <returns>Връща структура от тип PHONE_TYPES</returns>
-	PHONE_TYPES GetRowData() override
+	PHONE_TYPES& GetRowData() override
 	{
 		return m_recPhoneTypes;
 	}

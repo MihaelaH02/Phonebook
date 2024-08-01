@@ -21,9 +21,9 @@ class CTableDataArray : public CTypedPtrArray<CPtrArray, CClass*>
 public:
 	CTableDataArray() {};
 
-	CTableDataArray(const CTableDataArray& oCTableDataArray)
+	CTableDataArray(CTableDataArray& oCTableDataArray)
 	{
-		AddAll(oCTableDataArray);
+		AddAllElements(oCTableDataArray);
 	};
 
 	//Динамично се освобождава заделената памет
@@ -40,10 +40,19 @@ public:
 	/// Метод за добавяне на елемент динамично
 	/// </summary>
 	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
-	INT_PTR AddElement(const CClass& recStructData)
+	INT_PTR AddElement(const CClass recStructData)
 	{
 		CClass* pStruct = new CClass(recStructData);
 		return Add(pStruct);
+	}
+
+	void AddAllElements(const CTableDataArray& oCTableDataArray)
+	{
+		for (INT_PTR nIndex = 0; nIndex < oCTableDataArray.GetCount(); nIndex++)
+		{
+			CClass oElement = *GetAt(nIndex);
+			AddElement(oElement);
+		}
 	}
 
 	/// <summary>
@@ -63,6 +72,25 @@ public:
 			}
 		}
 	}
+
+	BOOL RemoveElement(CClass& recStructData)
+	{
+		for (INT_PTR nIndex = 0; nIndex < GetCount(); nIndex++)
+		{
+			CClass* pElement = GetAt(nIndex);
+			if (pElement == nullptr)
+			{
+				return FALSE;
+			}
+
+			if (pElement->lId == recStructData.lId)
+			{
+				delete pElement;
+				RemoveAt(nIndex);
+			}
+		}
+	}
+
 
 	/// <summary>
 	/// Метод за премахване на всички елементи от масива динамично

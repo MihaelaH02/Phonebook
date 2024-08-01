@@ -117,28 +117,28 @@ void CCitiesDialog::EnableControls(LPARAM oEnableControls)
 	//В зависимост от поданета стойност от тип енъм, се активират/деактивират контролите за писане
 	switch (oEnableControls)
 	{
-		case ENABLE_CONTROLS_FLAG_ALL:
+		case ENABLE_DIALOG_CTR_FLAG_ALL:
 		{
 			m_edbName.EnableWindow(TRUE);
 			m_edbRegion.EnableWindow(TRUE);
 		}
 		break;
 
-		case ENABLE_CONTROLS_FLAG_NONE:
+		case ENABLE_DIALOG_CTR_FLAG_NONE:
 		{
 			m_edbName.EnableWindow(FALSE);
 			m_edbRegion.EnableWindow(FALSE);
 		}
 		break;
 
-		case ENABLE_CONTROLS_FLAG_ONLY_NAME:
+		case ENABLE_DIALOG_CTR_FLAG_ONLY_NAME:
 		{
 			m_edbName.EnableWindow(TRUE);
 			m_edbRegion.EnableWindow(FALSE);
 		}
 		break;
 
-		case ENABLE_CONTROLS_FLAG_ONLY_REGION:
+		case ENABLE_DIALOG_CTR_FLAG_ONLY_REGION:
 		{
 			m_edbName.EnableWindow(FALSE);
 			m_edbRegion.EnableWindow(TRUE);

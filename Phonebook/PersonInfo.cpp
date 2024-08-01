@@ -9,11 +9,12 @@
 
 CPersonInfo::CPersonInfo()
 {
-}
+};
 
-CPersonInfo::CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersArray& oPhoneNumbers)
-	:m_recPerson(recPerson), m_oPhoneNumbers(oPhoneNumbers)
+CPersonInfo::CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap oPhoneNumbersMap)
 {
+	m_recPerson = recPerson;
+	m_oPhoneNumbers.AddAllElements(oPhoneNumbersMap);
 }
 
 CPersonInfo::~CPersonInfo()
@@ -28,14 +29,9 @@ const PERSONS CPersonInfo::GetPerson() const
 	return m_recPerson;
 }
 
-const CPhoneNumbersArray CPersonInfo::GetPhoneNumbers() const
+const CPhoneNumbersMap CPersonInfo::GetPhoneNumbers() const
 {
 	return m_oPhoneNumbers;
-}
-
-int CPersonInfo::FindPhoneNumber(const PHONE_NUMBERS& recPhoneNumber) 
-{
-	return m_oPhoneNumbers.FindElement(recPhoneNumber);
 }
 
 void CPersonInfo::AddPerson(PERSONS& recNewPerson)
@@ -43,11 +39,15 @@ void CPersonInfo::AddPerson(PERSONS& recNewPerson)
 	m_recPerson = recNewPerson;
 }
 
-void CPersonInfo::AddPhoneNumber(PHONE_NUMBERS& recPhoneNumber)
+void CPersonInfo::AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray)
 {
-	m_oPhoneNumbers.AddElement(recPhoneNumber);
+	m_oPhoneNumbers.AddElement(oPhoneNumbersArray);
 }
 
+void CPersonInfo::AddAllPhoneNumbers(const CPhoneNumbersMap oPhoneNumbersMap)
+{
+	m_oPhoneNumbers.AddAllElements(oPhoneNumbersMap);
+}
 
 // Overrides
 // ----------------

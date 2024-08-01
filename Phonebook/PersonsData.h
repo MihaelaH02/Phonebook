@@ -31,7 +31,7 @@ public:
 	/// </summary>
 	/// <param name="oPersonsInfo">Масив, в който ще се съхраняват прочетените данни</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectAll(CTableDataArray<CPersonInfo>& oPersonsInfo);
+	BOOL SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsInfo);
 
 	/// <summary>
 	/// Метод за селект само на един елемент от базата данни
@@ -39,32 +39,68 @@ public:
 	/// <param name="lID">Променлива указваща ИД на запис</param>
 	/// <param name="recPhoneTypes">Променлива, в която ще се запише прочетената стойност</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectWhereID(const long lID, CPersonInfo& oPersonInfo);
+	BOOL SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonInfo);
 
 	/// <summary>
-	/// Метод за редакция на запис
+	/// 
 	/// </summary>
-	/// <param name="lID">Променлива указваща ИД на запис</param>
-	/// <param name="oPersonInfo">Променлива, която съдържа новите данни</param>
-	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL UpdateWhereID(const long lID, CPersonInfo& oPersonInfo, LPARAM oUpdateFlag);
+	/// <param name="oPersonInfo"></param>
+	/// <returns></returns>
+	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag = OPERATIONS_WITH_DATA_FLAGS_NOCHANGE);
+	
+private:
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="recPerson"></param>
+	/// <returns></returns>
+	/*BOOL CPersonsData::PersonInsert(PERSONS& recPerson);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="lid"></param>
+	/// <param name="recPerson"></param>
+	/// <returns></returns>
+	BOOL CPersonsData::PersonUpdate(const long lid, PERSONS& recPerson);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="lId"></param>
+	/// <returns></returns>
+	BOOL CPersonsData::PersonDelete(const long lId);*/
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="recPerson"></param>
+	/// <returns></returns>
+	BOOL ManagePersonOperations(PERSONS& recPerson, LPARAM oFlagOperation);
+
 
 	/// <summary>
 	/// Метод за добавяне на запис
 	/// </summary>
 	/// <param name="oPersonInfo">Променлива с данни, които ще се добавя</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL Insert(CPersonInfo& oPersonInfo, LPARAM oUpdateFlag);
+	BOOL ChoosePhoneNumbersOperation(LPARAM oFlagOperation, CPhoneNumbersArray& pPhoneNumberArray);
 
 	/// <summary>
-	/// Метода за изтриване на запис
+	/// 
 	/// </summary>
-	/// <param name="lID">Променлива указваща ИД на запис</param>
-	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL DeleteWhereID(const long lID, LPARAM oUpdateFlag);
+	/// <param name="oPhoneNumbersArray"></param>
+	/// <returns></returns>
+	BOOL ManagePhoneNumbersOperations(CPhoneNumbersMap& oPhoneNumbersArray);
 
-private:
-	CPhoneNumbersArray FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray oPhoneNumbersArray);
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="lId"></param>
+	/// <param name="oPhoneNumbersArray"></param>
+	/// <returns></returns>
+	BOOL FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray& oPhoneNumbersArray);
+
 
 // Overrides
 // ----------------

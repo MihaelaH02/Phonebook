@@ -37,14 +37,14 @@ private:
 	/// </summary>
 	/// <param name="pCity">Параметър от тип структура град, с данни които да се добавят</param>
 	/// <param name="nIndex">Параметър за индекс, по който ще се редактират данни в контролата</param>
-	void AddOrEditItemInListCtr(const CITIES& pCity, int nOldIndexExistingElement = -1);
+	BOOL AddOrEditItemInListCtr(const CITIES& pCity, int nOldIndexExistingElement = -1);
 
 	/// <summary>
 	/// Метод за достъп до елемент в лист контролата
 	/// </summary>
 	/// <param name="nIndex">Параметър за индекс, по който ще се търси елемента</param>
 	/// <returns>Връща обект от тип структура за градове</returns>
-	CITIES GetItemFromListCtr(const int nIndex);
+	CITIES& GetItemFromListCtr(const int nIndex);
 
 	/// <summary>
 	/// Метод за достъп до индекс на селектиран елемент от лист контролата
@@ -55,13 +55,13 @@ private:
 	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
 	/// </summary>
-	void LoadDataInListCtrFromDoc();
+	BOOL LoadDataInListCtrFromDoc();
 
 	/// <summary>
 	/// Метод за търсене на всички елементи по даден критерий
 	/// </summary>
 	/// <param name="recCity">Структура, по която ще се търсият записи</param>
-	void FindItemsFromListCtr(const CITIES& recCity);
+	BOOL FilterItemsFromListCtr(const CITIES& recCity);
 
 	/// <summary>
 	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните в документа
@@ -72,7 +72,8 @@ private:
 	/// <summary>
 	/// Метод за сортиране на елементите в контролата по област и наименование на град
 	/// </summary>
-	void SortItemsListCtr();
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL SortItemsListCtr();
 
 	/// <summary>
 	/// Метод, който сравнява елементи
@@ -134,22 +135,22 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void SelectCityListCtr();
+	afx_msg void SelectCity();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void InsertCityListCtrl();
+	afx_msg void InsertCity();
 
 	/// <summary>
 	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void UpdateCityListCtr();
+	afx_msg void UpdateCity();
 
 	/// <summary>
 	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void DeleteCityListCtr();
+	afx_msg void DeleteCity();
 
 	/// <summary>
 	/// Метод, който филтрира градовете по подаден регион

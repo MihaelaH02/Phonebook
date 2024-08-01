@@ -4,7 +4,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-#include "EnumsStructsAccessorsInfo.h"
+#include "EnumsStructsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsAccessor
@@ -40,19 +40,19 @@ protected:
 	/// <summary>
 	/// Свързване на мембърите на структура PERSONS с колоните от таблица PERSONS в базата данни
 	/// </summary>
-	BEGIN_ACCESSOR_MAP(CPersonsAccessor, NUMBERS_OF_ACCESSORS)
-		BEGIN_ACCESSOR(ACCESSOR_FOR_ID, true)
-		COLUMN_ENTRY(ORDINAL_COLUMN_ID, m_recPersons.lId)
+	BEGIN_ACCESSOR_MAP(CPersonsAccessor, GLOBAL_ACCESSORS_INFO_NUMBERS_OF_ACCESSORS)
+		BEGIN_ACCESSOR(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_ID, true)
+		COLUMN_ENTRY(GLOBAL_ACCESSORS_INFO_ORDINAL_COLUMN_ID, m_recPersons.lId)
 		END_ACCESSOR()
 
-		BEGIN_ACCESSOR(ACCESSOR_FOR_DATA, true)
-		COLUMN_ENTRY(ORDINAL_COLUMN_UPDATE_COUNTED, m_recPersons.lUpdateCounter)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PERSONS_FIRSTNAME, m_recPersons.szFirstName)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PERSONS_SECONDNAME, m_recPersons.szSecondName)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PERSONS_LASTNAME, m_recPersons.szLastName)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PERSONS_EGN, m_recPersons.szEGN)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PERSONS_ID_CITY, m_recPersons.lIdCity)
-		COLUMN_ENTRY(ORDINAL_COLUMN_PERSONS_ADDRESS, m_recPersons.szAddress)
+		BEGIN_ACCESSOR(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA, true)
+		COLUMN_ENTRY(GLOBAL_ACCESSORS_INFO_ORDINAL_COLUMN_UPDATE_COUNTED, m_recPersons.lUpdateCounter)
+		COLUMN_ENTRY(STRUCT_PERSONS_ORDER_COL_FIRSTNAME, m_recPersons.szFirstName)
+		COLUMN_ENTRY(STRUCT_PERSONS_ORDER_COL_SECONDNAME, m_recPersons.szSecondName)
+		COLUMN_ENTRY(STRUCT_PERSONS_ORDER_COL_LASTNAME, m_recPersons.szLastName)
+		COLUMN_ENTRY(STRUCT_PERSONS_ORDER_COL_EGN, m_recPersons.szEGN)
+		COLUMN_ENTRY(STRUCT_PERSONS_ORDER_COL_ID_CITY, m_recPersons.lIdCity)
+		COLUMN_ENTRY(STRUCT_PERSONS_ORDER_COL_ADDRESS, m_recPersons.szAddress)
 		END_ACCESSOR()
 	END_ACCESSOR_MAP()
 };

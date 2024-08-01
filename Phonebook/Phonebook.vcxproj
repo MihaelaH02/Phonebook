@@ -190,7 +190,7 @@
     <ClInclude Include="CitiesAccessor.h" />
     <ClInclude Include="EnumsWithFlags.h" />
     <ClInclude Include="EnumsListCtrColumsInfo.h" />
-    <ClInclude Include="EnumsStructsAccessorsInfo.h" />
+    <ClInclude Include="EnumsStructsInfo.h" />
     <ClInclude Include="PersonInfo.h" />
     <ClInclude Include="PersonsAccessor.h" />
     <ClInclude Include="PersonsData.h" />
@@ -201,6 +201,7 @@
     <ClInclude Include="PhoneTypesAccessor.h" />
     <ClInclude Include="PhoneTypesData.h" />
     <ClInclude Include="PhoneTypesTable.h" />
+    <ClInclude Include="SessionTransactionManager.h" />
     <ClInclude Include="TableDataArray.h" />
     <ClInclude Include="CitiesDoc.h" />
     <ClInclude Include="Structures.h" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Phonebook.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Session.h" />
+    <ClInclude Include="TableDataMap.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ValidateStringData.h" />
   </ItemGroup>
