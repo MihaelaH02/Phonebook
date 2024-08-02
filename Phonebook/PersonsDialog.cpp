@@ -6,11 +6,17 @@
 #include "afxdialogex.h"
 #include "PersonsDialog.h"
 #include "AdditionInfo.h"
+#include "EnumsDialogCtrInfo.h"
 
 
-// CPersonsDialog dialog
+/////////////////////////////////////////////////////////////////////////////
+// PersonsDialog.cpp 
 
 IMPLEMENT_DYNAMIC(CPersonsDialog, CDialogEx)
+
+
+// Constructor / Destructor
+// ----------------
 
 CPersonsDialog::CPersonsDialog(LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_PERSONS_DIALOG, pParent)
@@ -19,7 +25,7 @@ CPersonsDialog::CPersonsDialog(LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_A
 }
 
 CPersonsDialog::CPersonsDialog(const CPersonInfo& oPersonInfo, const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PERSONS_DIALOG, pParent) 
+	: CDialogEx(IDD_PERSONS_DIALOG, pParent)
 {
 	//Подаваме всички данни за клиент към член променливите, които съхраняват съответните данни
 	PERSONS recPerson = oPersonInfo.GetPerson();
@@ -31,14 +37,17 @@ CPersonsDialog::CPersonsDialog(const CPersonInfo& oPersonInfo, const CAdditionIn
 	m_strAddress = recPerson.szAddress;
 
 	//Подаваме данни към масивите, съхраняващи съответните данни
-	//m_oPhoneNumbersArray = oPersonInfo.GetPhoneNumbers();
-	//m_oCitiesArray = oAdditionInfo.GetAllCities();
-	//m_oPhoneTypesArray = oAdditionInfo.GetAllPhoneTypes();
+	m_oPhoneNumbersMap.AddAllElements(oPersonInfo.GetPhoneNumbers());
+	//m_oCitiesArray.AddAllElements(oAdditionInfo.GetAllCities());
+	//m_oPhoneTypesArray.AddAllElements(oAdditionInfo.GetAllPhoneTypes());
 }
 
 CPersonsDialog::~CPersonsDialog()
 {
 }
+
+// MFC Overrides
+// ----------------
 
 void CPersonsDialog::DoDataExchange(CDataExchange* pDX)
 {
@@ -57,14 +66,19 @@ BOOL CPersonsDialog::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	//Задаване на максимална дължина на полетата
-	//m_edbName.SetLimitText(MAX_LENGTH_STRING);
-	//m_edbRegion.SetLimitText(MAX_LENGTH_STRING);
+	m_edbFirstName.SetLimitText(DIALOG_CTR_INFO_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
+	m_edbSecondName.SetLimitText(DIALOG_CTR_INFO_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
+	m_edbLastName.SetLimitText(DIALOG_CTR_INFO_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
+	//m_recAddress
+	m_edbEGN.SetLimitText(DIALOG_CTR_INFO_TEXT_BOX_MAX_LENGTH_ENTERED_EGN);
+
 
 	//Задаване на стойности за контролите
 	m_edbFirstName.SetWindowTextW(m_strFirstName);
 	m_edbSecondName.SetWindowTextW(m_strSecondName);
 	m_edbLastName.SetWindowTextW(m_strLastName);
 	m_edbEGN.SetWindowTextW(m_strEGN);
+	m_recAddress.SetWindowTextW(m_strAddress);
 
 	if (AddItemsInCmbCities())
 	{
@@ -74,12 +88,14 @@ BOOL CPersonsDialog::OnInitDialog()
 	int nIndexCity = m_cmbCities.GetItemData(m_nIdCity);
 	m_cmbCities.SetCurSel(nIndexCity);
 
-	m_recAddress.SetWindowTextW(m_strAddress);
-
 	//Промяна на активността на контролите, според подадения параметър
-	//EnableControls(m_oEnableControlsParam);
+	EnableControls(m_oEnableControlsParam);
 
 	//Напълни лист контролата
+	if (!LoadPhoneNumbersInListCtrFromArray())
+	{
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -93,8 +109,9 @@ BEGIN_MESSAGE_MAP(CPersonsDialog, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CPersonsDialog message handlers
 
+// MFC Message Handlers
+// ----------------
 
 void CPersonsDialog::OnBnClickedAdd()
 {
@@ -128,6 +145,30 @@ void CPersonsDialog::OnBnClickedCancel()
 }
 
 
+
+// Overrides
+// ----------------
+
+
+// Methods
+// ---------------
+
+BOOL CPersonsDialog::EnableControls(LPARAM oEnableControls)
+{
+	if(ENABLE_DIALOG_CTR_FLAG_NONE)
+	{
+		m_edbFirstName.EnableWindow(FALSE);
+		m_edbSecondName.EnableWindow(FALSE);
+		m_edbLastName.EnableWindow(FALSE);
+		m_edbEGN.EnableWindow(FALSE);
+		m_recAddress.EnableWindow(FALSE);
+		m_cmbCities.EnableWindow(FALSE);
+		m_lscPhoneNumbers.EnableWindow(FALSE);
+	}
+
+	return TRUE;
+}
+
 BOOL CPersonsDialog::AddItemsInCmbCities()
 {
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
@@ -147,7 +188,39 @@ BOOL CPersonsDialog::AddItemsInCmbCities()
 	return TRUE;
 }
 
-BOOL CPersonsDialog::AddItemsInListCtrPhoneNumbers()
+CString CPersonsDialog::FindPhoneTypesInArrayById(const int lId)
 {
-	return true;
+	for (INT_PTR nIndex = 0; nIndex < m_oPhoneTypesArray.GetCount(); nIndex++)
+	{
+		PHONE_TYPES* pPhoneTypes = m_oPhoneTypesArray.GetAt(nIndex);
+		if (pPhoneTypes == nullptr)
+		{
+			return NULL;
+		}
+
+		if (pPhoneTypes->lId == lId)
+		{
+			return pPhoneTypes->czPhoneType;
+		}
+	}
+	return NULL;
+}
+
+BOOL CPersonsDialog::LoadPhoneNumbersInListCtrFromArray()
+{
+	//Зареждаме данните от мапа в лист контролата и връщаме резултата за успех или не
+	CPhoneNumbersArray oPhoneNumberArray = m_oPhoneNumbersMap.FindValueByKey(OPERATIONS_WITH_DATA_FLAGS_READED);
+
+	if (!m_lscPhoneNumbers.LoadDataInListCtrFromResourse(oPhoneNumberArray))
+	{
+		return FALSE;
+	}
+
+	//Премахваме прочетеноно
+	if (!m_oPhoneNumbersMap.RemoveAllElements())
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }

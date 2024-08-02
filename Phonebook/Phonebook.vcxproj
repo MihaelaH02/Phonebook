@@ -188,14 +188,17 @@
     <ClInclude Include="CitiesDialog.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CitiesAccessor.h" />
+    <ClInclude Include="EnumsDialogCtrInfo.h" />
     <ClInclude Include="EnumsWithFlags.h" />
-    <ClInclude Include="EnumsListCtrColumsInfo.h" />
     <ClInclude Include="EnumsStructsInfo.h" />
+    <ClInclude Include="ManageListCtr.h" />
     <ClInclude Include="PersonInfo.h" />
     <ClInclude Include="PersonsAccessor.h" />
     <ClInclude Include="PersonsData.h" />
     <ClInclude Include="PersonsDialog.h" />
+    <ClInclude Include="PersonsDoc.h" />
     <ClInclude Include="PersonsTable.h" />
+    <ClInclude Include="PersonsView.h" />
     <ClInclude Include="PhoneNumbersAccessor.h" />
     <ClInclude Include="PhoneNumbersTable.h" />
     <ClInclude Include="PhoneTypesAccessor.h" />
@@ -237,6 +240,8 @@
     <ClCompile Include="PersonInfo.cpp" />
     <ClCompile Include="PersonsData.cpp" />
     <ClCompile Include="PersonsDialog.cpp" />
+    <ClCompile Include="PersonsDoc.cpp" />
+    <ClCompile Include="PersonsView.cpp" />
     <ClCompile Include="Phonebook.cpp" />
     <ClCompile Include="PhoneTypesData.cpp" />
     <ClCompile Include="Session.cpp" />

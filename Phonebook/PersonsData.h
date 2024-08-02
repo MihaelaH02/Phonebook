@@ -100,8 +100,6 @@ private:
 	/// <param name="oPhoneNumbersArray"></param>
 	/// <returns></returns>
 	BOOL FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray& oPhoneNumbersArray);
-
-
 // Overrides
 // ----------------
 

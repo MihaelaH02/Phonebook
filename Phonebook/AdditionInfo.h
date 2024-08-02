@@ -24,8 +24,8 @@ public:
 // ----------------
 
 public:
-	const CCitiesArray GetAllCities() const;
-	const CPhoneTypesArray GetAllPhoneTypes() const ;
+	const CCitiesArray& GetAllCities() const;
+	const CPhoneTypesArray& GetAllPhoneTypes() const ;
 
 // Overrides
 // ----------------

@@ -78,7 +78,7 @@ public:
 	/// </summary>
 	/// <param name="lId">ИД, по което ще се търси запис за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Delete(const long lId);
+	BOOL Delete(const CITIES& recCity);
 
 	/// <summary>
 	/// Достъп до член променлива на класа

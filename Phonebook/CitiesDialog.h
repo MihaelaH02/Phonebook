@@ -3,11 +3,10 @@
 #include "Structures.h"
 #include "ValidateStringData.h"
 #include "EnumsWithFlags.h"
+#include "EnumsDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesDialog dialog
-
-#define MAX_LENGTH_STRING 128
 
 /// <summary>
 /// Диалог за изпълнение на опирации свързани със структура Градове

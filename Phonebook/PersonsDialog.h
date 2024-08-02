@@ -3,7 +3,8 @@
 #include "PersonInfo.h"
 #include "EnumsWithFlags.h"
 #include "AdditionInfo.h"
-
+#include "ManageListCtr.h"
+#include "EnumsListCtrColumsInfo.h"
 
 // CPersonsDialog dialog
 
@@ -57,8 +58,12 @@ protected:
 // Methods
 // ----------------
 private:
+	BOOL EnableControls(LPARAM oEnableControls);
 	BOOL AddItemsInCmbCities();
-	BOOL AddItemsInListCtrPhoneNumbers();
+	BOOL AddOrEditElemenInListCtr(const PHONE_NUMBERS& recPhoneNumber);
+	CString FindPhoneTypesInArrayById(const int lId);
+	BOOL LoadPhoneNumbersInListCtrFromArray();
+
 
 // Members
 // ----------------
@@ -96,7 +101,7 @@ private:
 	/// <summary>
 	/// Член променлива за лест контрола с телефонни номера на клиент
 	/// </summary>
-	CListCtrl m_lscPhoneNumbers;
+	CManageListCtr<PHONE_NUMBERS> m_lscPhoneNumbers;
 
 	/// <summary>
 	/// Член променлива за обмяна на данни с контролата за име на клиент
@@ -131,7 +136,7 @@ private:
 	/// <summary>
 	/// Член променлива масив, която съдържа всички телефонни номера за клиент
 	/// </summary>
-	CPhoneNumbersArray m_oPhoneNumbersArray;
+	CPhoneNumbersMap m_oPhoneNumbersMap;
 
 	/// <summary>
 	/// Променлива, която съдържа всички градове

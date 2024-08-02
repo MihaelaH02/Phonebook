@@ -11,6 +11,7 @@
 #include "Resource.h"
 
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -39,8 +40,6 @@ END_MESSAGE_MAP()
 
 CCitiesView::CCitiesView() noexcept
 {
-	// TODO: add construction code here
-
 }
 
 CCitiesView::~CCitiesView()
@@ -53,31 +52,44 @@ CCitiesView::~CCitiesView()
 
 BOOL CCitiesView::PreCreateWindow(CREATESTRUCT& cs)
 {
+	//Достъп до лист контролата
+	CListCtrl& lscCities = GetListCtrl();
+
 	// Задаваме тип репорт на лист контролата
-	cs.style |=  LVS_REPORT | LVS_SINGLESEL;
+	cs.style |= LVS_REPORT | LVS_SINGLESEL;
 
 	return CListView::PreCreateWindow(cs);
 }
 
 void CCitiesView::OnInitialUpdate()
 {
-	CListView::OnInitialUpdate();
-
 	//Достъп до лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Добавяне на допълнителни стилове за лист контролата
-	lscCities.SetExtendedStyle( LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
-	
+	lscCities.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
+
+	//Асоциране на лист контролата от вюто с персонален клас,
+	m_oListCtr.SubclassDlgItem(lscCities.GetDlgCtrlID(), this);
+
 	//Добавяме колони в лист контролата с ляво подравяване и размер на полето
-	lscCities.InsertColumn(CITIE_VIEW_LIST_CTR_COLUM_REGION + 1, _T("Region"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
-	lscCities.InsertColumn(CITIE_VIEW_LIST_CTR_COLUM_REGION + 1, _T("City name"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
+	m_oListCtr.InsertColumn(CITIES_LIST_CTR_COLUMN_REGION + 1, _T("Region"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
+	m_oListCtr.InsertColumn(CITIES_LIST_CTR_COLUMN_CITY_NAME + 1, _T("City name"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
 
 	//Зареждане на данните от документа
 	if (!LoadDataInListCtrFromDoc())
 	{
 		return;
 	}
+
+	//Сортировка
+	if (!SortItemsListCtr())
+	{
+		return;
+	}
+
+	CListView::OnInitialUpdate();
+
 }
 
 void CCitiesView::OnLButtonDblClk(UINT nFlags, CPoint point)
@@ -127,7 +139,7 @@ void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	//Другите опрерации са вързможни само ако има избран елемент
-	if (GetSelectedItemListCtrByIndex() == -1)
+	if (m_oListCtr.GetSelectedItemListCtrByIndex() == -1)
 	{
 		return;
 	}
@@ -174,7 +186,7 @@ void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	}
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = GetSelectedItemListCtrByIndex();
+	int nSelectedIndex = m_oListCtr.GetSelectedItemListCtrByIndex();
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -204,19 +216,7 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		return;
 	}
 
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = GetSelectedItemListCtrByIndex();
-
-	//Проверка за изпълнение на операция изтриване на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_DELETE == lHint)
-	{
-		//Изтриваме ред по поданен индекс
-		lscCities.DeleteItem(nIndexItem);
-		return;
-	}
+	CITIES& recCity = *(CITIES*)pHint;
 
 	//Обект, който ще се обработва, ако е подаден такъв
 	if (pHint == nullptr)
@@ -224,21 +224,31 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		return;
 	}
 
-	CITIES& recCity = *(CITIES*)pHint;
-
 	//Проверка за изпълнение на операция добавяне на елемент
 	if(OPERATIONS_WITH_DATA_FLAGS_INSERT == lHint)
 	{
 		//Добавяме данни
-		AddOrEditItemInListCtr(recCity);
+		m_oListCtr.ManageAddingDataInElementListCtr(recCity);
 		return;
 	}
+
+	//Достъпваме индекса, на избрания елемент, в лист контролата
+	int nIndexItem = m_oListCtr.FindIndexByElement(recCity);
 
 	//Проверка за изпълнение на операция редакция на елемент
 	if(OPERATIONS_WITH_DATA_FLAGS_UPDATE == lHint)
 	{
 		//Редактираме, по открития индекс, данните
-		AddOrEditItemInListCtr(recCity, nIndexItem);
+		m_oListCtr.ManageAddingDataInElementListCtr(recCity, nIndexItem);
+		return;
+	}	
+
+	//Проверка за изпълнение на операция изтриване на елемент
+	if (OPERATIONS_WITH_DATA_FLAGS_DELETE == lHint)
+	{
+
+		//Изтриваме ред по поданен индекс
+		m_oListCtr.DeleteElementListCtr(nIndexItem);
 		return;
 	}
 }
@@ -248,11 +258,8 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 // ---------------
 void CCitiesView::SelectCity()
 {
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
 	//Индекс на селектирания запис
-	int nIndexItem = GetSelectedItemListCtrByIndex();
+	int nIndexItem = m_oListCtr.GetSelectedItemListCtrByIndex();
 
 	//Проверка за избран елемент
 	if (nIndexItem == -1)
@@ -262,7 +269,7 @@ void CCitiesView::SelectCity()
 	}
 
 	//Достъпваме данните от лист контролата
-	CITIES& recCity = GetItemFromListCtr(nIndexItem);
+	CITIES& recCity = m_oListCtr.GetItemFromListCtr(nIndexItem);
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
 	CCitiesDialog oDialog(recCity, ENABLE_DIALOG_CTR_FLAG_NONE);
@@ -296,10 +303,10 @@ void CCitiesView::InsertCity()
 void CCitiesView::UpdateCity()
 {
 	//Достъп до индекса на селектирания запис
-	int nIndexItem = GetSelectedItemListCtrByIndex();
+	int nIndexItem = m_oListCtr.GetSelectedItemListCtrByIndex();
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
-	CITIES& recCity = GetItemFromListCtr(nIndexItem);
+	CITIES& recCity = m_oListCtr.GetItemFromListCtr(nIndexItem);
 
 	//Запазваме ид-то на записа
 	long lId = recCity.lId;
@@ -334,22 +341,13 @@ void CCitiesView::DeleteCity()
 	}
 
 	//Достъпваме индекса на селектирания запис
-	int nIndexItem = GetSelectedItemListCtrByIndex();
+	int nIndexItem = m_oListCtr.GetSelectedItemListCtrByIndex();
 
 	//Достъпваме селектирания запис
-	CITIES& recCity = GetItemFromListCtr(nIndexItem);
-
-	//Достъпваме ИД на записа от лист контролата по подаден индекс
-	long lItemCityId = recCity.lId;
-
-	if (lItemCityId == NULL)
-	{
-		AfxMessageBox(_T("Failed to select id of data from list!"));
-		return;
-	}
+	CITIES& recCity = m_oListCtr.GetItemFromListCtr(nIndexItem);
 
 	//Изтриваме данните в документа по намереното ИД
-	if (!(GetDocument() && GetDocument()->Delete(lItemCityId)))
+	if (!(GetDocument() && GetDocument()->Delete(recCity)))
 	{
 		return;
 	}
@@ -375,6 +373,9 @@ void CCitiesView::FilterCitiesByRegion()
 			return;
 		}
 	}
+
+	//Филтрираме зареденото
+	SortItemsListCtr();
 }
 
 void CCitiesView::FindOneCity()
@@ -406,127 +407,26 @@ void CCitiesView::ReloadCities()
 	{
 		return;
 	}
+
+	//Сортировка на зареденото
+	SortItemsListCtr();
 }
 
 // Methods
 // ---------------
 
-int CCitiesView::GetSelectedItemListCtrByIndex() 
-{
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Вземаме позицията на селектирания елемент
-	POSITION oPositionCursor = lscCities.GetFirstSelectedItemPosition();
-	if (oPositionCursor == NULL)
-	{
-		return -1;
-	}
-
-	//Връщаме индекса на елемента или -1 ако няма такъв
-	 return lscCities.GetNextSelectedItem(oPositionCursor);
-}
-
-BOOL CCitiesView::AddOrEditItemInListCtr(const CITIES& recCity, int nOldIndexExistingElement)
-{
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Ако е подаден индекс на стар елемент да се изтрие
-	if (nOldIndexExistingElement != -1)
-	{
-		//Премахваме елемент от лист контролата
-		if (!lscCities.DeleteItem(nOldIndexExistingElement))
-		{
-			return FALSE;
-		}
-	}
-
-	//Указател към елемента
-	CITIES* pCity = new CITIES;
-	*pCity = recCity;
-
-	if (pCity == nullptr)
-	{
-		return FALSE;
-	}
-
-	//Правим структура, като задаваме индекс(последния), текст в първа колона и параметър(указател към структура)
-	LVITEM lvItem = {0};
-	lvItem.mask = LVIF_TEXT | LVIF_PARAM;
-	lvItem.iItem = lscCities.GetItemCount();
-	lvItem.pszText = pCity->szRegion;
-	lvItem.lParam = (LPARAM)pCity;
-
-	//Добавяме елемент
-	lscCities.InsertItem(&lvItem);
-
-	//Добавяне на данни и във второта колона по генерирания индекс
-	if (!lscCities.SetItemText(lvItem.iItem, CITIE_VIEW_LIST_CTR_COLUM_CITY_NAME, pCity->szCityName))
-	{
-		return FALSE;
-	};
-
-	//Сортираме по азбучен ред при всяка промяна
-	if (!SortItemsListCtr())
-	{
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-CITIES& CCitiesView::GetItemFromListCtr(const int nIndexItem)
-{
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Нов обект от тип структура с градове
-	CITIES* pCity = (CITIES*)(lscCities.GetItemData(nIndexItem));
-
-	if (pCity != nullptr)
-	{
-		//Връщаме пълната структура
-		return *pCity;
-	}
-}
-
 BOOL CCitiesView::LoadDataInListCtrFromDoc()
-{//Вариант за проверка на остналото и само да се добавят липсите от масива
-
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
-	//Изтриваве на всички останали данни
-	if (!lscCities.DeleteAllItems())
-	{
-		return FALSE;
-	}
-
+{
 	//Достъпваме документа
 	CCitiesDoc* pCitiesDoc = GetDocument();
 	if (pCitiesDoc == nullptr)
 	{
 		return FALSE;
 	}
-	
 	const CCitiesArray& oCitiesArray = pCitiesDoc->GetCitiesArray();
 
-	//Добавяме данните от таблицата в лист контролата
-	for (INT_PTR i = 0; i < oCitiesArray.GetCount(); ++i)
-	{
-		CITIES* pCity = oCitiesArray.GetAt(i);
-		if (pCity == nullptr)
-		{
-			return FALSE;
-		}
-
-		if (!AddOrEditItemInListCtr(*pCity)) 
-		{
-			return FALSE;
-		}
-	}
-	return TRUE;
+	//Зареждаме данните от масива в лист контролата и връщаме резултата за успех или не
+	return m_oListCtr.LoadDataInListCtrFromResourse(oCitiesArray);
 }
 
 BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
@@ -551,7 +451,7 @@ BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
 	//Премахва всички елементи, които не са с елемент, като подадения
 	for (int nIndex = nListCrtCountItems - 1; nIndex >= 0; --nIndex)
 	{
-		CString strCurrentRegion = lscCities.GetItemText(nIndex, CITIE_VIEW_LIST_CTR_COLUM_REGION);
+		CString strCurrentRegion = lscCities.GetItemText(nIndex, CITIES_LIST_CTR_COLUMN_REGION);
 
 		if (strRegionToFind != strCurrentRegion)
 		{
@@ -567,7 +467,7 @@ BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
 			continue;
 		}
 
-		CString strCurrentName = lscCities.GetItemText(nIndex, CITIE_VIEW_LIST_CTR_COLUM_CITY_NAME);
+		CString strCurrentName = lscCities.GetItemText(nIndex, CITIES_LIST_CTR_COLUMN_CITY_NAME);
 		if (strCityNameToFind != strCurrentName)
 		{
 			if (!lscCities.DeleteItem(nIndex))
@@ -583,9 +483,6 @@ BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
 
 BOOL CCitiesView::IsAllDataLoadFromDoc()
 {
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
-
 	//Достъпваме документа
 	CCitiesDoc* pCitiesDoc = GetDocument();
 
@@ -594,13 +491,8 @@ BOOL CCitiesView::IsAllDataLoadFromDoc()
 		return FALSE;
 	}
 
-	//Проверка дали броя на елементите, в лест контролата, е еднакъв с този в документа
-	if (lscCities.GetItemCount() != pCitiesDoc->GetCitiesArrayElementsCount())
-	{
-		return FALSE;
-	}
-
-	return TRUE;
+	//връщаме резултата за успех или не
+	return m_oListCtr.IsAllDataLoadFromResourse(pCitiesDoc->GetCitiesArrayElementsCount());
 }
 
 BOOL CCitiesView::SortItemsListCtr()

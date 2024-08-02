@@ -127,18 +127,19 @@ BOOL CCitiesDoc::Insert(CITIES& recCity)
 	return TRUE;
 }
 
-BOOL CCitiesDoc::Delete(const long lId)
+BOOL CCitiesDoc::Delete(const CITIES& recCity)
 {
-	if (!m_oCitiesData.DeleteWhereID(lId))
+
+	if (!m_oCitiesData.DeleteWhereID(recCity.lId))
 	{
 		return FALSE;
 	}
 
 	//Премахване на елемента от масива
-	m_oCitiesArray.RemoveElemetById(lId);
+	m_oCitiesArray.RemoveElement(recCity);
 
 	//Редакция на вютата, подаване на параметър за изтриване и обект, който е засегнат
-	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_DELETE, (CObject*)lId);
+	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_DELETE, (CObject*)&recCity);
 
 	return TRUE;
 }

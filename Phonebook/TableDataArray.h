@@ -55,25 +55,7 @@ public:
 		}
 	}
 
-	/// <summary>
-	/// Метод за премахване на елемент от масива динамично 
-	/// </summary>
-	/// <param name="lId">ИД на елемент, който да се премахне</param>
-	void RemoveElemetById(const long lId)
-	{
-		for (INT_PTR nIndex = 0; nIndex < GetCount(); nIndex++)
-		{
-			CClass* pElement = GetAt(nIndex);
-			if ( pElement->lId == lId)
-			{
-				delete pElement;
-				pElement = NULL;
-				RemoveAt(nIndex);
-			}
-		}
-	}
-
-	BOOL RemoveElement(CClass& recStructData)
+	BOOL RemoveElement(const CClass& recStructData)
 	{
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); nIndex++)
 		{

@@ -37,6 +37,21 @@ struct CITIES
 		_tcscpy_s(szRegion, recCity.szRegion);
 	}
 
+	BOOL ConvertStructToCArray(CArray<CString, CString>& strCitiesArray) const 
+	{
+		if (!strCitiesArray.Add(szRegion))
+		{
+			return FALSE;
+		}
+		
+		if (!strCitiesArray.Add(szCityName))
+		{
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
 };
 ///<summary> Псевдоним на  CTableDataArray<CITIES> с тип CITIES</summary> 
 typedef CTableDataArray<CITIES> CCitiesArray;
@@ -68,6 +83,16 @@ struct PHONE_TYPES
 		lId = recPhoneType.lId;
 		lUpdateCounter = recPhoneType.lUpdateCounter;
 		_tcscpy_s(czPhoneType, recPhoneType.czPhoneType);
+	}
+
+	BOOL ConvertStructToCArray(CArray<CString, CString>& strPhoneTypesArray) const
+	{
+		if (!strPhoneTypesArray.Add(czPhoneType))
+		{
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 };
 
@@ -116,6 +141,31 @@ struct PERSONS
 		lIdCity = recPersons.lIdCity;
 		_tcscpy_s(szAddress, recPersons.szAddress);
 	}
+
+	BOOL ConvertStructToCArray(CArray<CString, CString>& strPerosnsArray) const
+	{
+		if (!strPerosnsArray.Add(szFirstName))
+		{
+			return FALSE;
+		}
+
+		if (!strPerosnsArray.Add(szSecondName))
+		{
+			return FALSE;
+		}
+
+		if (!strPerosnsArray.Add(szLastName))
+		{
+			return FALSE;
+		}
+
+		if (!strPerosnsArray.Add(szEGN))
+		{
+			return FALSE;
+		}
+
+		return TRUE;
+	}
 };
 
 ///<summary> Псевдоним на CTableDataArray<PERSONS> с тип PERSONS</summary> 
@@ -154,6 +204,21 @@ struct PHONE_NUMBERS
 		lIdPerson = recPhoneNumbers.lIdPerson;
 		lIdPhoneType = recPhoneNumbers.lIdPhoneType;
 		_tcscpy_s(szPhone, recPhoneNumbers.szPhone);
+	}
+
+	BOOL ConvertStructToCArray(CArray<CString, CString>& strPhoneNumbersArray) const 
+	{
+		if (!strPhoneNumbersArray.Add(szPhone))
+		{
+			return FALSE;
+		}
+		/*
+		if (!strPhoneNumbersArray.Add( _T(lIdPhoneType)))
+		{
+			return FALSE;
+		}*/
+
+		return TRUE;
 	}
 };
 

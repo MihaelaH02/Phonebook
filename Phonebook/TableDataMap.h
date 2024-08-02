@@ -32,6 +32,7 @@ public:
 	//Динамично се освобождава заделената памет
 	virtual ~CTableDataMap()
 	{
+		RemoveAllElements();
 	};
 
 
@@ -43,13 +44,17 @@ public:
 	/// Метод за добавяне на елемент динамично
 	/// </summary>
 	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
-	void AddElement(CTableDataArray& oTableDataArray, OPERATIONS_WITH_DATA_FLAGS FLAG = OPERATIONS_WITH_DATA_FLAGS_READED)
+	BOOL AddElement(CTableDataArray& oTableDataArray, OPERATIONS_WITH_DATA_FLAGS eFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
+		//Динамично заделяне на памет за елелмент масив
 		CTableDataArray* pTableDataArray = new CTableDataArray(oTableDataArray);
-		if (pTableDataArray != nullptr)
+		if (pTableDataArray == nullptr)
 		{
-			SetAt(FLAG, pTableDataArray);
+			return FALSE;
 		}
+		//Добавяне на елемент с ключ - флаг, по който ще се определя операция и стойност - указател към масив с данни, чийито елементи ще се оперират
+		SetAt(eFlag, pTableDataArray);
+		return TRUE;
 	};
 
 	/// <summary>
@@ -62,8 +67,14 @@ public:
 		POSITION oPos = oCTableDataMap.GetStartPosition();
 		OPERATIONS_WITH_DATA_FLAGS oKey;
 		CTableDataArray* pValue;
+		if (oPos == NULL)
+		{
+			//oPos = 0/1;
+		}
+
 		while (oPos != NULL)
 		{
+			//Достъпваме текущ елемент от мапа
 			GetNextAssoc(oPos, oKey, pValue);
 			if (pValue == nullptr)
 			{
@@ -74,49 +85,57 @@ public:
 		return TRUE;
 	};
 
+	CTableDataArray& FindValueByKey(OPERATIONS_WITH_DATA_FLAGS eFlag)
+	{
+		CTableDataArray* pTableDataArray;
+
+		if (Lookup(eFlag, pTableDataArray))
+		{
+
+			if (pTableDataArray != nullptr)
+			{
+
+				return *pTableDataArray;
+			}
+		}
+	}
+
 	/// <summary>
 	/// Метод за премахване на елемент от масива динамично 
 	/// </summary>
 	/// <param name="lId">ИД на елемент, който да се премахне</param>
-	/*BOOL RemoveElemetByKey(const CTableDataArray& oClassArray)
+	BOOL RemoveElemetByKey(OPERATIONS_WITH_DATA_FLAGS eFlag)
 	{
-		CClass* pClass = nullptr;
-		if (!Lookup(oClassArray, pClass))
+		CTableDataArray* pTableDataArray = FindValueByKey(eFlag);
+		
+		if (pTableDataArray == nullptr)
 		{
 			return FALSE;
 		}
 
-		if (pClass == nullptr)
-		{
-			return FALSE;
-		}
-		delete pClass;
-		RemoveKey(pClass)
+		delete pTableDataArray;
+
+		if(!RemoveKey(eFlag))
 		{
 			return FALSE;
 		}
 
 		return TRUE;
-	};*/
+	};
 
 	/// <summary>
 	/// Метод за премахване на всички елементи от масива динамично
 	/// </summary>
-	/*void RemoveAllElements()
+	BOOL RemoveAllElements()
 	{
-		POSITION oPosDelete = GetStartPosition();
-		CClass* pKeyDelete = nullptr;
-		LPARAM oValueDelete = NULL;
-		while (oPosDelete != NULL)
+/*		POSITION oPos = GetStartPosition();
+
+		for (POSITION oPos = GetStartPosition(); oPos != NULL; oPos = GetNextPosotion())
 		{
-			GetNextAssoc(oPosDelete, pKeyDelete, oValueDelete);
-			if (pKeyDelete != nullptr)
-			{
-				delete pKeyDelete;
-			}
-		}
-		RemoveAll();
-	};*/
+			RemoveElemetByKey
+		}*/
+		return TRUE;
+	};
 
 
 // Overrides

@@ -5,6 +5,7 @@
 #pragma once
 #include "CitiesDialog.h"
 #include "EnumsListCtrColumsInfo.h"
+#include "ManageListCtr.h"
 
 class CCitiesView : public CListView
 {
@@ -32,25 +33,6 @@ public:
 	CCitiesDoc* GetDocument() const;
 
 private:
-	/// <summary>
-	/// Метод за добавяне на елемент към лист контролата
-	/// </summary>
-	/// <param name="pCity">Параметър от тип структура град, с данни които да се добавят</param>
-	/// <param name="nIndex">Параметър за индекс, по който ще се редактират данни в контролата</param>
-	BOOL AddOrEditItemInListCtr(const CITIES& pCity, int nOldIndexExistingElement = -1);
-
-	/// <summary>
-	/// Метод за достъп до елемент в лист контролата
-	/// </summary>
-	/// <param name="nIndex">Параметър за индекс, по който ще се търси елемента</param>
-	/// <returns>Връща обект от тип структура за градове</returns>
-	CITIES& GetItemFromListCtr(const int nIndex);
-
-	/// <summary>
-	/// Метод за достъп до индекс на селектиран елемент от лист контролата
-	/// </summary>
-	/// <returns>Връща индекс на елемент от лист контролата</returns>
-	int GetSelectedItemListCtrByIndex();
 
 	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
@@ -170,6 +152,8 @@ public:
 
 // Members
 // ----------------
+
+	CManageListCtr<CITIES> m_oListCtr;
 };
 
 
