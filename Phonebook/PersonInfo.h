@@ -42,13 +42,13 @@ public:
 	/// Метод за достъп до член променлива клиент
 	/// </summary>
 	/// <returns>Връща структура на от тип клиент</returns>
-	const PERSONS GetPerson() const;
+	const PERSONS& GetPerson() const;
 
 	/// <summary>
 	/// Метод за достъп до член променлива масив в телефонни номера
 	/// </summary>
 	/// <returns>Връща масив</returns>
-	const CPhoneNumbersMap GetPhoneNumbers() const;
+	const CPhoneNumbersMap& GetPhoneNumbers() const;
 
 	/// <summary>
 	/// Метод за добавяне на клиент
@@ -66,7 +66,7 @@ public:
 	/// Метод за добавяне на всички телефонни номера
 	/// </summary>
 	/// <param name="oPhoneNumbersMap"></param>
-	void AddAllPhoneNumbers(const CPhoneNumbersMap oPhoneNumbersMap);
+	void AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersMap);
 
 // Overrides
 // ----------------

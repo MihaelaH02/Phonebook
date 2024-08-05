@@ -29,7 +29,7 @@ BEGIN_MESSAGE_MAP(CCitiesView, CListView)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CCitiesView::InsertCity)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CCitiesView::UpdateCity)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CCitiesView::DeleteCity)
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_FILTERBYREGION, &CCitiesView::FilterCitiesByRegion)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_FILTER, &CCitiesView::FilterCitiesByRegion)
 	ON_COMMAND(ID_CONTEXT_MANU_DATA_FIND, &CCitiesView::FindOneCity)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_RELOAD, &CCitiesView::ReloadCities)
 END_MESSAGE_MAP()
@@ -291,7 +291,7 @@ void CCitiesView::SelectCity()
 	}
 
 	//Достъпваме данните от лист контролата
-	CITIES& recCity = m_oListCtrManager.GetItemFromListCtr(lscCities, nIndexItem);
+	CITIES& recCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
 	CCitiesDialog oDialog(recCity, ENABLE_DIALOG_CTR_FLAG_NONE);
@@ -331,7 +331,7 @@ void CCitiesView::UpdateCity()
 	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
-	CITIES& recCity = m_oListCtrManager.GetItemFromListCtr(lscCities, nIndexItem);
+	CITIES& recCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
 
 	//Запазваме ид-то на записа
 	long lId = recCity.lId;
@@ -372,7 +372,7 @@ void CCitiesView::DeleteCity()
 	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
 
 	//Достъпваме селектирания запис
-	CITIES& recCity = m_oListCtrManager.GetItemFromListCtr(lscCities,nIndexItem);
+	CITIES& recCity = m_oListCtrManager.GetItemByIndex(lscCities,nIndexItem);
 
 	//Изтриваме данните в документа по намереното ИД
 	if (!(GetDocument() && GetDocument()->Delete(recCity)))

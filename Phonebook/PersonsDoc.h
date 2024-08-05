@@ -51,7 +51,7 @@ public:
 	/// Метод, който достъпва броя на клиентите
 	/// </summary>
 	/// <returns>Връща броя на елемените в масива с информация на кленти</returns>
-	int GetPersonsArrayElementsCount();
+	INT_PTR GetPersonsArrayElementsCount();
 
 	/// <summary>
 	/// Метод, който селектира клиеит по ид

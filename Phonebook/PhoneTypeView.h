@@ -1,13 +1,14 @@
 #pragma once
-
+/*
 #include "EnumsListCtrColumsInfo.h"
-#include "PersonsDialog.h"
+//#include "PhonetypesDialog.h"
 #include "ManageListCtr.h"
-#include "PersonsDoc.h"
+#include "PhoneTypesDoc.h"
 
-// CPersonsView view
+/////////////////////////////////////////////////////////////////////////////
+// CPhoneTypeView view
 
-class CPersonsView : public CListView
+class CPhoneTypeView : public CListView
 {
 // Constants
 // ----------------
@@ -15,7 +16,7 @@ class CPersonsView : public CListView
 
 // Macros
 // ----------------
-	DECLARE_DYNCREATE(CPersonsView)
+	DECLARE_DYNCREATE(CPhoneTypeView)
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -23,14 +24,13 @@ protected:
 // Constructor / Destructor
 // ----------------
 protected:
-	CPersonsView();           // protected constructor used by dynamic creation
-	virtual ~CPersonsView();
+	CPhoneTypeView();         
+	virtual ~CPhoneTypeView();
 
-
-// Methods
+	// Methods
 // ----------------
 public:
-	CPersonsDoc* GetDocument() const;
+	CPhoneTypesDoc* GetDocument() const;
 private:
 
 	/// <summary>
@@ -45,7 +45,7 @@ private:
 	BOOL IsAllDataLoadFromDoc();
 
 	/// <summary>
-	/// Метод за сортиране на елементите в контролата по област и имена на клиент
+	/// Метод за сортиране на елементите в контролата по тип телефон
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL SortItemsListCtr();
@@ -62,31 +62,25 @@ private:
 	/// <summary>
 	/// Метод, който записва всички презентационни данни от всички елементи тип клиент в нов масив
 	/// </summary>
-	/// <param name="oPersonsArray">Масив с клиенти</param>
-	/// <param name="strPersonsArrayToDisplayInListCtrl">Масив с презентационни данни на всички клиенти</param>
+	/// <param name="oPhonetypesArray">Масив с типове телефони</param>
+	/// <param name="strPhonetypesArrayToDisplayInListCtrl">Масив с презентационни данни на всички типове телефони</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertAllElementPersonsInfoToArrayWithDisplayData(const CTableDataArray<CPersonInfo>& oPersonsInfoArray, CTableDataArray<CTableDataArray<CString>>& strPersonsArrayToDisplayInListCtrl);
+	BOOL ConvertAllElementsPhoneTypesToArrayWithDisplayData(const CTableDataArray<PHONE_TYPES>& oPhonetypesArray, CTableDataArray<CTableDataArray<CString>>& strPhonetypesArrayToDisplayInListCtrl);
 
 	/// <summary>
-	/// Метод, който записва презентационните данни на един елемент клиент в нов масив
+	/// Метод, който записва презентационните данни на един елемент тип телефон в нов масив
 	/// </summary>
-	/// <param name="recPerson">Еменет от тип структура с клиенти</param>
-	/// <param name="strPersonArray">Масив с презентационни данни за този елемент</param>
+	/// <param name="recPhoneType">Еменет от тип структура с типове телефони</param>
+	/// <param name="strPhoneType">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertElementPersonInfoToArrayWithDisplayData(const PERSONS& recPerson, CTableDataArray<CString>& strPersonArray);
+	BOOL ConvertElementPhoneTypeToArrayWithDisplayData(const PHONE_TYPES& recPhoneType, CTableDataArray<CString>& strPhoneType);
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="strParamToFind"></param>
-	/// <param name="FIND_BY_COLUMN"></param>
-	/// <returns></returns>
-	BOOL FilterItemsFromListCtr(const CString& strParamToFind, PERSONS_LIST_CTR_COLUMN FIND_BY_COLUMN);
 
-// Overrides
-// ----------------
+
+	// Overrides
+	// ----------------
 public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 protected:
 	virtual void OnInitialUpdate();
@@ -96,7 +90,9 @@ protected:
 	/// </summary>
 	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 
-// Generated message map functions
+
+	// Generated message map functions
+public:
 	/// <summary>
 	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
 	/// </summary>
@@ -122,50 +118,40 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void SelectPerson();
+	afx_msg void SelectPhoneType();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void InsertPerson();
+	afx_msg void InsertPhoneType();
 
 	/// <summary>
 	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void UpdatePerson();
+	afx_msg void UpdatePhoneType();
 
 	/// <summary>
 	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void DeletePerson();
+	afx_msg void DeletePhoneType();
 
 	/// <summary>
 	/// Метод, който търси даден клиент по егн
 	/// </summary>
-	afx_msg void FindPersonByEgn();
-
-	/// <summary>
-	/// Метод, който филтрира клиентите по регион
-	/// </summary>
-	afx_msg void FilterPersonsByRegion();
+	afx_msg void FindPhoneType();
 
 	/// <summary>
 	/// Метод за зареждане на всички градове
 	/// </summary>
-	afx_msg void ReloadPersons();
+	afx_msg void ReloadPhoneTypes();
 
 // Members
 // ----------------
-	
+
 	/// <summary>
 	///Член проминлива от тип клас, който ще управлява елемените в лист контролата
 	/// </summary>
-	CListCtrlManager<CPersonInfo> m_oManagerListCtr;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	CAdditionInfo m_oAdditionalInfo;
+	CListCtrlManager<PHONE_TYPES> m_oManagerListCtr;
 
 public:
 #ifdef _DEBUG
@@ -177,9 +163,5 @@ public:
 
 };
 
-#ifndef _DEBUG  // debug version in CitiesView.cpp
-inline CPersonsDoc* CPersonsView::GetDocument() const
-{
-	return reinterpret_cast<CPersonsDoc*>(m_pDocument);
-}
-#endif
+
+*/

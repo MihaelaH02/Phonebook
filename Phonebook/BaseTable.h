@@ -349,8 +349,13 @@ public:
 				DoMesgStatusExit(_T("Error all selected data!"));
 				return FALSE;
 			}
-			Insert(*recStruct);
+
+			if (!Insert(*recStruct))
+			{
+				return FALSE;
+			}
 		}
+		return TRUE;
 	}
 
 	/// <summary>
@@ -369,9 +374,15 @@ public:
 				DoMesgStatusExit(_T("Error all selected data!"));
 				return FALSE;
 			}
-			UpdateWhereID(recStruct->lId, *recStruct);
+			if (!UpdateWhereID(recStruct->lId, *recStruct))
+			{
+				return FALSE;
+			}
 		}
+
+		return TRUE;
 	}
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -388,8 +399,12 @@ public:
 				DoMesgStatusExit(_T("Error all selected data!"));
 				return FALSE;
 			}
-			DeleteWhereID(recStruct->lId);
+			if (!DeleteWhereID(recStruct->lId))
+			{
+				return FALSE;
+			}
 		}
+		return TRUE;
 	}
 
 private:

@@ -118,18 +118,19 @@ BOOL CPersonsData::SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonIn
 BOOL CPersonsData::ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag)
 {
 	//КЛАС ЗА ТРАНЗАКЦИИ И СЕСИИ
-	//Инстнация на клиент, върху който ще се извършват операции
-	PERSONS recPerson = oPersonInfo.GetPerson();
-
-	if (!ManagePersonOperations(recPerson, oOperationFlag))
-	{
-		return FALSE;
-	}
 
 	//Инстнация на масив с телефонин номера за клиент, върху който ще се извършват операции
 	CPhoneNumbersMap oPhoneNumbersMap = oPersonInfo.GetPhoneNumbers();
 
 	if (!ManagePhoneNumbersOperations(oPhoneNumbersMap))
+	{
+		return FALSE;
+	}
+
+	//Инстнация на клиент, върху който ще се извършват операции
+	PERSONS recPerson = oPersonInfo.GetPerson();
+
+	if (!ManagePersonOperations(recPerson, oOperationFlag))
 	{
 		return FALSE;
 	}
@@ -227,7 +228,7 @@ BOOL CPersonsData::ManagePhoneNumbersOperations(CPhoneNumbersMap& oPhoneNumbersM
 
 	//Променливи за обход на мап
 	POSITION oPos = oPhoneNumbersMap.GetStartPosition();
-	OPERATIONS_WITH_DATA_FLAGS oFlagOperation;
+	LPARAM oFlagOperation;
 	CPhoneNumbersArray* pPhoneNumberArray;
 
 	while (oPos != NULL)

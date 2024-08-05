@@ -71,15 +71,15 @@
 #define ID_FILE_NEW_PHONETYPES          32793
 #define ID_FILE_NEW_CLIENTS             32794
 #define ID_CONTEXT_MANU_DATA_FIND       32805
-#define ID_CONTEXT_MENU_DATA_FILTERBYREGION 32806
 #define ID_CONTEXT_MENU_DATA_RELOAD     32809
+#define ID_CONTEXT_MENU_DATA_FILTER     32810
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        318
-#define _APS_NEXT_COMMAND_VALUE         32810
+#define _APS_NEXT_COMMAND_VALUE         32811
 #define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

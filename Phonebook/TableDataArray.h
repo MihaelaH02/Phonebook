@@ -40,7 +40,7 @@ public:
 	/// Метод за добавяне на елемент динамично
 	/// </summary>
 	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
-	INT_PTR AddElement(const CClass recStructData)
+	INT_PTR AddElement(const CClass& recStructData)
 	{
 		CClass* pStruct = new CClass(recStructData);
 		if (pStruct == nullptr)

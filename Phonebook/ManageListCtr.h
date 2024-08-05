@@ -55,7 +55,7 @@ public:
 		return TRUE;
 	}
 
-	CTypeElements& GetItemFromListCtr(CListCtrl& lscListCtr, const int nIndexItem)
+	CTypeElements& GetItemByIndex(CListCtrl& lscListCtr, const int nIndexItem)
 	{
 		//Нов обект от типа на елементите в лист контролата
 		CTypeElements* pElement = (CTypeElements*)(lscListCtr.GetItemData(nIndexItem));
@@ -69,6 +69,7 @@ public:
 
 	BOOL LoadDataInListCtrFromResourse(CListCtrl& lscListCtr, const CTableDataArray<CTypeElements>& oResourseArray,const CTableDataArray<CTableDataArray<CString>>& oArrayWithdataToDisplay)
 	{
+		//Премахване на всички зиписани елементи
 		if (lscListCtr.GetItemCount() > 0)
 		{
 			//Изтриваве на всички останали данни
@@ -77,6 +78,8 @@ public:
 				return FALSE;
 			}
 		}
+
+		//Проврка дали размира на масива с данни, които ще се визуализират в контролата е равен на масива с физическите данни
 		if (oResourseArray.GetCount() != oArrayWithdataToDisplay.GetCount())
 		{
 			return FALSE;
@@ -85,16 +88,17 @@ public:
 		//Добавяме данните от подаден масив в лист контролата
 		for (INT_PTR nIndex = 0; nIndex < oResourseArray.GetCount(); ++nIndex)
 		{
+			//Достъп до текущ елемент от масива с данни
 			CTypeElements* pElement = oResourseArray.GetAt(nIndex);
+
+			//Достъп до текущ елемент с данни, които ще се видуализират
 			CTableDataArray<CString>* pElementToDisplay = oArrayWithdataToDisplay.GetAt(nIndex);
-			CString str = *pElementToDisplay->GetAt(0);		
-			CString str1 = *pElementToDisplay->GetAt(1);
 
 			if (pElement == nullptr)
 			{
 				return FALSE;
 			}
-
+			//Добавяне на нов елемент
 			if (!ManageAddingDataInElementListCtr(lscListCtr, *pElement, *pElementToDisplay))
 			{
 				return FALSE;
@@ -103,7 +107,7 @@ public:
 		return TRUE;
 	}
 
-	BOOL IsAllDataLoadFromResourse(CListCtrl& lscListCtr, const int oResourseSize)
+	BOOL IsAllDataLoadFromResourse(CListCtrl& lscListCtr, const INT_PTR oResourseSize)
 	{
 		//Проверка дали броя на елементите, в лест контролата, е еднакъв с този в документа
 		if (lscListCtr.GetItemCount() != oResourseSize)

@@ -48,7 +48,7 @@ const CTableDataArray<CPersonInfo>& CPersonsDoc::GetPersonInfo()
 	return m_oPersonsInfo;
 }
 
-int CPersonsDoc::GetPersonsArrayElementsCount()
+INT_PTR CPersonsDoc::GetPersonsArrayElementsCount()
 {
 	return m_oPersonsInfo.GetCount();
 }

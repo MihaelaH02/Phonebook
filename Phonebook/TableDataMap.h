@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Structures.h"
+#include "TableDataArray.h"
 #include "EnumsWithFlags.h"
 /////////////////////////////////////////////////////////////////////////////
 // CTableDataMap
@@ -8,8 +9,8 @@
 /// <summary>
 ///Темплейт клас отгоравящ за обработката на CTypedPtrArrays
 /// </summary>
-template<class CTableDataArray>
-class CTableDataMap : public CMap<OPERATIONS_WITH_DATA_FLAGS, OPERATIONS_WITH_DATA_FLAGS, CTableDataArray*, CTableDataArray*>
+template<class Type>
+class CTableDataMap : public CMap<LPARAM, LPARAM, Type*, Type*>
 {
 
 	// Constants
@@ -43,79 +44,53 @@ public:
 	/// <summary>
 	/// Метод за добавяне на елемент динамично
 	/// </summary>
-	/// <param name="recStructData">Елемент от тип структура, който се се добави към масива</param>
-	BOOL AddElement(CTableDataArray& oTableDataArray, OPERATIONS_WITH_DATA_FLAGS eFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
+	BOOL AddElement(Type& oType, LPARAM oFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
 		//Динамично заделяне на памет за елелмент масив
-		CTableDataArray* pTableDataArray = new CTableDataArray(oTableDataArray);
-		if (pTableDataArray == nullptr)
+		Type* pType = new Type(oType);
+		if (pType == nullptr)
 		{
 			return FALSE;
 		}
 		//Добавяне на елемент с ключ - флаг, по който ще се определя операция и стойност - указател към масив с данни, чийито елементи ще се оперират
-		SetAt(eFlag, pTableDataArray);
+		SetAt(oFlag, pType);
 		return TRUE;
 	};
 
 	/// <summary>
-	/// 
+	/// Метод за търсене на стойност по подаден ключ
 	/// </summary>
-	/// <param name="oCTableDataMap"></param>
-	/// <returns></returns>
-	BOOL AddAllElements(const CTableDataMap& oCTableDataMap)
+	/// <param name="oFlag">Флаг на опреция</param>
+	/// <returns>Връща указател към намерена стойност</returns>
+	Type* GetKeyByValue(LPARAM oFlag)
 	{
-		POSITION oPos = oCTableDataMap.GetStartPosition();
-		OPERATIONS_WITH_DATA_FLAGS oKey;
-		CTableDataArray* pValue;
-		if (oPos == NULL)
+		Type* pType;
+
+		if (!Lookup(eFlag, pType))
 		{
-			//oPos = 0/1;
+			return nullptr;
 		}
+			
+		return *pType;
 
-		while (oPos != NULL)
-		{
-			//Достъпваме текущ елемент от мапа
-			oCTableDataMap.GetNextAssoc(oPos, oKey, pValue);
-			if (pValue == nullptr)
-			{
-				return FALSE;
-			}
-			AddElement(*pValue, oKey);
-		}
-		return TRUE;
-	};
-
-	CTableDataArray& FindValueByKey(OPERATIONS_WITH_DATA_FLAGS eFlag)
-	{
-		CTableDataArray* pTableDataArray;
-
-		if (Lookup(eFlag, pTableDataArray))
-		{
-
-			if (pTableDataArray != nullptr)
-			{
-
-				return *pTableDataArray;
-			}
-		}
 	}
 
 	/// <summary>
 	/// Метод за премахване на елемент от масива динамично 
 	/// </summary>
 	/// <param name="lId">ИД на елемент, който да се премахне</param>
-	BOOL RemoveElemetByKey(OPERATIONS_WITH_DATA_FLAGS eFlag)
+	BOOL RemoveElemetByKey(LPARAM oFlag)
 	{
-		CTableDataArray* pTableDataArray = FindValueByKey(eFlag);
+		Type* pType = GetKeyByValue(oFlag);
 		
-		if (pTableDataArray == nullptr)
+		if (pType == nullptr)
 		{
 			return FALSE;
 		}
 
-		delete pTableDataArray;
+		delete pType;
 
-		if(!RemoveKey(eFlag))
+		if(!RemoveKey(oFlag))
 		{
 			return FALSE;
 		}
@@ -138,11 +113,11 @@ public:
 	};
 
 
-	BOOL GetAllValuesInArray(CTableDataArray& oCTableDataArray)
+	BOOL GetAllValuesInArray(Type& oType)
 	{
 		POSITION oPos = GetStartPosition();
-		OPERATIONS_WITH_DATA_FLAGS oKey;
-		CTableDataArray* pValue;
+		LPARAM oKey;
+		Type* pValue;
 		if (oPos == NULL)
 		{
 			//oPos = 0/1;
@@ -156,10 +131,38 @@ public:
 			{
 				return FALSE;
 			}
-			oCTableDataArray.AddAllElements(*pValue);
+			oType.AddAllElements(*pValue);
 		}
 		return TRUE;
 	}
+
+	/// <summary>
+	/// Добавяне на няколко елемента
+	/// </summary>
+	/// <param name="oCTableDataMap"></param>
+	/// <returns></returns>
+	BOOL AddAllElements(const CTableDataMap& oCTableDataMap)
+	{
+		POSITION oPos = oCTableDataMap.GetStartPosition();
+		LPARAM oKey;
+		Type* pValue;
+		if (oPos == NULL)
+		{
+			//oPos = 0/1;
+		}
+
+		while (oPos != NULL)
+		{
+			//Достъпваме текущ елемент от мапа
+			oCTableDataMap.GetNextAssoc(oPos, oKey, pValue);
+			if (pValue == nullptr)
+			{
+				return FALSE;
+			}
+			AddElement(*pValue, oKey);
+		}
+		return TRUE;
+	};
 
 // Overrides
 // ----------------

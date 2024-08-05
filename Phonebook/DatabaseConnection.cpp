@@ -7,14 +7,15 @@
 // CDatabaseConnection
 
 /// <summary> Начална инициализация на инстанцията</summary>
-CDatabaseConnection* CDatabaseConnection::pInstancePtr = NULL;
 
+CDatabaseConnection* CDatabaseConnection::pInstancePtr = NULL;
 
 // Constructor / Destructor
 // ----------------
 
-CDatabaseConnection::CDatabaseConnection() 
+CDatabaseConnection::CDatabaseConnection()
 {
+//	CDatabaseConnection* pInstancePtr = NULL;
 }
 
 CDatabaseConnection::~CDatabaseConnection()

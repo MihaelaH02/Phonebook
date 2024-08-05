@@ -36,6 +36,11 @@ struct CITIES
 		_tcscpy_s(szCityName, recCity.szCityName);
 		_tcscpy_s(szRegion, recCity.szRegion);
 	}
+
+	bool operator==(const CITIES& recCity) const 
+	{
+		return szCityName == recCity.szCityName && szRegion == recCity.szRegion;
+	}
 };
 ///<summary> Псевдоним на  CTableDataArray<CITIES> с тип CITIES</summary> 
 typedef CTableDataArray<CITIES> CCitiesArray;
@@ -184,4 +189,6 @@ struct PHONE_NUMBERS
 
 ///<summary> Псевдоним на CTableDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
 typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
+
+/// <summary>/// /// </summary>
 typedef CTableDataMap<CPhoneNumbersArray> CPhoneNumbersMap;

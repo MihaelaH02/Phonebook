@@ -129,6 +129,12 @@
     <ClInclude Include="PersonsView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PhoneTypesDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhoneTypeView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Phonebook.cpp">
@@ -176,13 +182,19 @@
     <ClCompile Include="PersonsDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AdditionInfocpp.cpp">
+    <ClCompile Include="AdditionInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PersonsDoc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PersonsView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhoneTypesDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhoneTypeView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

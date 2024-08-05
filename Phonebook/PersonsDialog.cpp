@@ -15,10 +15,15 @@ IMPLEMENT_DYNAMIC(CPersonsDialog, CDialogEx)
 // Constructor / Destructor
 // ----------------
 
-CPersonsDialog::CPersonsDialog(LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PERSONS_DIALOG, pParent)
+CPersonsDialog::CPersonsDialog(const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_PERSONS_DIALOG, pParent), m_oAdditionalInfo(oAdditionInfo)
 {
-	SecureZeroMemory(this, sizeof(*this));
+	m_strFirstName = "";
+	m_strSecondName = "";
+	m_strLastName = "";
+	m_strEGN = "";
+	m_lIdCity = -1;
+	m_strAddress = "";
 }
 
 CPersonsDialog::CPersonsDialog(const CPersonInfo& oPersonInfo, const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
@@ -32,11 +37,6 @@ CPersonsDialog::CPersonsDialog(const CPersonInfo& oPersonInfo, const CAdditionIn
 	m_strEGN = recPerson.szEGN;
 	m_lIdCity = recPerson.lIdCity;
 	m_strAddress = recPerson.szAddress;
-
-	//Подаваме данни към масивите, съхраняващи съответните данни
-	//m_oPhoneNumbersMap.AddAllElements(oPersonInfo.GetPhoneNumbers());
-	//m_oCitiesArray.AddAllElements(oAdditionInfo.GetAllCities());
-	//m_oPhoneTypesArray.AddAllElements(oAdditionInfo.GetAllPhoneTypes());
 }
 
 CPersonsDialog::~CPersonsDialog()

@@ -29,7 +29,7 @@ class CPersonsDialog : public CDialogEx
 // ----------------
 public:
 	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPersonsDialog(LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPersonsDialog(const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="oPerson">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
 	CPersonsDialog(const CPersonInfo& oPerson, const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
@@ -41,8 +41,8 @@ public:
 // ----------------	
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX); 
-	virtual BOOL OnInitDialog();
+	virtual void DoDataExchange(CDataExchange* pDX) override; 
+	virtual BOOL OnInitDialog() override;
 
 
 // MFC Message Handlers
