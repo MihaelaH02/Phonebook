@@ -16,15 +16,28 @@ public:
 	CPersonInfo();
 
 	/// <summary>
-	/// Параметризиран конструктор
+	/// Копи параметризиран конструктор
 	/// </summary>
-	CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap recPhoneNumbers);
+	CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& recPhoneNumbers);
+
+	/// <summary>
+	/// Копи параметризиран конструктор
+	/// </summary>
+	/// <param name="oPersonInfo"></param>
+	CPersonInfo(const CPersonInfo& oPersonInfo);
 
 	~CPersonInfo();
 
 // Methods
 // ----------------
 public:
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="lId"></param>
+	/// <returns></returns>
+	void SetIdPerson(long lId);
+
 	/// <summary>
 	/// Метод за достъп до член променлива клиент
 	/// </summary>
@@ -50,7 +63,7 @@ public:
 	void AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray);
 
 	/// <summary>
-	/// 
+	/// Метод за добавяне на всички телефонни номера
 	/// </summary>
 	/// <param name="oPhoneNumbersMap"></param>
 	void AddAllPhoneNumbers(const CPhoneNumbersMap oPhoneNumbersMap);

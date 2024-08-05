@@ -36,22 +36,6 @@ struct CITIES
 		_tcscpy_s(szCityName, recCity.szCityName);
 		_tcscpy_s(szRegion, recCity.szRegion);
 	}
-
-	BOOL ConvertStructToCArray(CArray<CString, CString>& strCitiesArray) const 
-	{
-		if (!strCitiesArray.Add(szRegion))
-		{
-			return FALSE;
-		}
-		
-		if (!strCitiesArray.Add(szCityName))
-		{
-			return FALSE;
-		}
-
-		return TRUE;
-	}
-
 };
 ///<summary> Псевдоним на  CTableDataArray<CITIES> с тип CITIES</summary> 
 typedef CTableDataArray<CITIES> CCitiesArray;
@@ -142,30 +126,6 @@ struct PERSONS
 		_tcscpy_s(szAddress, recPersons.szAddress);
 	}
 
-	BOOL ConvertStructToCArray(CArray<CString, CString>& strPerosnsArray) const
-	{
-		if (!strPerosnsArray.Add(szFirstName))
-		{
-			return FALSE;
-		}
-
-		if (!strPerosnsArray.Add(szSecondName))
-		{
-			return FALSE;
-		}
-
-		if (!strPerosnsArray.Add(szLastName))
-		{
-			return FALSE;
-		}
-
-		if (!strPerosnsArray.Add(szEGN))
-		{
-			return FALSE;
-		}
-
-		return TRUE;
-	}
 };
 
 ///<summary> Псевдоним на CTableDataArray<PERSONS> с тип PERSONS</summary> 

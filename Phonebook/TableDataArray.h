@@ -21,7 +21,7 @@ class CTableDataArray : public CTypedPtrArray<CPtrArray, CClass*>
 public:
 	CTableDataArray() {};
 
-	CTableDataArray(CTableDataArray& oCTableDataArray)
+	CTableDataArray(const CTableDataArray& oCTableDataArray)
 	{
 		AddAllElements(oCTableDataArray);
 	};
@@ -43,16 +43,31 @@ public:
 	INT_PTR AddElement(const CClass recStructData)
 	{
 		CClass* pStruct = new CClass(recStructData);
+		if (pStruct == nullptr)
+		{
+			return -1;
+		}
+
 		return Add(pStruct);
 	}
 
-	void AddAllElements(const CTableDataArray& oCTableDataArray)
+	BOOL AddAllElements(const CTableDataArray& oCTableDataArray)
 	{
 		for (INT_PTR nIndex = 0; nIndex < oCTableDataArray.GetCount(); nIndex++)
 		{
-			CClass oElement = *GetAt(nIndex);
-			AddElement(oElement);
+
+			CClass* pElement = oCTableDataArray.GetAt(nIndex);
+			if (pElement == nullptr)
+			{
+				return FALSE;
+			}
+
+			if (AddElement(*pElement) == -1) 
+			{
+				return FALSE;
+			}
 		}
+		return TRUE;
 	}
 
 	BOOL RemoveElement(const CClass& recStructData)

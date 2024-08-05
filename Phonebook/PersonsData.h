@@ -99,7 +99,9 @@ private:
 	/// <param name="lId"></param>
 	/// <param name="oPhoneNumbersArray"></param>
 	/// <returns></returns>
-	BOOL FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray& oPhoneNumbersArray);
+	BOOL CPersonsData::FindAllPhoneNumbersForPerson(const long lId, const CPhoneNumbersArray& oAllPhoneNumbersArray, CPhoneNumbersArray& oPhoneNumbersArrayForPerson);
+
+
 // Overrides
 // ----------------
 

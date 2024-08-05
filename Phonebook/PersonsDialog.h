@@ -5,7 +5,9 @@
 #include "AdditionInfo.h"
 #include "ManageListCtr.h"
 #include "EnumsListCtrColumsInfo.h"
+#include "EnumsDialogCtrInfo.h"
 
+/////////////////////////////////////////////////////////////////////////////
 // CPersonsDialog dialog
 
 class CPersonsDialog : public CDialogEx
@@ -57,12 +59,74 @@ protected:
 
 // Methods
 // ----------------
+public:
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	 BOOL GetControlsData(CPersonInfo& oPersonInfo);
+
 private:
+	/// <summary>
+	/// Метод, който управлява активността на контролите в диалога
+	/// </summary>
+	/// <param name="oEnableControls">Флаг, който определя активонстта на контролите</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL EnableControls(LPARAM oEnableControls);
-	BOOL AddItemsInCmbCities();
-	BOOL AddOrEditElemenInListCtr(const PHONE_NUMBERS& recPhoneNumber);
-	CString FindPhoneTypesInArrayById(const int lId);
-	BOOL LoadPhoneNumbersInListCtrFromArray();
+
+	/// <summary>
+	/// Метод за добавяне на елементи в комбо бокс контрола с градове
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL CPersonsDialog::AddItemsInCmbCities();
+
+	/// <summary>
+	/// Метод за зареждане на всички данни от списък с телефонни номера в лист контролата
+	/// </summary>
+	BOOL LoadPhoneNumbersInListCtrlFromArray();
+
+	/// <summary>
+	/// Метод за търсене на всички елементи от лист контролата по даден критерий
+	/// </summary>
+	/// <param name="recPerson">Структура, по която ще се търсият записи</param>
+	BOOL FilterItemsFromListCtr(const PHONE_NUMBERS& recPhoneNumber);
+
+	/// <summary>
+	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните от масива
+	/// </summary>
+	/// <returns>Връща TRUE при равенство и FALSE при разминаване</returns>
+	BOOL IsAllPhoneNumbersLoadFromArray();
+
+	/// <summary>
+	/// Метод за сортиране на елементите в контролата по тип телефонен номер
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL SortItemsListCtr();
+
+	/// <summary>
+	/// Метод, който сравнява елементи
+	/// </summary>
+	/// <param name="lParam1">Асоцира се с първия елемент, който ще се сравнява</param>
+	/// <param name="lParam2">Асоцира се с втори елемент, който ще се сравнява</param>
+	/// <param name="lParamSort">Параметър, който приложението си генерира </param>
+	/// <returns>Връща се резултат то сравнението</returns>
+	int static CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
+
+	/// <summary>
+	/// Метод, който записва всички презентационни данни от всички елементи тип телефонен номер в нов масив
+	/// </summary>
+	/// <param name="oPhoneNumbersArray">Масив с телефонни номера</param>
+	/// <param name="strPhoneNumbersArrayToDisplayInListCtrl">Масив с презентационни данни на всички телефонни номера</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL ConvertAllElementsPhoneNumbersToArrayWithDisplayData(const CPhoneNumbersArray& oPhoneNumbersArray, CTableDataArray<CTableDataArray<CString>>& strPhoneNumbersArrayToDisplayInListCtrl);
+
+	/// <summary>
+	/// Метод, който записва презентационните данни на един елемент телефонен номер в нов масив
+	/// </summary>
+	/// <param name="recPerson">Еменет от тип структура с телефонни номера</param>
+	/// <param name="strPersonArray">Масив с презентационни данни за този елемент</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL ConvertElementPhoneNumberToArrayWithDisplayData(const PHONE_NUMBERS& recPhoneNumbers, CTableDataArray<CString>& strPhoneNumbersArray);
 
 
 // Members
@@ -101,7 +165,12 @@ private:
 	/// <summary>
 	/// Член променлива за лест контрола с телефонни номера на клиент
 	/// </summary>
-	CManageListCtr<PHONE_NUMBERS> m_lscPhoneNumbers;
+	CListCtrl m_lscPhoneNumbers;
+
+	/// <summary>
+	/// Член променлива от клас, който управлява операции с лист контлора 
+	/// </summary>
+	CListCtrlManager<PHONE_NUMBERS> m_oListCtrlManager;
 
 	/// <summary>
 	/// Член променлива за обмяна на данни с контролата за име на клиент
@@ -126,7 +195,7 @@ private:
 	/// <summary>
 	/// Член променлива за обмяна на данни с контролата за егн на клиент
 	/// </summary>
-	int m_nIdCity;
+	long m_lIdCity;
 
 	/// <summary>
 	/// Член променлива за обмяна на данни с контролата за егн на клиент
@@ -139,14 +208,9 @@ private:
 	CPhoneNumbersMap m_oPhoneNumbersMap;
 
 	/// <summary>
-	/// Променлива, която съдържа всички градове
+	/// Член променлива от тип клас, който съдържа допълнителна информация
 	/// </summary>
-	CCitiesArray m_oCitiesArray;
-
-	/// <summary>
-	/// Променлива, която съдържа всчики типове телефони
-	/// </summary>
-	CPhoneTypesArray m_oPhoneTypesArray;
+	CAdditionInfo m_oAdditionalInfo;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите

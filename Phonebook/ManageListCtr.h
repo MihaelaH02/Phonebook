@@ -3,60 +3,51 @@
 #include "TableDataArray.h"
 
 template<class CTypeElements>
-class CManageListCtr: public CListCtrl
+class CListCtrlManager
 {
 
 public:
-	CManageListCtr()
-	{	
-
-	}
-
-	~CManageListCtr()
+	CListCtrlManager()
 	{
-		//Динамично освобождаваме паметта
-		DeleteAllElementsListCtr();
 	}
 
-	int GetSelectedItemListCtrByIndex()
+	~CListCtrlManager()
+	{
+	}
+
+	int GetSelectedItemListCtrByIndex(CListCtrl& lscListCtr)
 	{
 		//Вземаме позицията на селектирания елемент
-		POSITION oPositionCursor = GetFirstSelectedItemPosition();
+		POSITION oPositionCursor = lscListCtr.GetFirstSelectedItemPosition();
 		if (oPositionCursor == NULL)
 		{
 			return -1;
 		}
 
 		//Връщаме индекса на елемента или -1 ако няма такъв
-		return GetNextSelectedItem(oPositionCursor);
+		return lscListCtr.GetNextSelectedItem(oPositionCursor);
 	}
 
-	BOOL ManageAddingDataInElementListCtr(const CTypeElements& oTypeElement, int nOldIndexExistingElement = -1)
+	BOOL ManageAddingDataInElementListCtr(CListCtrl& lscListCtr, const CTypeElements& oTypeElement, const CTableDataArray<CString>& strArrayWithDataToDisplay,  int nOldIndexExistingElement = -1)
 	{		
 		//Ако е подаден индекс на стар елемент да се изтрие
 		if (nOldIndexExistingElement != -1)
 		{
 			//Премахваме елемент от лист контролата
-			if (!DeleteAllElementsListCtr())
+			if (!DeleteElementListCtr(lscListCtr, nOldIndexExistingElement))
 			{
 				return FALSE;
 			}
 		}
 
 		//Връщаме новия индекс на елемента
-		int nIndex = AddDataToElementListCtr(oTypeElement);
+		int nIndex = AddDataToElementListCtr(lscListCtr, oTypeElement);
 		if (nIndex == -1)
 		{
 			return FALSE;
 		}
 
-		CArray<CString, CString> strTypeElementArray;
-		if (!oTypeElement.ConvertStructToCArray(strTypeElementArray))
-		{
-			return FALSE;
-		}
-
-		if (!AddElemenInListCtr(nIndex, strTypeElementArray))
+		if (!AddElemenInListCtr(lscListCtr, nIndex, strArrayWithDataToDisplay))
 		{
 			return FALSE;
 		}
@@ -64,10 +55,10 @@ public:
 		return TRUE;
 	}
 
-	CTypeElements& GetItemFromListCtr(const int nIndexItem)
+	CTypeElements& GetItemFromListCtr(CListCtrl& lscListCtr, const int nIndexItem)
 	{
 		//Нов обект от типа на елементите в лист контролата
-		CTypeElements* pElement = (CTypeElements*)(GetItemData(nIndexItem));
+		CTypeElements* pElement = (CTypeElements*)(lscListCtr.GetItemData(nIndexItem));
 
 		if (pElement != nullptr)
 		{
@@ -76,25 +67,35 @@ public:
 		}
 	}
 
-	BOOL LoadDataInListCtrFromResourse(const CTableDataArray<CTypeElements>& oResourseArray)
+	BOOL LoadDataInListCtrFromResourse(CListCtrl& lscListCtr, const CTableDataArray<CTypeElements>& oResourseArray,const CTableDataArray<CTableDataArray<CString>>& oArrayWithdataToDisplay)
 	{
-		
-		//Изтриваве на всички останали данни
-		if (!DeleteAllItems())
+		if (lscListCtr.GetItemCount() > 0)
+		{
+			//Изтриваве на всички останали данни
+			if (!lscListCtr.DeleteAllItems())
+			{
+				return FALSE;
+			}
+		}
+		if (oResourseArray.GetCount() != oArrayWithdataToDisplay.GetCount())
 		{
 			return FALSE;
 		}
 
 		//Добавяме данните от подаден масив в лист контролата
-		for (INT_PTR i = 0; i < oResourseArray.GetCount(); ++i)
+		for (INT_PTR nIndex = 0; nIndex < oResourseArray.GetCount(); ++nIndex)
 		{
-			CTypeElements* pElement = oResourseArray.GetAt(i);
+			CTypeElements* pElement = oResourseArray.GetAt(nIndex);
+			CTableDataArray<CString>* pElementToDisplay = oArrayWithdataToDisplay.GetAt(nIndex);
+			CString str = *pElementToDisplay->GetAt(0);		
+			CString str1 = *pElementToDisplay->GetAt(1);
+
 			if (pElement == nullptr)
 			{
 				return FALSE;
 			}
 
-			if (!ManageAddingDataInElementListCtr(*pElement))
+			if (!ManageAddingDataInElementListCtr(lscListCtr, *pElement, *pElementToDisplay))
 			{
 				return FALSE;
 			}
@@ -102,25 +103,20 @@ public:
 		return TRUE;
 	}
 
-	BOOL IsAllDataLoadFromResourse(const INT_PTR oResourseSize)
+	BOOL IsAllDataLoadFromResourse(CListCtrl& lscListCtr, const int oResourseSize)
 	{
 		//Проверка дали броя на елементите, в лест контролата, е еднакъв с този в документа
-		if (GetItemCount() != oResourseSize)
+		if (lscListCtr.GetItemCount() != oResourseSize)
 		{
 			return FALSE;
 		}
 		return TRUE;
 	}
 	
-	CListCtrl& GetListCtrl()
-	{
-		return GetListCtr();
-	}
-
-	BOOL DeleteElementListCtr(int nIndex)
+	BOOL DeleteElementListCtr(CListCtrl& lscListCtr, int nIndex)
 	{
 		//Досъпваме укаателя към елемента в лист контролата по подаден индекс
-		CTypeElements* pElement = (CTypeElements*)(GetItemData(nIndex));
+		CTypeElements* pElement = (CTypeElements*)(lscListCtr.GetItemData(nIndex));
 
 		//Проверка за нулев указател
 		if (pElement == nullptr)
@@ -132,19 +128,19 @@ public:
 		delete pElement;
 
 		//Изтриваме елемента от констролата
-		if (!DeleteItem(nIndex))
+		if (!lscListCtr.DeleteItem(nIndex))
 		{
 			return FALSE;
 		}
 		return TRUE;
 	}
 
-	int FindIndexByElement(const CTypeElements& oTypeElement)
+	int FindIndexByElement(CListCtrl& lscListCtr, const CTypeElements& oTypeElement)
 	{
-		for (int nIndex = 0; nIndex < GetItemCount(); ++nIndex)
+		for (int nIndex = 0; nIndex < lscListCtr.GetItemCount(); ++nIndex)
 		{
-			//Досъпваме укаателя към елемента в лист контролата по подаден индекс
-			CTypeElements* pElement = (CTypeElements*)(GetItemData(nIndex));
+			//Досъпваме указтеля към елемента в лист контролата по подаден индекс
+			CTypeElements* pElement = (CTypeElements*)(lscListCtr.GetItemData(nIndex));
 
 			//Проверка за нулев указател
 			if (pElement == nullptr)
@@ -164,11 +160,10 @@ public:
 	}
 
 private:
-	int AddDataToElementListCtr(const CTypeElements& oTypeElement)
+	int AddDataToElementListCtr(CListCtrl& lscListCtr, const CTypeElements& oTypeElement)
 	{
 		//Указател към елемента
-		CTypeElements* pElement = new CTypeElements;
-		*pElement = oTypeElement;
+		CTypeElements* pElement = new CTypeElements(oTypeElement);
 
 		if (pElement == nullptr)
 		{
@@ -178,21 +173,20 @@ private:
 		//Правим структура, като задаваме индекс(последния), текст в първа колона и параметър(указател към структура)
 		LVITEM lvItem = { 0 };
 		lvItem.mask = LVIF_TEXT | LVIF_PARAM;
-		lvItem.iItem = GetItemCount();
-		//lvItem.pszText = pCity->szRegion;
+		lvItem.iItem = lscListCtr.GetItemCount();
 		lvItem.lParam = (LPARAM)pElement;
 
 		//Добавяме елемент
-		return InsertItem(&lvItem);
+		return lscListCtr.InsertItem(&lvItem);
 	}
 
-	BOOL DeleteAllElementsListCtr()
+	BOOL DeleteAllElementsListCtr(CListCtrl& lscListCtr)
 	{
 		//Преход през всеки елемент от контролата като започваме от последния
-		for (int nIndex = GetItemCount(); nIndex >= 0; --nIndex)
+		for (int nIndex = lscListCtr.GetItemCount(); nIndex >= 0; --nIndex)
 		{
 			//Премахване на всеки елемент
-			if (!DeleteElementListCtr(nIndex))
+			if (!DeleteElementListCtr(lscListCtr, nIndex))
 			{
 				return FALSE;
 			}
@@ -200,14 +194,18 @@ private:
 		return TRUE;
 	}
 
-	BOOL AddElemenInListCtr(const int nIndex, const CArray<CString, CString>& strTypeElementArray)
+	BOOL AddElemenInListCtr(CListCtrl& lscListCtr, const int nIndex, const CTableDataArray<CString>& strArrayWithDataToDisplay)
 	{
-
 		//Добавяме елементите от сткуктурата в таблиците
-		for (INT_PTR nNumbersOfColsToAdd = 0; nNumbersOfColsToAdd < strTypeElementArray.GetCount(); nNumbersOfColsToAdd++)
+		for (INT_PTR nNumbersOfColsToAdd = 0; nNumbersOfColsToAdd < strArrayWithDataToDisplay.GetCount(); nNumbersOfColsToAdd++)
 		{
+			CString* strDataToDisplayInCol = strArrayWithDataToDisplay.GetAt(nNumbersOfColsToAdd);
+			if (strDataToDisplayInCol == nullptr)
+			{
+				return FALSE;
+			}
 
-			if (!SetItemText(nIndex, nNumbersOfColsToAdd, strTypeElementArray.GetAt(nIndex)))
+			if (!lscListCtr.SetItemText(nIndex, nNumbersOfColsToAdd, *strDataToDisplayInCol))
 			{
 				return FALSE;
 			}

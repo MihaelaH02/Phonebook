@@ -41,12 +41,31 @@ public:
 // Methods
 // ----------------
 
-
 	/// <summary>
 	/// Достъп до член променлива на класа
 	/// </summary>
-	/// <returns>Връща масива с данните от таблицата с градов</returns>
+	/// <returns>Връща масива с информацията за клиенти</returns>
 	const CTableDataArray<CPersonInfo>& GetPersonInfo();
+
+	/// <summary>
+	/// Метод, който достъпва броя на клиентите
+	/// </summary>
+	/// <returns>Връща броя на елемените в масива с информация на кленти</returns>
+	int GetPersonsArrayElementsCount();
+
+	/// <summary>
+	/// Метод, който селектира клиеит по ид
+	/// </summary>
+	/// <param name="lID">Ид на клиент по което ще се търсят данни</param>
+	/// <param name="oPersonInfo">Масив с намерена ииформация за клиет</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonInfo);
+
+	/// <summary>
+	/// Метод за обработка на операции с информацията за клиенти
+	/// </summary>
+	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag);
+
 
 // Members
 // ----------------

@@ -26,7 +26,7 @@ BOOL CPersonsData::SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsIn
 
 	//Помощни масива, в които ще се съхранява прочетеното от базата данни
 	CPersonsArray oPersonsArray;
-	CPhoneNumbersArray oPhoneNumbersArray;
+	CPhoneNumbersArray oAllPhoneNumbersArray;
 
 	//Извършване на опирация от базата данни
 	//транзакция + сесия
@@ -35,7 +35,7 @@ BOOL CPersonsData::SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsIn
 		return FALSE;
 	}
 
-	if (!oPhoneNumbersTable.SelectAll(oPhoneNumbersArray))
+	if (!oPhoneNumbersTable.SelectAll(oAllPhoneNumbersArray))
 	{
 		return FALSE;
 	}
@@ -45,16 +45,28 @@ BOOL CPersonsData::SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsIn
 	for (INT_PTR nIndexPersons = 0; nIndexPersons < oPersonsArray.GetCount(); nIndexPersons++)
 	{
 		//Достъпваме настоящия елемент от масива с клиенти
-		PERSONS pPerson = *oPersonsArray.GetAt(nIndexPersons);
-		
+		PERSONS* pPerson = oPersonsArray.GetAt(nIndexPersons);
+		if (pPerson == nullptr)
+		{
+			return FALSE;
+		}
+
 		//Откриваме всички телефонни номера за настоящия клиент
-		FindAllPhoneNumbersForPerson(nIndexPersons, oPhoneNumbersArray);
+		CPhoneNumbersArray oPhoneNumbersArrayForPerson;
+		if (!FindAllPhoneNumbersForPerson(pPerson->lId, oAllPhoneNumbersArray, oPhoneNumbersArrayForPerson))
+		{
+			return FALSE;
+		}
+
 
 		CPhoneNumbersMap oPhoneNumberMap;
-		oPhoneNumberMap.AddElement(oPhoneNumbersArray);
+		if (!oPhoneNumberMap.AddElement(oPhoneNumbersArrayForPerson))
+		{
+			return FALSE;
+		}
 
 		//Добавяме данните за клиент и масив с телефонните му номера
-		CPersonInfo oPersonInfo(pPerson, oPhoneNumberMap);
+		CPersonInfo oPersonInfo(*pPerson, oPhoneNumberMap);
 
 		//Добавяме времения обект с данни към масива с данни за клиенти
 		oPersonsInfo.AddElement(oPersonInfo);
@@ -73,7 +85,7 @@ BOOL CPersonsData::SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonIn
 	PERSONS recPersonToFind;
 
 	//Временна променлива на масива с телефонни номера за клиента
-	CPhoneNumbersArray oPhoneNumbersArray;
+	CPhoneNumbersArray oAllPhoneNumbersArray;
 
 	//Прочитаме клиента, който се търси в базата данни и се записва във временната променлива
 	if (!oPersonsTable.SelectWhereID(lID, recPersonToFind))
@@ -82,16 +94,21 @@ BOOL CPersonsData::SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonIn
 	}
 
 	//Достъпваме всички телефонни номера
-	if (!oPhoneNumbersTable.SelectAll(oPhoneNumbersArray))
+	if (!oPhoneNumbersTable.SelectAll(oAllPhoneNumbersArray))
 	{
 		return FALSE;
 	}
 
-	FindAllPhoneNumbersForPerson(recPersonToFind.lId, oPhoneNumbersArray);
+	//Откриваме всички телефонни номера за настоящия клиент
+	CPhoneNumbersArray oPhoneNumbersArrayForPerson;
+	if (!FindAllPhoneNumbersForPerson(recPersonToFind.lId, oAllPhoneNumbersArray, oPhoneNumbersArrayForPerson))
+	{
+		return FALSE;
+	}
 
 	//Откриваме всички телефонни номера за настоящия клиент
 	CPhoneNumbersMap oPhoneNumbersMapForOnePerson;
-	oPhoneNumbersMapForOnePerson.AddElement(oPhoneNumbersArray);
+	oPhoneNumbersMapForOnePerson.AddElement(oPhoneNumbersArrayForPerson);
 
 	//Добавяме данните за клиент и масив с телефонните му номера към променвилата с всички данни за клиент
 	oPersonInfo.AddPerson(recPersonToFind);
@@ -271,20 +288,20 @@ BOOL CPersonsData::ChoosePhoneNumbersOperation(LPARAM oFlagOperation, CPhoneNumb
 	return TRUE;
 }
 
-BOOL CPersonsData::FindAllPhoneNumbersForPerson(const long lId, CPhoneNumbersArray& oPhoneNumbersArray)
+BOOL CPersonsData::FindAllPhoneNumbersForPerson(const long lId, const CPhoneNumbersArray& oAllPhoneNumbersArray, CPhoneNumbersArray& oPhoneNumbersArrayForPerson)
 {
-	for (INT_PTR nIndex = oPhoneNumbersArray.GetCount(); nIndex >= 0; --nIndex)
+	for (INT_PTR nIndex = oAllPhoneNumbersArray.GetCount()-1; nIndex >= 0; --nIndex)
 	{
 		//Достъпваме настоящ елемент
-		PHONE_NUMBERS* pPhoneNumber = oPhoneNumbersArray.GetAt(nIndex);
+		PHONE_NUMBERS* pPhoneNumber = oAllPhoneNumbersArray.GetAt(nIndex);
 		if (pPhoneNumber == nullptr)
 		{
 			return FALSE;
 		}
 		//Ако ид на клиент на настоящия телефонен номер е идентично с настоящия клеинт
-		if (pPhoneNumber->lIdPerson != lId)
+		if (pPhoneNumber->lIdPerson == lId)
 		{
-			oPhoneNumbersArray.RemoveElement(*pPhoneNumber);
+			oPhoneNumbersArrayForPerson.AddElement(*pPhoneNumber);
 		}
 	}
 	return TRUE;

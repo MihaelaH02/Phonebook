@@ -75,7 +75,7 @@ public:
 		while (oPos != NULL)
 		{
 			//Достъпваме текущ елемент от мапа
-			GetNextAssoc(oPos, oKey, pValue);
+			oCTableDataMap.GetNextAssoc(oPos, oKey, pValue);
 			if (pValue == nullptr)
 			{
 				return FALSE;
@@ -137,6 +137,29 @@ public:
 		return TRUE;
 	};
 
+
+	BOOL GetAllValuesInArray(CTableDataArray& oCTableDataArray)
+	{
+		POSITION oPos = GetStartPosition();
+		OPERATIONS_WITH_DATA_FLAGS oKey;
+		CTableDataArray* pValue;
+		if (oPos == NULL)
+		{
+			//oPos = 0/1;
+		}
+
+		while (oPos != NULL)
+		{
+			//Достъпваме текущ елемент от мапа
+			GetNextAssoc(oPos, oKey, pValue);
+			if (pValue == nullptr)
+			{
+				return FALSE;
+			}
+			oCTableDataArray.AddAllElements(*pValue);
+		}
+		return TRUE;
+	}
 
 // Overrides
 // ----------------
