@@ -2,10 +2,12 @@
 #include "afxdialogex.h"
 #include "PersonInfo.h"
 #include "EnumsWithFlags.h"
-#include "AdditionInfo.h"
+#include "AdditionPersonInfo.h"
 #include "ManageListCtr.h"
 #include "EnumsListCtrColumsInfo.h"
 #include "EnumsDialogCtrInfo.h"
+#include "EnumsWithFlags.h"
+#include "PhoneNumbersDialog.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsDialog dialog
@@ -29,10 +31,10 @@ class CPersonsDialog : public CDialog
 // ----------------
 public:
 	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPersonsDialog(const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPersonsDialog(const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="oPerson">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
-	CPersonsDialog(const CPersonInfo& oPerson, const CAdditionInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPersonsDialog(const CPersonInfo& oPerson, const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPersonsDialog();
 
@@ -48,7 +50,66 @@ protected:
 // MFC Message Handlers
 // ----------------
 	afx_msg void OnBnClickedOk();
+
 	afx_msg void OnBnClickedCancel();
+
+	/// <summary>
+	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
+	/// </summary>
+	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+
+	/// <summary>
+	/// Метод, който управлява действия свързани с ляво натискане на бутона на мишката
+	/// </summary>
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+
+	/// <summary>
+	/// Метод, който управлява действия свързани с визуализацията на контекстно меню
+	/// </summary>
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+
+	/// <summary>
+	/// Метод, който управлява действия свързани с натискане на бутон от клавиатурата
+	/// </summary>
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+
+public:
+	/// <summary>
+	/// Метод за селект на елемент от лест контролата
+	/// </summary>
+	afx_msg void ViewPhoneNumberInfo();
+
+	/// <summary>
+	/// Метод за добавяне на елемент в лист контролата
+	/// </summary>
+	afx_msg void InsertPhoneNumber();
+
+	/// <summary>
+	/// Метод за редакция на елемент в лист контролата
+	/// </summary>
+	afx_msg void UpdatePhoneNumber();
+
+	/// <summary>
+	/// Метод за изтриване на елемент в лист контролата
+	/// </summary>
+	afx_msg void DeletePhoneNumber();
+
+	/// <summary>
+	/// Метод, който филтрира градовете по подаден регион
+	/// </summary>
+	/// <param name="strRegion">Променлива стринг, по който ще се филтрират градовете</param>
+	afx_msg void FilterPhoneNumbersByType();
+
+	/// <summary>
+	/// Метод, който търси даден град по подадени данни
+	/// </summary>
+	afx_msg void FindPhoneNumber();
+
+	/// <summary>
+	/// Метод за зареждане на всички градове
+	/// </summary>
+	afx_msg void ReloadPhoneNumbers();
+
 
 // Overrides
 // ----------------
@@ -86,7 +147,7 @@ private:
 	/// Метод за търсене на всички елементи от лист контролата по даден критерий
 	/// </summary>
 	/// <param name="recPerson">Структура, по която ще се търсият записи</param>
-	BOOL FilterItemsFromListCtr(const PHONE_NUMBERS& recPhoneNumber);
+	BOOL FilterItemsFromListCtrByCol(const CString& strListCtrElementToFind, LPARAM oColName);
 
 	/// <summary>
 	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните от масива
@@ -207,7 +268,7 @@ private:
 	/// <summary>
 	/// Член променлива от тип клас, който съдържа допълнителна информация
 	/// </summary>
-	CAdditionInfo m_oAdditionalInfo;
+	CAdditionPersonInfo m_oAdditionalInfo;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите

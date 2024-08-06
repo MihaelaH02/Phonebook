@@ -1,5 +1,6 @@
 #pragma once
 #include "PersonsData.h"
+#include "AdditionPersonInfo.h"
 #include "Structures.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +46,13 @@ public:
 	/// Достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с информацията за клиенти</returns>
-	const CTableDataArray<CPersonInfo>& GetPersonInfo();
+	CTableDataArray<CPersonInfo>& GetPersonInfo();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	CAdditionPersonInfo& GetAdditionalPersonInfo();
 
 	/// <summary>
 	/// Метод, който достъпва броя на клиентите
@@ -64,6 +71,7 @@ public:
 	/// <summary>
 	/// Метод за обработка на операции с информацията за клиенти
 	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag);
 
 
@@ -76,7 +84,12 @@ private:
 	CPersonsData m_oPersonsData;
 
 	/// <summary>
-	///Член променлива съдърщата масив с данните от таблицата с градове
+	///Член променлива, съдърщата масив с данните от таблицата с градове
 	/// </summary>
-	CTableDataArray<CPersonInfo> m_oPersonsInfo;	
+	CTableDataArray<CPersonInfo> m_oPersonsInfo;
+
+	/// <summary>
+	/// Член променилва от тип клас с дъполнителни данни
+	/// </summary>
+	CAdditionPersonInfo m_oAdditionalInfo;
 };

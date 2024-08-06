@@ -2,13 +2,13 @@
 #pragma once
 
 #include "Structures.h"
-#include "CitiesDoc.h"
-#include "PhoneTypesDoc.h"
+#include "CitiesData.h"
+#include "PhoneTypesData.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CAdditionInfo
 
-class CAdditionInfo
+class CAdditionPersonInfo
 {
 // Constants
 // ----------------
@@ -17,15 +17,27 @@ class CAdditionInfo
 // Constructor / Destructor
 // ----------------
 public:
-	CAdditionInfo();
+	CAdditionPersonInfo();
 
-	~CAdditionInfo();
+	~CAdditionPersonInfo();
 
 
 // Methods
 // ----------------
 
 public:
+	/// <summary>
+	/// Запълване на член променливата масив с градове с данни
+	/// </summary>
+	/// <param name="oCitiesArray">Масив съдържащ данните с градове</param>
+	void SetCitiesData(const CCitiesArray& oCitiesArray);
+
+	/// <summary>
+	/// Запълване на член променливата масив с типове телефони с данни
+	/// </summary>
+	/// <param name="oPhoneTypesArray">Масив съдържащ данните с типове телефони</param>
+	void SetPhoneTypesData(const CPhoneTypesArray& oPhoneTypesArray);
+
 	/// <summary>
 	/// Метод за достъп до член променлива масив с градове
 	/// </summary>
@@ -41,14 +53,14 @@ public:
 	/// </summary>
 	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
 	/// <returns>Връща указалет към открит обект или nullptr при неуспех</returns>
-	CITIES* CAdditionInfo::FindCityInArrayById(const int lId);
+	CITIES* CAdditionPersonInfo::FindCityInArrayById(const int lId);
 
 	/// <summary>
 	/// Метод за търсене на телефонен номер по ид
 	/// </summary>
 	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
 	/// <returns>Връща указалет към открит обект или nullptr при неуспех</returns>
-	PHONE_TYPES* CAdditionInfo::FindPhoneTypesInArrayById(const int lId);
+	PHONE_TYPES* CAdditionPersonInfo::FindPhoneTypesInArrayById(const int lId);
 
 
 // Overrides
@@ -57,7 +69,7 @@ public:
 
 // Members
 // ----------------
-
+private:
 	/// <summary>
 	/// Променлива масив, който съдържа всички градове
 	/// </summary>

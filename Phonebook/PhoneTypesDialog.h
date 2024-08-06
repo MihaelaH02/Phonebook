@@ -26,9 +26,9 @@ class CPhoneTypesDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
-	CPhoneTypesDialog(LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneTypesDialog(LPARAM oEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
-	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM oEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPhoneTypesDialog();
 

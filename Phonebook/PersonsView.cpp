@@ -24,7 +24,6 @@ END_MESSAGE_MAP()
 // ----------------
 CPersonsView::CPersonsView()
 {
-
 }
 
 CPersonsView::~CPersonsView()
@@ -121,7 +120,7 @@ void CPersonsView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	//Другите опрерации са възможни само ако има избран елемент
-	if (m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPersons) == -1)
+	if (m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons) == -1)
 	{
 		return;
 	}
@@ -171,7 +170,7 @@ void CPersonsView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPersons);
+	int nSelectedIndex = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons);
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -211,7 +210,7 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 
 	CPersonInfo& oPersonInfo = *(CPersonInfo*)pHint;
-
+	
 	//Превръщаме града в масив със стрингови данни, които ще се презентират в лист контролата
 	CTableDataArray<CString> strPersonArrayToOperateInListCtrl;
 	if (!ConvertElementPersonInfoToArrayWithDisplayData(oPersonInfo.GetPerson(), strPersonArrayToOperateInListCtrl))
@@ -220,8 +219,13 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		return;
 	}
 
+	//Достъпваме индекса, на избрания елемент, в лист контролата
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons);
+
+	switch (lHint)
+	{
 	//Проверка за изпълнение на операция добавяне на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_INSERT == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
 	{
 		//Добавяме нов елемент в лист контролата
 		if (!m_oManagerListCtr.ManageAddingDataInElementListCtr(lscPersons, oPersonInfo, strPersonArrayToOperateInListCtrl))
@@ -229,18 +233,11 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			AfxMessageBox(_T("Failed to add new element in list!\n Try to reload."));
 			return;
 		}
-		return;
 	}
-
-	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = m_oManagerListCtr.FindIndexByElement(lscPersons, oPersonInfo);
-	if (nIndexItem == -1)
-	{
-		return;
-	}
+	break;
 
 	//Проверка за изпълнение на операция редакция на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_UPDATE == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
 	{
 		//Редактираме, по открития индекс, данните
 		if (!m_oManagerListCtr.ManageAddingDataInElementListCtr(lscPersons, oPersonInfo, strPersonArrayToOperateInListCtrl, nIndexItem))
@@ -248,13 +245,12 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			AfxMessageBox(_T("Failed to update element in list!\n Try to reload."));
 			return;
 		}
-		return;
 	}
+	break;
 
 	//Проверка за изпълнение на операция изтриване на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_DELETE == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
 	{
-
 		//Изтриваме ред по поданен индекс
 		if (!m_oManagerListCtr.DeleteElementListCtr(lscPersons, nIndexItem))
 		{
@@ -262,6 +258,11 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			return;
 		}
 		return;
+	}
+	break;
+
+	default:
+		break;
 	}
 
 	//Сортировка на елементите в лист контролата след направен промени
@@ -277,11 +278,19 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 void CPersonsView::ViewPersonInfo()
 {
+	//Достъп до данни от документа
+	CPersonsDoc* pPersonDoc = GetDocument();
+	if (pPersonDoc == nullptr)
+	{
+		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		return;
+	}
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPersons);
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons);
 
 	//Проверка за избран елемент
 	if (nIndexItem == -1)
@@ -300,7 +309,7 @@ void CPersonsView::ViewPersonInfo()
 	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CPersonsDialog oDialog(*pPersonInfo, m_oAdditionalInfo, ENABLE_DIALOG_CTR_FLAG_NONE);
+	CPersonsDialog oDialog(*pPersonInfo, pPersonDoc->GetAdditionalPersonInfo(), ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -308,8 +317,16 @@ void CPersonsView::ViewPersonInfo()
 
 void CPersonsView::InsertPerson()
 {
+	//Достъп до данни от документа
+	CPersonsDoc* pPersonDoc = GetDocument();
+	if (pPersonDoc == nullptr)
+	{
+		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		return;
+	}
+
 	//Достъпваме диалога
-	CPersonsDialog oDialog(m_oAdditionalInfo);
+	CPersonsDialog oDialog(pPersonDoc->GetAdditionalPersonInfo());
 
 	//Нова структура, която ще съдържа данни за новия запис
 	CPersonInfo oPersonInfo;
@@ -334,11 +351,19 @@ void CPersonsView::InsertPerson()
 
 void CPersonsView::UpdatePerson()
 {
+	//Достъп до данни от документа
+	CPersonsDoc* pPersonDoc = GetDocument();
+	if (pPersonDoc == nullptr)
+	{
+		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		return;
+	}
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Достъп до индекса на селектирания запис
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPersons);
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons);
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
 	CPersonInfo* pPersonInfo = m_oManagerListCtr.GetItemByIndex(lscPersons, nIndexItem);
@@ -354,7 +379,7 @@ void CPersonsView::UpdatePerson()
 	long lId = pPersonInfo->GetPerson().lId;
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CPersonsDialog oDialog(*pPersonInfo,m_oAdditionalInfo);
+	CPersonsDialog oDialog(*pPersonInfo, pPersonDoc->GetAdditionalPersonInfo());
 
 	//Проверка за натиснат бутон OK в диалога
 	if (oDialog.DoModal() == IDOK)
@@ -391,7 +416,7 @@ void CPersonsView::DeletePerson()
 	CListCtrl& lscPerson = GetListCtrl();
 
 	//Достъпваме индекса на селектирания запис
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPerson);
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPerson);
 
 	//Достъпваме селектирания запис
 	CPersonInfo* pPersonInfo = m_oManagerListCtr.GetItemByIndex(lscPerson, nIndexItem);
@@ -551,11 +576,18 @@ BOOL CPersonsView::SortItemsListCtr()
 }
 
 int CALLBACK CPersonsView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
-{
-	//Инстанция на изгледа, с която ще достъпваме нестатични член променливи
+{	//Инстанция на изгледа, с която ще достъпваме нестатични член променливи
 	CPersonsView* pPersonsView = (CPersonsView*)lParamSort;
 	if (pPersonsView == nullptr)
 	{
+		return 0;
+	}
+
+	//Достъп до данни от документа
+	CPersonsDoc* pPersonDoc = pPersonsView->GetDocument();
+	if (pPersonDoc == nullptr)
+	{
+		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
 		return 0;
 	}
 
@@ -570,8 +602,8 @@ int CALLBACK CPersonsView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lP
 	}
 
 	//Провенливи, които съдържат градовете на клиентите
-	CITIES* pCity1 = pPersonsView->m_oAdditionalInfo.FindCityInArrayById(pPerson1->lIdCity);
-	CITIES* pCity2 = pPersonsView->m_oAdditionalInfo.FindCityInArrayById(pPerson2->lIdCity);
+	CITIES* pCity1 = pPersonDoc->GetAdditionalPersonInfo().FindCityInArrayById(pPerson1->lIdCity);
+	CITIES* pCity2 = pPersonDoc->GetAdditionalPersonInfo().FindCityInArrayById(pPerson2->lIdCity);
 
 	if (pCity1 == nullptr || pCity2 == nullptr)
 	{
@@ -599,6 +631,14 @@ int CALLBACK CPersonsView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lP
 
 BOOL CPersonsView::ConvertElementPersonInfoToArrayWithDisplayData(const PERSONS& recPerson, CTableDataArray<CString>& strPersonArray)
 {
+	//Достъп до данни от документа
+	CPersonsDoc* pPersonDoc = GetDocument();
+	if (pPersonDoc == nullptr)
+	{
+		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		return FALSE;
+	}
+
 	//Добавяме първи елемент, който ще се презентира
 	if (strPersonArray.AddElement(recPerson.szFirstName) == -1)
 	{
@@ -618,7 +658,7 @@ BOOL CPersonsView::ConvertElementPersonInfoToArrayWithDisplayData(const PERSONS&
 	}
 
 	//Достъпваме града на клиента по подадено ид
-	CITIES* pCity = m_oAdditionalInfo.FindCityInArrayById(recPerson.lIdCity);
+	CITIES* pCity = pPersonDoc->GetAdditionalPersonInfo().FindCityInArrayById(recPerson.lIdCity);
 
 	//Проверка за открит обект
 	if (pCity == nullptr)

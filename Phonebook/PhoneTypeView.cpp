@@ -124,7 +124,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	//Другите опрерации са вързможни само ако има избран елемент
-	if (m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPhoneTypes) == -1)
+	if (m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPhoneTypes) == -1)
 	{
 		return;
 	}
@@ -173,7 +173,7 @@ void CPhoneTypeView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	CListCtrl& lscPhoneTypes = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPhoneTypes);
+	int nSelectedIndex = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPhoneTypes);
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -220,42 +220,54 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	CTableDataArray<CString> strPersonArrayToOperateInListCtrl;
 	if (!ConvertElementPhoneTypeToArrayWithDisplayData(oPhoneType, strPersonArrayToOperateInListCtrl))
 	{
-		return;
-	}
-
-
-	//Проверка за изпълнение на операция добавяне на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_INSERT == lHint)
-	{
-		//Добавяме данни
-		m_oManagerListCtr.ManageAddingDataInElementListCtr(lscPhoneTypes, oPhoneType, strPersonArrayToOperateInListCtrl);
+		AfxMessageBox(_T("Failed to load phone type information in list!\n Try to reload."));
 		return;
 	}
 
 	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPhoneTypes);
-	if (nIndexItem == -1)
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPhoneTypes);
+
+	switch (lHint)
 	{
-		return;
+	//Проверка за изпълнение на операция добавяне на елемент
+	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
+	{
+		//Добавяме данни
+		if (!m_oManagerListCtr.ManageAddingDataInElementListCtr(lscPhoneTypes, oPhoneType, strPersonArrayToOperateInListCtrl))
+		{
+			AfxMessageBox(_T("Failed to insert phone type in list!\n Try to reload."));
+			return;
+		}
 	}
+	break;
 
 	//Проверка за изпълнение на операция редакция на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_UPDATE == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
 	{
 		//Редактираме, по открития индекс, данните
-		m_oManagerListCtr.ManageAddingDataInElementListCtr(lscPhoneTypes, oPhoneType, strPersonArrayToOperateInListCtrl, nIndexItem);
-		return;
+		if (!m_oManagerListCtr.ManageAddingDataInElementListCtr(lscPhoneTypes, oPhoneType, strPersonArrayToOperateInListCtrl, nIndexItem))
+		{
+			AfxMessageBox(_T("Failed to update phone type in list!\n Try to reload."));
+			return;
+		}
 	}
+	break;
 
 	//Проверка за изпълнение на операция изтриване на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_DELETE == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
 	{
 		//Изтриваме ред по поданен индекс
-		m_oManagerListCtr.DeleteElementListCtr(lscPhoneTypes, nIndexItem);
-		return;
+		if(!m_oManagerListCtr.DeleteElementListCtr(lscPhoneTypes, nIndexItem))
+		{
+			AfxMessageBox(_T("Failed to delete phone type in list!\n Try to reload."));
+			return;
+		}
 	}
 
-	//Сортировка
+	break;
+	}
+
+	//Сортировка на обновения масив
 	if (!SortItemsListCtr())
 	{
 		return;
@@ -272,7 +284,7 @@ void CPhoneTypeView::SelectPhoneType()
 	CListCtrl& lscPhoneTypes = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPhoneTypes);
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPhoneTypes);
 
 	//Проверка за избран елемент
 	if (nIndexItem == -1)
@@ -292,7 +304,7 @@ void CPhoneTypeView::SelectPhoneType()
 	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CPhoneTypesDialog oDialog(*pPhoneTypes, ENABLE_DIALOG_CTR_FLAG_NONE);
+	CPhoneTypesDialog oDialog(*pPhoneTypes, ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -326,7 +338,7 @@ void CPhoneTypeView::UpdatePhoneType()
 	CListCtrl& lscPhoneTypes = GetListCtrl();
 
 	//Достъп до индекса на селектирания запис
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPhoneTypes);
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPhoneTypes);
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
 	PHONE_TYPES* pPhoneType = m_oManagerListCtr.GetItemByIndex(lscPhoneTypes, nIndexItem);
@@ -374,7 +386,7 @@ void CPhoneTypeView::DeletePhoneType()
 	CListCtrl& lscPhoneTypes = GetListCtrl();
 
 	//Достъпваме индекса на селектирания запис
-	int nIndexItem = m_oManagerListCtr.GetSelectedItemListCtrByIndex(lscPhoneTypes);
+	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPhoneTypes);
 
 	//Достъпваме селектирания запис
 	PHONE_TYPES* pPhoneType = m_oManagerListCtr.GetItemByIndex(lscPhoneTypes, nIndexItem);

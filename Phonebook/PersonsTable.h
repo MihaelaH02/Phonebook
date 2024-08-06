@@ -2,6 +2,7 @@
 #include <atldbcli.h>
 #include "PersonsAccessor.h"
 #include "BaseTable.h"
+#include "InitializeSession.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPhersonsTable
@@ -19,8 +20,15 @@ class CPersonsTable :public CBaseTable<CPersonsAccessor, PERSONS>
 // Constructor / Destructor
 // ----------------
 public:
-	CPersonsTable() {};
-	virtual ~CPersonsTable() {};
+
+	CPersonsTable(CDatabaseTransactionManager& oDatabaseTransactionManager)
+		:CBaseTable(oDatabaseTransactionManager)
+	{
+	};
+
+	virtual ~CPersonsTable() 
+	{
+	};
 
 
 // Methods
@@ -88,4 +96,3 @@ private:
 // Members
 // ----------------
 };
-#pragma once

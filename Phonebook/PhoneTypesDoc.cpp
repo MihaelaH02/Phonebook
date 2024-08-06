@@ -62,17 +62,6 @@ void CPhoneTypesDoc::Serialize(CArchive& ar)
 
 // Methods
 // ----------------
-BOOL CPhoneTypesDoc::SelectAllPhoneTypesFromData()
-{
-	//Зареждане на данните от базата данни в масив
-	if (!m_oPhoneTypesData.SelectAll(m_oPhoneTypesArray))
-	{
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
 BOOL CPhoneTypesDoc::SelectPhoneType(const long lID, PHONE_TYPES& recPhoneType)
 {
 	if (!m_oPhoneTypesData.SelectWhereID(lID, recPhoneType))
@@ -148,6 +137,11 @@ BOOL CPhoneTypesDoc::DeletePhoneType(const PHONE_TYPES& recPhoneType)
 
 const CPhoneTypesArray& CPhoneTypesDoc::GetPhoneTypesArray()
 {
+	/*if (!SelectAllPhoneTypesFromData())
+	{ 
+		//return;
+	}*/
+
 	return m_oPhoneTypesArray;
 }
 
@@ -155,6 +149,18 @@ INT_PTR CPhoneTypesDoc::GetPhoneTypesArrayCount()
 {
 	return m_oPhoneTypesArray.GetCount();
 }
+
+BOOL CPhoneTypesDoc::SelectAllPhoneTypesFromData()
+{
+	//Зареждане на данните от базата данни в масив
+	if (!m_oPhoneTypesData.SelectAll(m_oPhoneTypesArray))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 
 // CPhoneTypesDoc diagnostics
 

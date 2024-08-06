@@ -19,7 +19,11 @@ class CPhoneNumbersTable :public CBaseTable<CPhoneNumbersAccessor, PHONE_NUMBERS
 	// Constructor / Destructor
 	// ----------------
 public:
-	CPhoneNumbersTable() {};
+	CPhoneNumbersTable(CDatabaseTransactionManager& oDatabaseTransactionManager)
+		:CBaseTable(oDatabaseTransactionManager)
+	{
+	};
+
 	virtual ~CPhoneNumbersTable() {};
 
 

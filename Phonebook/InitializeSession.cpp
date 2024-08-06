@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <atldbcli.h>
 #include <afxtempl.h>
-#include "Session.h"
+#include "InitializeSession.h"
 #include "DatabaseConnection.h"
 
 
@@ -48,9 +48,18 @@ BOOL CInitializeSession::CloseSession()
 	return TRUE;
 }
 
-CSession & CInitializeSession::GetSession()
+CSession& CInitializeSession::GetSession()
 {
 	return m_oSession;
+}
+
+BOOL CInitializeSession::IsSessionOpen()
+{
+	if (m_oSession.m_spOpenRowset == nullptr)
+	{
+		return FALSE;
+	}
+	return TRUE;
 }
 
 // Overrides

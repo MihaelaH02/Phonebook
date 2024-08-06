@@ -61,7 +61,7 @@ public:
 	/// </summary>
 	/// <param name="recPhoneNumber"></param>
 	/// 
-	int AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray);
+	int AddPhoneNumber(PHONE_NUMBERS& recPhoneNumbers);
 
 	/// <summary>
 	/// Метод за добавяне на всички телефонни номера

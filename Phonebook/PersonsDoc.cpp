@@ -34,8 +34,14 @@ BOOL CPersonsDoc::OnNewDocument()
 		return FALSE;
 	}
 
-	//Зареждане на данните от базата данни в масив
+	//Зареждане на клиенти от базата данни в масив
 	if (!m_oPersonsData.SelectAllPersonsInfo(m_oPersonsInfo))
+	{
+		return FALSE;
+	}
+
+	//Зареждане на допълнителнита данните от базата данни в масив
+	if (!m_oPersonsData.LoadAllAdditionalPersonInfo(m_oAdditionalInfo))
 	{
 		return FALSE;
 	}
@@ -43,7 +49,7 @@ BOOL CPersonsDoc::OnNewDocument()
 	return TRUE;
 }
 
-const CTableDataArray<CPersonInfo>& CPersonsDoc::GetPersonInfo()
+CTableDataArray<CPersonInfo>& CPersonsDoc::GetPersonInfo()
 {
 	return m_oPersonsInfo;
 }
@@ -51,6 +57,11 @@ const CTableDataArray<CPersonInfo>& CPersonsDoc::GetPersonInfo()
 INT_PTR CPersonsDoc::GetPersonsArrayElementsCount()
 {
 	return m_oPersonsInfo.GetCount();
+}
+
+CAdditionPersonInfo& CPersonsDoc::GetAdditionalPersonInfo()
+{
+	return m_oAdditionalInfo;
 }
 
 BOOL CPersonsDoc::SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonInfo)
@@ -70,8 +81,12 @@ BOOL CPersonsDoc::ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFl
 	{
 		return FALSE;
 	}
+
+	UpdateAllViews(nullptr, oOperationFlag, (CObject*)&oPersonInfo);
 	return TRUE;
 }
+
+
 
 
 // CPersonsDoc diagnostics

@@ -71,17 +71,6 @@ void CCitiesDoc::Serialize(CArchive& ar)
 // Methods
 // ----------------
 
-BOOL CCitiesDoc::SelectAllCities()
-{
-	//Зареждане на данните от базата данни в масив
-	if (!m_oCitiesData.SelectAll(m_oCitiesArray))
-	{
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
 BOOL CCitiesDoc::SelectCity(const long lID, CITIES& recCity)
 {
 	if (!m_oCitiesData.SelectWhereID(lID, recCity))
@@ -157,12 +146,27 @@ BOOL CCitiesDoc::DeleteCity(const CITIES& recCity)
 
 const CCitiesArray& CCitiesDoc::GetCitiesArray()
 {
+	/*if (!SelectAllCities())
+	{
+		//return NULL;
+	}*/
 	return m_oCitiesArray;
 }
 
 INT_PTR CCitiesDoc::GetCitiesArrayCount()
 {
 	return m_oCitiesArray.GetCount();
+}
+
+BOOL CCitiesDoc::SelectAllCities()
+{
+	//Зареждане на данните от базата данни в масив
+	if (!m_oCitiesData.SelectAll(m_oCitiesArray))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 #ifdef SHARED_HANDLERS

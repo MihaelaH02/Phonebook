@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "AdditionInfo.h"
-#include "CitiesDoc.h"
+#include "AdditionPersonInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CAdditionInfo
@@ -8,21 +7,11 @@
 
 // Constructor / Destructor
 // ----------------
-CAdditionInfo::CAdditionInfo()
+CAdditionPersonInfo::CAdditionPersonInfo()
 {
-	/*CCitiesDoc* pCitiesDoc;
-	if (pCitiesDoc == nullptr)
-	{
-		return;
-	}
-
-	m_oCitiesArray.AddAllElements(pCitiesDoc->GetCitiesArray());*/
-
-	//типове телефони
-
 }
 
-CAdditionInfo::~CAdditionInfo()
+CAdditionPersonInfo::~CAdditionPersonInfo()
 {
 
 }
@@ -30,17 +19,28 @@ CAdditionInfo::~CAdditionInfo()
 
 // Methods
 // ----------------
-const CCitiesArray& CAdditionInfo::GetAllCities()
+
+void CAdditionPersonInfo::SetCitiesData(const CCitiesArray& oCitiesArray)
+{
+	m_oCitiesArray.AddAllElements(oCitiesArray);
+}
+
+void CAdditionPersonInfo::SetPhoneTypesData(const CPhoneTypesArray& oPhoneTypesArray)
+{
+	m_oPhoneTypesArray.AddAllElements(oPhoneTypesArray);
+}
+
+const CCitiesArray& CAdditionPersonInfo::GetAllCities()
 {
 	return m_oCitiesArray;
 }
 
-const CPhoneTypesArray& CAdditionInfo::GetAllPhoneTypes()
+const CPhoneTypesArray& CAdditionPersonInfo::GetAllPhoneTypes()
 {
 	return m_oPhoneTypesArray;
 }
 
-CITIES* CAdditionInfo::FindCityInArrayById(const int lId)
+CITIES* CAdditionPersonInfo::FindCityInArrayById(const int lId)
 {
 	//Обхождаме всчки градове
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
@@ -58,7 +58,7 @@ CITIES* CAdditionInfo::FindCityInArrayById(const int lId)
 	return nullptr;
 }
 
-PHONE_TYPES* CAdditionInfo::FindPhoneTypesInArrayById(const int lId)
+PHONE_TYPES* CAdditionPersonInfo::FindPhoneTypesInArrayById(const int lId)
 {
 	//Обхождаме всчки телефонни типове
 	for (INT_PTR nIndex = 0; nIndex < m_oPhoneTypesArray.GetCount(); nIndex++)

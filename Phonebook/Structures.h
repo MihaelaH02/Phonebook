@@ -37,9 +37,19 @@ struct CITIES
 		_tcscpy_s(szRegion, recCity.szRegion);
 	}
 
-	bool operator==(const CITIES& recCity) const 
+	BOOL operator==(const CITIES& recCity) const 
 	{
-		return szCityName == recCity.szCityName && szRegion == recCity.szRegion;
+		if (szCityName != recCity.szCityName)
+		{
+			return FALSE;
+		}
+
+		if(szRegion != recCity.szRegion)
+		{
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 };
 ///<summary> Псевдоним на  CTableDataArray<CITIES> с тип CITIES</summary> 
@@ -74,9 +84,9 @@ struct PHONE_TYPES
 		_tcscpy_s(czPhoneType, recPhoneType.czPhoneType);
 	}
 
-	BOOL ConvertStructToCArray(CArray<CString, CString>& strPhoneTypesArray) const
+	BOOL operator==(const PHONE_TYPES& recPhoneType) const
 	{
-		if (!strPhoneTypesArray.Add(czPhoneType))
+		if (czPhoneType != recPhoneType.czPhoneType)
 		{
 			return FALSE;
 		}
@@ -131,6 +141,22 @@ struct PERSONS
 		_tcscpy_s(szAddress, recPersons.szAddress);
 	}
 
+	BOOL operator==(const PERSONS& recPerson) const
+	{
+		if (lId != recPerson.lId)
+		{
+			return FALSE;
+		}
+		return TRUE;
+
+			/* szFirstName == recPerson.szFirstName &&
+			szSecondName = recPerson.szSecondName &&
+			szLastName == recPerson.szLastName &&
+			szAddress == recPerson.szAddress &&
+			szEGN == recPerson.szEGN &&
+			lIdCity == recPerson.lIdCity;*/
+	}
+
 };
 
 ///<summary> Псевдоним на CTableDataArray<PERSONS> с тип PERSONS</summary> 
@@ -171,18 +197,16 @@ struct PHONE_NUMBERS
 		_tcscpy_s(szPhone, recPhoneNumbers.szPhone);
 	}
 
-	BOOL ConvertStructToCArray(CArray<CString, CString>& strPhoneNumbersArray) const 
+	BOOL operator==(const PHONE_NUMBERS& recPhoneNumber) const
 	{
-		if (!strPhoneNumbersArray.Add(szPhone))
+		if (_tcscmp(szPhone, recPhoneNumber.szPhone) != 0)
 		{
 			return FALSE;
 		}
-		/*
-		if (!strPhoneNumbersArray.Add( _T(lIdPhoneType)))
+		if(lIdPhoneType != recPhoneNumber.lIdPhoneType)
 		{
 			return FALSE;
-		}*/
-
+		}
 		return TRUE;
 	}
 };
@@ -190,5 +214,5 @@ struct PHONE_NUMBERS
 ///<summary> Псевдоним на CTableDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
 typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
 
-/// <summary>/// /// </summary>
-typedef CTableDataMap<CPhoneNumbersArray> CPhoneNumbersMap;
+/// <summary>Псевдоним на клас CTableDataMap с тип PHONE_NUMBERS</summary>
+typedef CTableDataMap<PHONE_NUMBERS> CPhoneNumbersMap;

@@ -49,12 +49,6 @@ public:
 // ----------------
 public:
 	/// <summary>
-	/// Метод за зареждане на всички градове 
-	/// </summary>
-	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL CCitiesDoc::SelectAllCities();
-
-	/// <summary>
 	/// Селектира един запис от таблицата с градове
 	/// </summary>
 	/// <param name="lID">ИД, по което ще се търси запис</param>
@@ -97,6 +91,14 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	INT_PTR GetCitiesArrayCount();
+
+private:
+
+	/// <summary>
+	/// Метод за зареждане на всички градове 
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
+	BOOL CCitiesDoc::SelectAllCities();
 
 
 // Members

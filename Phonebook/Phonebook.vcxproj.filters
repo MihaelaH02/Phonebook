@@ -45,7 +45,7 @@
     <ClInclude Include="DatabaseConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Session.h">
+    <ClInclude Include="InitializeSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CitiesAccessor.h">
@@ -108,7 +108,7 @@
     <ClInclude Include="PersonsDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AdditionInfo.h">
+    <ClInclude Include="AdditionPersonInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SessionTransactionManager.h">
@@ -138,6 +138,12 @@
     <ClInclude Include="PhoneTypesDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PhoneNumbersDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseTransactionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Phonebook.cpp">
@@ -161,7 +167,7 @@
     <ClCompile Include="DatabaseConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Session.cpp">
+    <ClCompile Include="InitializeSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CitiesDialog.cpp">
@@ -185,7 +191,7 @@
     <ClCompile Include="PersonsDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AdditionInfo.cpp">
+    <ClCompile Include="AdditionPersonInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PersonsDoc.cpp">
@@ -201,6 +207,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhoneTypesDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhoneNumbersDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseTransactionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

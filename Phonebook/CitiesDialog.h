@@ -31,10 +31,10 @@ class CCitiesDialog : public CDialog
 // ----------------
 public:
 	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CCitiesDialog(LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CCitiesDialog(LPARAM oEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="recCity">Параметър структура с градове, чиито стойности ще се визуализират в контролите на диалога</param>
-	CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls = ENABLE_DIALOG_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 	virtual ~CCitiesDialog();
 
 
@@ -42,6 +42,7 @@ public:
 // ----------------	
 private:
 	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
+	
 	virtual BOOL OnInitDialog() override;
 
 

@@ -107,13 +107,13 @@ void CPhoneTypesDialog::EnableControls(LPARAM oEnableControls)
 	//В зависимост от поданета стойност от тип енъм, се активират/деактивират контролите за писане
 	switch (oEnableControls)
 	{
-	case ENABLE_DIALOG_CTR_FLAG_ALL:
+	case ENABLE_DIALOG_CITIES_CTR_FLAG_ALL:
 	{
 		m_edbPhoneType.EnableWindow(TRUE);
 	}
 	break;
 
-	case ENABLE_DIALOG_CTR_FLAG_NONE:
+	case ENABLE_DIALOG_CITIES_CTR_FLAG_NONE:
 	{
 		m_edbPhoneType.EnableWindow(FALSE);
 	}

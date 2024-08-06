@@ -2,7 +2,7 @@
 #include <atldbcli.h>
 #include <typeinfo>
 
-#include "Session.h"
+#include "DatabaseTransactionManager.h"
 #include "TableDataArray.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,19 @@ public:
 
 // Constructor / Destructor
 // ----------------
-	CBaseTable() {};
-	~CBaseTable() {};
+	CBaseTable()
+		:m_oSessionManager(CDatabaseTransactionManager())
+	{
+	}
+
+	CBaseTable(CDatabaseTransactionManager& oDatabaseTransactionManager)
+		:m_oSessionManager(oDatabaseTransactionManager)
+	{
+	};
+
+	~CBaseTable() 
+	{
+	};
 
 // Methods
 // ----------------
@@ -37,10 +48,13 @@ public:
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL SelectAll(CTableDataArray<CStruct>& oTableArray)
 	{
-		//Отваряне на нова на сесията
-		if (!m_oSession.OpenSession())
+		if (!m_oSessionManager.IsSessionOpen())
 		{
-			return FALSE;
+			//Отваряне на нова на сесията
+			if (!m_oSessionManager.OpenSession())
+			{
+				return FALSE;
+			}
 		}
 
 		//Извършване на заявка за селект на всички записи
@@ -48,7 +62,7 @@ public:
 		strQuery.Format(_T("SELECT * FROM %s"), GetTableName());
 
 		//Изпълниение на заявката
-		HRESULT hResult = Open(m_oSession.GetSession(), strQuery);
+		HRESULT hResult = Open(m_oSessionManager.GetSession(), strQuery);
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuery);
@@ -82,16 +96,19 @@ public:
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL SelectWhereID(const long lID, CStruct& recStruct)
 	{
-		//Отваряне на нова на сесията
-		if (!m_oSession.OpenSession())
+		if (!m_oSessionManager.IsSessionOpen())
 		{
-			return FALSE;
+			//Отваряне на нова на сесията
+			if (!m_oSessionManager.OpenSession())
+			{
+				return FALSE;
+			}
 		}
 
 		//Изпълнение на заявка
 		CString strQuery;
 		strQuery.Format(_T("SELECT * FROM %s WHERE [ID] = %d"), GetTableName(), lID);
-		HRESULT hResult = Open(m_oSession.GetSession(), strQuery);
+		HRESULT hResult = Open(m_oSessionManager.GetSession(), strQuery);
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuery);
@@ -119,10 +136,13 @@ public:
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL UpdateWhereID(const long lID, const CStruct& recStruct)
 	{
-		//Отваряне на нова сесия
-		if (!m_oSession.OpenSession())
+		if (!m_oSessionManager.IsSessionOpen())
 		{
-			return FALSE;
+			//Отваряне на нова на сесията
+			if (!m_oSessionManager.OpenSession())
+			{
+				return FALSE;
+			}
 		}
 
 		//Селектираме търсения запис
@@ -130,7 +150,7 @@ public:
 		strQuerySelectWithNolock.Format(_T("SELECT * FROM %s WITH(NOLOCK) WHERE [ID] = %d"), GetTableName(), lID);
 
 		//Извършваме заявка
-		HRESULT hResult = Open(m_oSession.GetSession(), strQuerySelectWithNolock);
+		HRESULT hResult = Open(m_oSessionManager.GetSession(), strQuerySelectWithNolock);
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuerySelectWithNolock);
@@ -149,12 +169,12 @@ public:
 		Close();
 
 		//Начало на транзакция
-		hResult = m_oSession.GetSession().StartTransaction();
+		/*hResult = m_oSessionManager.GetSession().StartTransaction();
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Failed to start transaction!.\n Error: %d. Query: %s"), hResult);
 			return FALSE;
-		}
+		}*/
 		//Селект на записа със заключване
 		CString strQuerySelectWithUplocl;
 		strQuerySelectWithUplocl.Format(_T("SELECT * FROM %s WITH(UPDLOCK) WHERE [ID] = %d"), GetTableName(), lID);
@@ -167,10 +187,10 @@ public:
 		oUpdateDBPropSet.AddProperty(DBPROP_UPDATABILITY, DBPROPVAL_UP_CHANGE | DBPROPVAL_UP_INSERT | DBPROPVAL_UP_DELETE);
 
 		//Извършване на заявка
-		hResult = Open(m_oSession.GetSession(), strQuerySelectWithUplocl, &oUpdateDBPropSet);
+		hResult = Open(m_oSessionManager.GetSession(), strQuerySelectWithUplocl, &oUpdateDBPropSet);
 		if (FAILED(hResult))
 		{
-			m_oSession.GetSession().Abort();
+			//m_oSessionManager.GetSession().Abort();
 			DoMesgStatusExit(_T("Error executing query.\n Error: %d. Query: %s"), hResult, strQuerySelectWithNolock);
 			return FALSE;
 		}
@@ -179,7 +199,7 @@ public:
 		hResult = MoveFirst();
 		if (FAILED(hResult))
 		{
-			m_oSession.GetSession().Abort();
+			//m_oSessionManager.GetSession().Abort();
 			DoMesgStatusExit(_T("Fail to select data.\n Error: %d."), hResult);
 			return FALSE;
 		}
@@ -187,7 +207,7 @@ public:
 		//Проверка дали настоящия Update_counter е със същата стойност като преди заключването 
 		if (lReadedUpdateCounterWithNolock != GetUpdateCounter())
 		{
-			m_oSession.GetSession().Abort();
+			//m_oSessionManager.GetSession().Abort();
 			DoMesgStatusExit(_T("Failed to commit transaction!"));
 			return FALSE;
 		}
@@ -202,16 +222,16 @@ public:
 		hResult = SetData(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA);
 		if (FAILED(hResult))
 		{
-			m_oSession.GetSession().Abort();
+			//m_oSessionManager.GetSession().Abort();
 			DoMesgStatusExit(_T("Failed to update data!\n Error: %d."), hResult);
 			return FALSE;
 		}
 
 		//Запазване на промените, затваряне на заявката и сесията
-		hResult = m_oSession.GetSession().Commit();
+		hResult = m_oSessionManager.GetSession().Commit();
 		if (FAILED(hResult))
 		{
-			m_oSession.GetSession().Abort();
+			//m_oSessionManager.GetSession().Abort();
 			DoMesgStatusExit(_T("Failed to commit data!\n Error: % d."), hResult);
 			return FALSE;
 		}
@@ -226,10 +246,13 @@ public:
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL Insert(CStruct& recStruct)
 	{
-		//Отваряне на нова сесия
-		if (!m_oSession.OpenSession())
+		if (!m_oSessionManager.IsSessionOpen())
 		{
-			return FALSE;
+			//Отваряне на нова на сесията
+			if (!m_oSessionManager.OpenSession())
+			{
+				return FALSE;
+			}
 		}
 
 		//Селектираме таблицата
@@ -244,7 +267,7 @@ public:
 		oInsertDBPropSet.AddProperty(DBPROP_UPDATABILITY, DBPROPVAL_UP_INSERT);
 
 		//Изпълняваме заявката
-		HRESULT hResult = Open(m_oSession.GetSession(), strQuerySelect, &oInsertDBPropSet);
+		HRESULT hResult = Open(m_oSessionManager.GetSession(), strQuerySelect, &oInsertDBPropSet);
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Failed to select data from database.\n Error: %d"), hResult);
@@ -282,10 +305,13 @@ public:
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL DeleteWhereID(const long lID)
 	{
-		//Отваряне на нова сесия
-		if (!m_oSession.OpenSession())
+		if (!m_oSessionManager.IsSessionOpen())
 		{
-			return FALSE;
+			//Отваряне на нова на сесията
+			if (!m_oSessionManager.OpenSession())
+			{
+				return FALSE;
+			}
 		}
 
 		//Селектираме търсения запис
@@ -300,7 +326,7 @@ public:
 		oDeleteDBPropSet.AddProperty(DBPROP_UPDATABILITY, DBPROPVAL_UP_DELETE);
 
 		//Изпълняваме заявката
-		HRESULT hResult = Open(m_oSession.GetSession(), strQuerySelect, &oDeleteDBPropSet);
+		HRESULT hResult = Open(m_oSessionManager.GetSession(), strQuerySelect, &oDeleteDBPropSet);
 		if (FAILED(hResult))
 		{
 			DoMesgStatusExit(_T("Failed to select data from database!\n  Error: %d"), hResult);
@@ -346,7 +372,7 @@ public:
 			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
 			if (recStruct == nullptr)
 			{
-				DoMesgStatusExit(_T("Error all selected data!"));
+				DoMesgStatusExit(_T("Error in inserting all data!"));
 				return FALSE;
 			}
 
@@ -371,7 +397,7 @@ public:
 			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
 			if (recStruct == nullptr)
 			{
-				DoMesgStatusExit(_T("Error all selected data!"));
+				DoMesgStatusExit(_T("Error in updateing all data!"));
 				return FALSE;
 			}
 			if (!UpdateWhereID(recStruct->lId, *recStruct))
@@ -396,7 +422,7 @@ public:
 			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
 			if (recStruct == nullptr)
 			{
-				DoMesgStatusExit(_T("Error all selected data!"));
+				DoMesgStatusExit(_T("Error in deleteing all data!"));
 				return FALSE;
 			}
 			if (!DeleteWhereID(recStruct->lId))
@@ -462,15 +488,15 @@ private:
 			AfxMessageBox(strMessage);
 		}
 		Close();
-		m_oSession.CloseSession();
+		//m_oSessionManager.CloseSession();
 	};
 
 // Members
 // ----------------
-
+protected:
 	/// <summary>
 	/// Член променлива, която отговаря за сесията
 	/// </summary>
-	CInitializeSession m_oSession;
+	CDatabaseTransactionManager m_oSessionManager;
 };
 

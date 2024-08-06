@@ -15,7 +15,7 @@ public:
 	{
 	}
 
-	int GetSelectedItemListCtrByIndex(CListCtrl& lscListCtr)
+	int GetIndexSelectedItemListCtrl(CListCtrl& lscListCtr)
 	{
 		//Вземаме позицията на селектирания елемент
 		POSITION oPositionCursor = lscListCtr.GetFirstSelectedItemPosition();
@@ -28,7 +28,7 @@ public:
 		return lscListCtr.GetNextSelectedItem(oPositionCursor);
 	}
 
-	BOOL ManageAddingDataInElementListCtr(CListCtrl& lscListCtr, const CTypeElements& oTypeElement, const CTableDataArray<CString>& strArrayWithDataToDisplay,  int nOldIndexExistingElement = -1)
+	BOOL ManageAddingDataInElementListCtr(CListCtrl& lscListCtr, const CTypeElements oTypeElement, const CTableDataArray<CString>& strArrayWithDataToDisplay,  int nOldIndexExistingElement = -1)
 	{		
 		//Ако е подаден индекс на стар елемент да се изтрие
 		if (nOldIndexExistingElement != -1)

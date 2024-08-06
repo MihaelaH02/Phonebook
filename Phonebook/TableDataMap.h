@@ -3,6 +3,7 @@
 #include "Structures.h"
 #include "TableDataArray.h"
 #include "EnumsWithFlags.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CTableDataMap
 
@@ -10,30 +11,41 @@
 ///Темплейт клас отгоравящ за обработката на CTypedPtrArrays
 /// </summary>
 template<class Type>
-class CTableDataMap : public CMap<LPARAM, LPARAM, Type*, Type*>
+class CTableDataMap : public CMap<LPARAM, LPARAM, CTableDataArray<Type>*, CTableDataArray<Type>*>
 {
 
-	// Constants
-	// ----------------
+// Constants
+// ----------------
 
 
-	// Constructor / Destructor
-	// ----------------
+// Constructor / Destructor
+// ----------------
 
 public:
 	CTableDataMap()
 	{
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTableDataArray<Type>());
 	};
 
 	CTableDataMap(const CTableDataMap& oCTableDataMap)
 	{
-		AddAllElements(oCTableDataMap);
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTableDataArray<Type>());
+		AddAllElementsToMap(oCTableDataMap);
 	}
 
 	//Динамично се освобождава заделената памет
 	virtual ~CTableDataMap()
 	{
-		RemoveAllElements();
+		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_READED);
+		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_INSERT);
+		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_UPDATE);
+		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_DELETE);
 	};
 
 
@@ -44,94 +56,50 @@ public:
 	/// <summary>
 	/// Метод за добавяне на елемент динамично
 	/// </summary>
-	BOOL AddElement(Type& oType, LPARAM oFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
+	BOOL AddOneElementToKey(const Type& oType, LPARAM oFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
-		//Динамично заделяне на памет за елелмент масив
+		//Динамично заделяне на памет за елемент масив
 		Type* pType = new Type(oType);
+
 		if (pType == nullptr)
 		{
 			return FALSE;
 		}
-		//Добавяне на елемент с ключ - флаг, по който ще се определя операция и стойност - указател към масив с данни, чийито елементи ще се оперират
-		SetAt(oFlag, pType);
-		return TRUE;
-	};
 
-	/// <summary>
-	/// Метод за търсене на стойност по подаден ключ
-	/// </summary>
-	/// <param name="oFlag">Флаг на опреция</param>
-	/// <returns>Връща указател към намерена стойност</returns>
-	Type* GetKeyByValue(LPARAM oFlag)
-	{
-		Type* pType;
-
-		if (!Lookup(eFlag, pType))
+		//Добавяне на елемент към подаден флаг
+		CTableDataArray<Type>* pDataArray;
+		if (!Lookup(oFlag, pDataArray))
 		{
-			return nullptr;
+			return FALSE;
 		}
-			
-		return *pType;
-
-	}
-
-	/// <summary>
-	/// Метод за премахване на елемент от масива динамично 
-	/// </summary>
-	/// <param name="lId">ИД на елемент, който да се премахне</param>
-	BOOL RemoveElemetByKey(LPARAM oFlag)
-	{
-		Type* pType = GetKeyByValue(oFlag);
 		
-		if (pType == nullptr)
+		if (pDataArray->AddElement(oType) == -1)
 		{
 			return FALSE;
 		}
-
-		delete pType;
-
-		if(!RemoveKey(oFlag))
-		{
-			return FALSE;
-		}
-
 		return TRUE;
 	};
 
 	/// <summary>
-	/// Метод за премахване на всички елементи от масива динамично
+	/// 
 	/// </summary>
-	BOOL RemoveAllElements()
+	/// <param name="oTableDataArray"></param>
+	/// <param name="oFlag"></param>
+	/// <returns></returns>
+	BOOL AddAllElementsToKey(const CTableDataArray<Type>& oTableDataArray,LPARAM oFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
-/*		POSITION oPos = GetStartPosition();
-
-		for (POSITION oPos = GetStartPosition(); oPos != NULL; oPos = GetNextPosotion())
+		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
 		{
-			RemoveElemetByKey
-		}*/
-		return TRUE;
-	};
-
-
-	BOOL GetAllValuesInArray(Type& oType)
-	{
-		POSITION oPos = GetStartPosition();
-		LPARAM oKey;
-		Type* pValue;
-		if (oPos == NULL)
-		{
-			//oPos = 0/1;
-		}
-
-		while (oPos != NULL)
-		{
-			//Достъпваме текущ елемент от мапа
-			GetNextAssoc(oPos, oKey, pValue);
-			if (pValue == nullptr)
+			Type* pType = oTableDataArray.GetAt(nIndex);
+			if (pType == nullptr)
 			{
 				return FALSE;
 			}
-			oType.AddAllElements(*pValue);
+
+			if (!AddOneElementToKey(*pType))
+			{
+				return FALSE;
+			}
 		}
 		return TRUE;
 	}
@@ -141,14 +109,14 @@ public:
 	/// </summary>
 	/// <param name="oCTableDataMap"></param>
 	/// <returns></returns>
-	BOOL AddAllElements(const CTableDataMap& oCTableDataMap)
+	BOOL AddAllElementsToMap(const CTableDataMap& oCTableDataMap)
 	{
 		POSITION oPos = oCTableDataMap.GetStartPosition();
 		LPARAM oKey;
-		Type* pValue;
+		CTableDataArray<Type>* pValue;
 		if (oPos == NULL)
 		{
-			//oPos = 0/1;
+			return FALSE;
 		}
 
 		while (oPos != NULL)
@@ -159,10 +127,129 @@ public:
 			{
 				return FALSE;
 			}
-			AddElement(*pValue, oKey);
+			if (!AddAllElementsToKey(*pValue, oKey))
+			{
+				return FALSE;
+			}
 		}
 		return TRUE;
 	};
+
+	/// <summary>
+	/// Метод за търсене на ключ по подаден елемент
+	/// </summary>
+	/// <param name="oType"></param>
+	/// <returns></returns>
+	LPARAM FindKeyByValue(const Type& oType)
+	{
+		POSITION oPos = GetStartPosition();
+		LPARAM oKey;
+		CTableDataArray<Type>* pValue;
+		if (oPos == NULL)
+		{
+			return -1;
+		}
+
+		while (oPos != NULL)
+		{
+			//Достъпваме текущ елемент от мапа
+			GetNextAssoc(oPos, oKey, pValue);
+			if (pValue == nullptr)
+			{
+				return -1;
+			}
+
+			//Търсим дали е записан в текущия масив
+			INT_PTR nIndex = pValue->FindIndexByElement(oType);
+
+			//Ако е открит връщаме ключа - флаг, под който е записан
+			if (nIndex != -1)
+			{
+				return oKey;
+			}
+		}
+
+		//Връщаме при -1 не открит елемент
+		return -1;
+	}
+
+	/// <summary>
+	/// Метод за премахване на елемент от масива динамично 
+	/// </summary>
+	/// <param name="lId">ИД на елемент, който да се премахне</param>
+	BOOL RemoveElemetFromKey(const Type& oType, LPARAM oFlag)
+	{
+		//Достъпваме масива по поданен флаг-ключ
+		CTableDataArray<Type>* pDataArray;
+		if (!Lookup(oFlag, pDataArray))
+		{
+			return FALSE;
+		}
+
+		//Премахване на подадения елемен от масива
+		if (!pDataArray->RemoveElement(oType))
+		{
+			return FALSE;
+		}
+		
+		return TRUE;
+	};
+
+	/// <summary>
+	/// Метод за премахване на всички елементи от масива динамично
+	/// </summary>
+	BOOL RemoveAllElementsFromKey(LPARAM oFlag)
+	{
+		//Достъпваме масива по поданен флаг-ключ
+		CTableDataArray<Type>* pDataArray;
+		if (!Lookup(oFlag, pDataArray))
+		{
+			return FALSE;
+		}
+
+		pDataArray->RemoveAllElements();
+		return TRUE;
+	};
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oType"></param>
+	/// <returns></returns>
+	BOOL GetOnlyNonDeletedElementsInArray(CTableDataArray<Type>& oType)
+	{
+		POSITION oPos = GetStartPosition();
+		LPARAM oKey;
+		CTableDataArray<Type>* pValue;
+		if (oPos == NULL)
+		{
+			return FALSE;
+		}
+
+		while (oPos != NULL)
+		{
+			//Достъпваме текущ елемент от мапа
+			GetNextAssoc(oPos, oKey, pValue);
+
+			//При достигане на кюба-флаг с изтрити елементи спираме прочита на данни
+			if (oKey == OPERATIONS_WITH_DATA_FLAGS_DELETE)
+			{
+				break;
+			}
+
+			if (pValue == nullptr)
+			{
+				return FALSE;
+			}
+
+			if (!oType.AddAllElements(*pValue))
+			{
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+
 
 // Overrides
 // ----------------

@@ -48,14 +48,14 @@ void CPersonInfo::SetIdPerson(long lId)
 	m_recPerson.lId = lId;
 }
 
-int CPersonInfo::AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray)
+int CPersonInfo::AddPhoneNumber(PHONE_NUMBERS& recPhoneNumber)
 {
-	return m_oPhoneNumbers.AddElement(oPhoneNumbersArray);
+	return m_oPhoneNumbers.AddOneElementToKey(recPhoneNumber);
 }
 
 BOOL CPersonInfo::AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersMap)
 {
-	return m_oPhoneNumbers.AddAllElements(oPhoneNumbersMap);
+	return m_oPhoneNumbers.AddAllElementsToMap(oPhoneNumbersMap);
 }
 
 // Overrides

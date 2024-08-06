@@ -36,11 +36,6 @@ public:
 // Methods
 // ----------------
 public:
-	/// <summary>
-	/// Метод за селект на всички типове телефонни номера 
-	/// </summary>
-	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL SelectAllPhoneTypesFromData();
 
 	/// <summary>
 	/// Селектира един запис от таблицата с типове телефони
@@ -83,6 +78,13 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	INT_PTR GetPhoneTypesArrayCount();
+
+private:
+	/// <summary>
+	/// Метод за селект на всички типове телефонни номера 
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
+	BOOL SelectAllPhoneTypesFromData();
 
 
 	// Members

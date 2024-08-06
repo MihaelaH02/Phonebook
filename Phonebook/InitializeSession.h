@@ -1,5 +1,5 @@
 #pragma once
-
+#include <atldbcli.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CInitializeSession
@@ -39,6 +39,12 @@ public:
 	/// </summary>
 	/// <returns>Връща променлива,съдържаща сесията</returns>
 	CSession& GetSession();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	BOOL IsSessionOpen();
 
 
 // Overrides

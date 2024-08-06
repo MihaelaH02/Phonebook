@@ -4,8 +4,7 @@
 #include "PhoneNumbersTable.h"
 #include "PersonInfo.h"
 #include "EnumsWithFlags.h"
-//#include "Structures.h"
-
+#include "AdditionPersonInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsData
@@ -46,52 +45,28 @@ public:
 	/// </summary>
 	/// <param name="oPersonInfo"></param>
 	/// <returns></returns>
-	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag = OPERATIONS_WITH_DATA_FLAGS_NOCHANGE);
+	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag = OPERATIONS_WITH_DATA_FLAGS_READED);
 	
-private:
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="recPerson"></param>
 	/// <returns></returns>
-	/*BOOL CPersonsData::PersonInsert(PERSONS& recPerson);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="lid"></param>
-	/// <param name="recPerson"></param>
-	/// <returns></returns>
-	BOOL CPersonsData::PersonUpdate(const long lid, PERSONS& recPerson);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="lId"></param>
-	/// <returns></returns>
-	BOOL CPersonsData::PersonDelete(const long lId);*/
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="recPerson"></param>
-	/// <returns></returns>
-	BOOL ManagePersonOperations(PERSONS& recPerson, LPARAM oFlagOperation);
-
+	BOOL ManagePersonOperations(CPersonsTable& oPersonTable, PERSONS& recPerson, LPARAM oFlagOperation);
 
 	/// <summary>
 	/// Метод за добавяне на запис
 	/// </summary>
 	/// <param name="oPersonInfo">Променлива с данни, които ще се добавя</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL ChoosePhoneNumbersOperation(LPARAM oFlagOperation, CPhoneNumbersArray& pPhoneNumberArray);
+	BOOL ChoosePhoneNumbersOperation(CPhoneNumbersTable& oPhoneNumbersTable,LPARAM oFlagOperation,CPhoneNumbersArray& pPhoneNumberArray);
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="oPhoneNumbersArray"></param>
 	/// <returns></returns>
-	BOOL ManagePhoneNumbersOperations(CPhoneNumbersMap& oPhoneNumbersArray);
+	BOOL ManagePhoneNumbersOperations(CPhoneNumbersTable& oPhoneNumbersTable, CPhoneNumbersMap& oPhoneNumbersArray);
 
 	/// <summary>
 	/// 
@@ -100,6 +75,13 @@ private:
 	/// <param name="oPhoneNumbersArray"></param>
 	/// <returns></returns>
 	BOOL CPersonsData::FindAllPhoneNumbersForPerson(const long lId, const CPhoneNumbersArray& oAllPhoneNumbersArray, CPhoneNumbersArray& oPhoneNumbersArrayForPerson);
+
+	/// <summary>
+	/// Метод за имплементация на клас с допълнтелни данни
+	/// </summary>
+	/// <param name="oAdditionalPersonInfo">Обект, който ще съхранямва заредените данни</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL LoadAllAdditionalPersonInfo(CAdditionPersonInfo& oAdditionalPersonInfo);
 
 
 // Overrides

@@ -162,11 +162,6 @@ public:
 	/// </summary>
 	CListCtrlManager<CPersonInfo> m_oManagerListCtr;
 
-	/// <summary>
-	/// 
-	/// </summary>
-	CAdditionInfo m_oAdditionalInfo;
-
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;

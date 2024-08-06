@@ -138,7 +138,7 @@ void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	//Другите опрерации са вързможни само ако има избран елемент
-	if (m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities) == -1)
+	if (m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities) == -1)
 	{
 		return;
 	}
@@ -187,7 +187,7 @@ void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
+	int nSelectedIndex = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -211,58 +211,68 @@ void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 
 void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
-	//Инстанция на лист контролата
-	CListCtrl& lscCities = GetListCtrl();
 	//Проверка, при първоначално извикване на метода
 	if (lHint == NULL)
 	{
 		return;
 	}
 
+	//Обект, който ще се обработва, ако е подаден такъв
+	if (pHint == nullptr)
+	{
+		return;
+	}
 	CITIES& recCity = *(CITIES*)pHint;
 
 	//Превръщаме града в масив с стрингови данни, които ще се презентират в лист контролата
 	CTableDataArray<CString> strCitiesArrayToOperateInListCtrl;
 	if (!ConvertElementCitiesToArrayWithDisplayData(recCity, strCitiesArrayToOperateInListCtrl))
 	{
-		return ;
-	}
-	//Обект, който ще се обработва, ако е подаден такъв
-	if (pHint == nullptr)
-	{
 		return;
 	}
 
-	//Проверка за изпълнение на операция добавяне на елемент
-	if(OPERATIONS_WITH_DATA_FLAGS_INSERT == lHint)
-	{
-		//Добавяме данни
-		m_oListCtrManager.ManageAddingDataInElementListCtr(lscCities, recCity, strCitiesArrayToOperateInListCtrl);
-		return;
-	}
+	//Инстанция на лист контролата
+	CListCtrl& lscCities = GetListCtrl();
 
 	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = m_oListCtrManager.FindIndexByElement(lscCities, recCity);
-	if (nIndexItem == -1)
+	int nIndexItem = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
+
+	switch (lHint)
 	{
-		return;
+		//Проверка за изпълнение на операция добавяне на елемент
+	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
+	{
+		//Добавяме данни
+		if (!m_oListCtrManager.ManageAddingDataInElementListCtr(lscCities, recCity, strCitiesArrayToOperateInListCtrl))
+		{
+			AfxMessageBox(_T("Failed to insert city in list!\n Try to reload."));
+			return;
+		}
 	}
+	break;
 
 	//Проверка за изпълнение на операция редакция на елемент
-	if(OPERATIONS_WITH_DATA_FLAGS_UPDATE == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
 	{
 		//Редактираме, по открития индекс, данните
-		m_oListCtrManager.ManageAddingDataInElementListCtr(lscCities, recCity, strCitiesArrayToOperateInListCtrl, nIndexItem);
-		return;
-	}	
+		if (!m_oListCtrManager.ManageAddingDataInElementListCtr(lscCities, recCity, strCitiesArrayToOperateInListCtrl, nIndexItem))
+		{
+			AfxMessageBox(_T("Failed to insert city in list!\n Try to reload."));
+			return;
+		}
+	}
+	break;
 
 	//Проверка за изпълнение на операция изтриване на елемент
-	if (OPERATIONS_WITH_DATA_FLAGS_DELETE == lHint)
+	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
 	{
-
-		//Изтриваме ред по поданен индекс
-		m_oListCtrManager.DeleteElementListCtr(lscCities, nIndexItem);
-		return;
+		if (!m_oListCtrManager.DeleteElementListCtr(lscCities, nIndexItem))
+		{
+			AfxMessageBox(_T("Failed to insert city in list!\n Try to reload."));
+			return;
+		}
+	}
+	break;
 	}
 
 	//Сортировка
@@ -281,7 +291,7 @@ void CCitiesView::ViewCityInfo()
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
+	int nIndexItem = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
 
 	//Проверка за избран елемент
 	if (nIndexItem == -1)
@@ -301,7 +311,7 @@ void CCitiesView::ViewCityInfo()
 	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CCitiesDialog oDialog(*pCity, ENABLE_DIALOG_CTR_FLAG_NONE);
+	CCitiesDialog oDialog(*pCity, ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -335,7 +345,7 @@ void CCitiesView::UpdateCity()
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Достъп до индекса на селектирания запис
-	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
+	int nIndexItem = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
 	CITIES* pCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
@@ -383,7 +393,7 @@ void CCitiesView::DeleteCity()
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Достъпваме индекса на селектирания запис
-	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
+	int nIndexItem = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
 
 	//Достъпваме селектирания запис
 	CITIES* pCity = m_oListCtrManager.GetItemByIndex(lscCities,nIndexItem);
@@ -405,7 +415,7 @@ void CCitiesView::DeleteCity()
 void CCitiesView::FilterCitiesByRegion()
 {
 	//Достъпваме диалога
-	CCitiesDialog oDialog(ENABLE_DIALOG_CTR_FLAG_ONLY_REGION);
+	CCitiesDialog oDialog(ENABLE_DIALOG_CITIES_CTR_FLAG_ONLY_REGION);
 
 	//Нова структура, която ще съдържа данни за новия запис
 	CITIES recCity;

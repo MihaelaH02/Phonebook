@@ -86,6 +86,7 @@ public:
 				RemoveAt(nIndex);
 			}
 		}
+		return TRUE;
 	}
 
 
@@ -111,7 +112,7 @@ public:
 	/// </summary>
 	/// <param name="recElement"></param>
 	/// <returns></returns>
-	int FindElement(const CClass& recElement)
+	INT_PTR FindIndexByElement(const CClass& recElement)
 	{
 		//Цисъл, който преминава през всеки елемент
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
