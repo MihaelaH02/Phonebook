@@ -132,7 +132,7 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void SelectCity();
+	afx_msg void ViewCityInfo();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата

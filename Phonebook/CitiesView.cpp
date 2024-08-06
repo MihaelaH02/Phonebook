@@ -94,7 +94,7 @@ void CCitiesView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CView::OnLButtonDblClk(nFlags, point);
 
 	//Извършване на операция селект
-	SelectCity();
+	ViewCityInfo();
 }
 
 void CCitiesView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -156,7 +156,7 @@ void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	//При натискане на бутона Enter да се изведе в режим преглед записа
 	case VK_RETURN:
 	{
-		SelectCity();
+		ViewCityInfo();
 		return;
 	}
 	break;
@@ -275,7 +275,7 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 // Generated message map functions
 // ---------------
-void CCitiesView::SelectCity()
+void CCitiesView::ViewCityInfo()
 {
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
@@ -291,10 +291,17 @@ void CCitiesView::SelectCity()
 	}
 
 	//Достъпваме данните от лист контролата
-	CITIES& recCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
+	CITIES* pCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
+
+	//Проверка за открит елемент
+	if (pCity == nullptr)
+	{
+		AfxMessageBox(_T("Failed to select city from list!\n Try to reload."));
+		return;
+	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CCitiesDialog oDialog(recCity, ENABLE_DIALOG_CTR_FLAG_NONE);
+	CCitiesDialog oDialog(*pCity, ENABLE_DIALOG_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -315,7 +322,7 @@ void CCitiesView::InsertCity()
 		recCity = oDialog.GetControlsData();
 
 		//Добавяме данните в документа
-		if (!(GetDocument() && GetDocument()->Insert(recCity)))
+		if (!(GetDocument() && GetDocument()->InsertCity(recCity)))
 		{
 			return;
 		}
@@ -331,23 +338,30 @@ void CCitiesView::UpdateCity()
 	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
-	CITIES& recCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
+	CITIES* pCity = m_oListCtrManager.GetItemByIndex(lscCities, nIndexItem);
+
+	//Проверка за открит елемент
+	if (pCity == nullptr)
+	{
+		AfxMessageBox(_T("Failed to select city from list!\n Try to reload."));
+		return;
+	}
 
 	//Запазваме ид-то на записа
-	long lId = recCity.lId;
+	long lId = pCity->lId;
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CCitiesDialog oDialog(recCity);
+	CCitiesDialog oDialog(*pCity);
 
 	//Проверка за натиснат бутон OK в диалога
 	if (oDialog.DoModal() == IDOK)
 	{
 		//Присвояваме ноивте данни от контролите в диалога със старото ид
-		recCity = oDialog.GetControlsData();
-		recCity.lId = lId;
+		*pCity = oDialog.GetControlsData();
+		pCity->lId = lId;
 
 		//Редактираме данните в документа като подаваме стуртура с обновени данни
-		if (!(GetDocument() && GetDocument()->UpdateCity(recCity)))
+		if (!(GetDocument() && GetDocument()->UpdateCity(*pCity)))
 		{
 			return;
 		}
@@ -372,10 +386,17 @@ void CCitiesView::DeleteCity()
 	int nIndexItem = m_oListCtrManager.GetSelectedItemListCtrByIndex(lscCities);
 
 	//Достъпваме селектирания запис
-	CITIES& recCity = m_oListCtrManager.GetItemByIndex(lscCities,nIndexItem);
+	CITIES* pCity = m_oListCtrManager.GetItemByIndex(lscCities,nIndexItem);
+
+	//Проверка за открит елемент
+	if (pCity == nullptr)
+	{
+		AfxMessageBox(_T("Failed to select city from list!\n Try to reload."));
+		return;
+	}
 
 	//Изтриваме данните в документа по намереното ИД
-	if (!(GetDocument() && GetDocument()->Delete(recCity)))
+	if (!(GetDocument() && GetDocument()->DeleteCity(*pCity)))
 	{
 		return;
 	}
@@ -539,7 +560,7 @@ BOOL CCitiesView::IsAllDataLoadFromDoc()
 	}
 
 	//връщаме резултата за успех или не
-	if (!m_oListCtrManager.IsAllDataLoadFromResourse(lscCities, pCitiesDoc->GetCitiesArrayElementsCount()))
+	if (!m_oListCtrManager.IsAllDataLoadFromResourse(lscCities, pCitiesDoc->GetCitiesArrayCount()))
 	{
 		return FALSE;
 	}

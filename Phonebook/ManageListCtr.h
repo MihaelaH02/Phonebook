@@ -55,16 +55,13 @@ public:
 		return TRUE;
 	}
 
-	CTypeElements& GetItemByIndex(CListCtrl& lscListCtr, const int nIndexItem)
+	CTypeElements* GetItemByIndex(CListCtrl& lscListCtr, const int nIndexItem)
 	{
 		//Нов обект от типа на елементите в лист контролата
 		CTypeElements* pElement = (CTypeElements*)(lscListCtr.GetItemData(nIndexItem));
 
-		if (pElement != nullptr)
-		{
-			//Връщаме пълен елемент
-			return *pElement;
-		}
+		//Връщаме елемент
+		return pElement;
 	}
 
 	BOOL LoadDataInListCtrFromResourse(CListCtrl& lscListCtr, const CTableDataArray<CTypeElements>& oResourseArray,const CTableDataArray<CTableDataArray<CString>>& oArrayWithdataToDisplay)
@@ -209,7 +206,8 @@ private:
 				return FALSE;
 			}
 
-			if (!lscListCtr.SetItemText(nIndex, nNumbersOfColsToAdd, *strDataToDisplayInCol))
+			int nIndexOfColsToAdd = (int)nNumbersOfColsToAdd;
+			if (!lscListCtr.SetItemText(nIndex, nIndexOfColsToAdd, *strDataToDisplayInCol))
 			{
 				return FALSE;
 			}

@@ -60,13 +60,14 @@ public:
 	/// Метод за добавяне на нов телефонен номер
 	/// </summary>
 	/// <param name="recPhoneNumber"></param>
-	void AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray);
+	/// 
+	int AddPhoneNumber(CPhoneNumbersArray& oPhoneNumbersArray);
 
 	/// <summary>
 	/// Метод за добавяне на всички телефонни номера
 	/// </summary>
 	/// <param name="oPhoneNumbersMap"></param>
-	void AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersMap);
+	BOOL AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersMap);
 
 // Overrides
 // ----------------

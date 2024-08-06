@@ -41,8 +41,8 @@ public:
 // MFC Overrides
 // ----------------	
 private:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL OnInitDialog();
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
+	virtual BOOL OnInitDialog() override;
 
 
 // MFC Message Handlers

@@ -122,7 +122,7 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void SelectPerson();
+	afx_msg void ViewPersonInfo();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата

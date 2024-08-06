@@ -47,7 +47,7 @@ BOOL CCitiesDoc::OnNewDocument()
 	}
 
 	//Зареждане на данните от базата данни в масив
-	if (!m_oCitiesData.SelectAll(m_oCitiesArray))
+	if(!SelectAllCities())
 	{
 		return FALSE;
 	}
@@ -70,6 +70,17 @@ void CCitiesDoc::Serialize(CArchive& ar)
 
 // Methods
 // ----------------
+
+BOOL CCitiesDoc::SelectAllCities()
+{
+	//Зареждане на данните от базата данни в масив
+	if (!m_oCitiesData.SelectAll(m_oCitiesArray))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 BOOL CCitiesDoc::SelectCity(const long lID, CITIES& recCity)
 {
@@ -112,7 +123,7 @@ BOOL CCitiesDoc::UpdateCity(const CITIES& recCity)
 	return FALSE;
 }
 
-BOOL CCitiesDoc::Insert(CITIES& recCity)
+BOOL CCitiesDoc::InsertCity(CITIES& recCity)
 {
 	if (!m_oCitiesData.Insert(recCity))
 	{
@@ -127,7 +138,7 @@ BOOL CCitiesDoc::Insert(CITIES& recCity)
 	return TRUE;
 }
 
-BOOL CCitiesDoc::Delete(const CITIES& recCity)
+BOOL CCitiesDoc::DeleteCity(const CITIES& recCity)
 {
 
 	if (!m_oCitiesData.DeleteWhereID(recCity.lId))
@@ -149,7 +160,7 @@ const CCitiesArray& CCitiesDoc::GetCitiesArray()
 	return m_oCitiesArray;
 }
 
-int CCitiesDoc::GetCitiesArrayElementsCount()
+INT_PTR CCitiesDoc::GetCitiesArrayCount()
 {
 	return m_oCitiesArray.GetCount();
 }

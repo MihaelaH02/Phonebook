@@ -3,7 +3,7 @@
 
 #include "Structures.h"
 #include "CitiesDoc.h"
-//#include "PhoneTypesDoc.h"
+#include "PhoneTypesDoc.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CAdditionInfo
@@ -20,6 +20,7 @@ public:
 	CAdditionInfo();
 
 	~CAdditionInfo();
+
 
 // Methods
 // ----------------
@@ -38,15 +39,17 @@ public:
 	/// <summary>
 	/// Метод за търсене на област по ид
 	/// </summary>
-	/// <returns>Връща област на открит град</returns>
-	CString CAdditionInfo::FindCityInArrayById(const int lId);
+	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
+	/// <returns>Връща указалет към открит обект или nullptr при неуспех</returns>
+	CITIES* CAdditionInfo::FindCityInArrayById(const int lId);
 
 	/// <summary>
 	/// Метод за търсене на телефонен номер по ид
 	/// </summary>
-	/// <param name="lId"></param>
-	/// <returns>Връща тип на открит телефонен номер</returns>
-	CString CAdditionInfo::FindPhoneTypesInArrayById(const int lId);
+	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
+	/// <returns>Връща указалет към открит обект или nullptr при неуспех</returns>
+	PHONE_TYPES* CAdditionInfo::FindPhoneTypesInArrayById(const int lId);
+
 
 // Overrides
 // ----------------
@@ -56,12 +59,12 @@ public:
 // ----------------
 
 	/// <summary>
-	/// Променлива, която съдържа всички градове
+	/// Променлива масив, който съдържа всички градове
 	/// </summary>
 	CCitiesArray m_oCitiesArray;
 
 	/// <summary>
-	/// Променлива, която съдържа всчики типове телефони
+	/// Променлива масив, който съдържа всчики типове телефони
 	/// </summary>
 	CPhoneTypesArray m_oPhoneTypesArray;
 };

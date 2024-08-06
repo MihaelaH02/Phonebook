@@ -15,9 +15,8 @@
 #include "PersonsDoc.h"
 #include "PersonsView.h"
 #include "DatabaseConnection.h"
-#include "CitiesTable.h"
-#include "TableDataArray.h"
-
+#include "PhoneTypesDoc.h"
+#include "PhoneTypeView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -129,11 +128,20 @@ BOOL CPhonebookApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);*/
 
-	CMultiDocTemplate* pDocTemplate;
+	/*CMultiDocTemplate* pDocTemplate;
 	pDocTemplate = new CMultiDocTemplate(IDR_PhonebookTYPE,
 		RUNTIME_CLASS(CPersonsDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CPersonsView));
+	if (!pDocTemplate)
+		return FALSE;
+	AddDocTemplate(pDocTemplate);*/
+
+	CMultiDocTemplate* pDocTemplate;
+	pDocTemplate = new CMultiDocTemplate(IDR_PhonebookTYPE,
+		RUNTIME_CLASS(CPhoneTypesDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CPhoneTypeView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);

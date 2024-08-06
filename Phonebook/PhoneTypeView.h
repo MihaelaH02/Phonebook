@@ -1,7 +1,7 @@
 #pragma once
-/*
+
 #include "EnumsListCtrColumsInfo.h"
-//#include "PhonetypesDialog.h"
+#include "PhonetypesDialog.h"
 #include "ManageListCtr.h"
 #include "PhoneTypesDoc.h"
 
@@ -27,7 +27,8 @@ protected:
 	CPhoneTypeView();         
 	virtual ~CPhoneTypeView();
 
-	// Methods
+
+// Methods
 // ----------------
 public:
 	CPhoneTypesDoc* GetDocument() const;
@@ -162,6 +163,3 @@ public:
 #endif
 
 };
-
-
-*/

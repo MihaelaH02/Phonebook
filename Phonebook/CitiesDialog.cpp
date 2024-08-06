@@ -47,8 +47,8 @@ BOOL CCitiesDialog::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	//Задаване на максимална дължина на полетата
-	m_edbName.SetLimitText(DIALOG_CTR_INFO_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
-	m_edbRegion.SetLimitText(DIALOG_CTR_INFO_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
+	m_edbName.SetLimitText(DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
+	m_edbRegion.SetLimitText(DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
 
 	//Задаване на стойности за контролите
 	m_edbName.SetWindowTextW(m_strName);

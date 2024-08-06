@@ -49,6 +49,12 @@ public:
 // ----------------
 public:
 	/// <summary>
+	/// Метод за зареждане на всички градове 
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
+	BOOL CCitiesDoc::SelectAllCities();
+
+	/// <summary>
 	/// Селектира един запис от таблицата с градове
 	/// </summary>
 	/// <param name="lID">ИД, по което ще се търси запис</param>
@@ -71,14 +77,14 @@ public:
 	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
 	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Insert(CITIES& recCity);
+	BOOL InsertCity(CITIES& recCity);
 
 	/// <summary>
 	/// Изтриване на запис от таблицата с градове
 	/// </summary>
 	/// <param name="lId">ИД, по което ще се търси запис за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Delete(const CITIES& recCity);
+	BOOL DeleteCity(const CITIES& recCity);
 
 	/// <summary>
 	/// Достъп до член променлива на класа
@@ -86,7 +92,12 @@ public:
 	/// <returns>Връща масива с данните от таблицата с градов</returns>
 	const CCitiesArray& GetCitiesArray();
 
-	int GetCitiesArrayElementsCount();
+	/// <summary>
+	/// Метод, който връща размера на масива с градове
+	/// </summary>
+	/// <returns></returns>
+	INT_PTR GetCitiesArrayCount();
+
 
 // Members
 // ----------------
@@ -100,6 +111,7 @@ private:
 	///Член променлива съдърщата масив с данните от таблицата с градове
 	/// </summary>
 	CCitiesArray m_oCitiesArray;
+
 
 #ifdef SHARED_HANDLERS
 	// Helper function that sets search content for a Search Handler

@@ -19,6 +19,7 @@ CAdditionInfo::CAdditionInfo()
 	m_oCitiesArray.AddAllElements(pCitiesDoc->GetCitiesArray());*/
 
 	//типове телефони
+
 }
 
 CAdditionInfo::~CAdditionInfo()
@@ -34,45 +35,44 @@ const CCitiesArray& CAdditionInfo::GetAllCities()
 	return m_oCitiesArray;
 }
 
-/*const CPhoneTypesArray& CAdditionInfo::GetAllPhoneTypes()
+const CPhoneTypesArray& CAdditionInfo::GetAllPhoneTypes()
 {
-	return 
-}*/
-
-CString CAdditionInfo::FindCityInArrayById(const int lId)
-{
-	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
-	{
-		CITIES* pCity = m_oCitiesArray.GetAt(nIndex);
-
-		if (pCity == nullptr)
-		{
-			return NULL;
-		}
-
-		if (pCity->lId == lId)
-		{
-			return pCity->szRegion;
-		}
-	}
-	return NULL;
+	return m_oPhoneTypesArray;
 }
 
-CString CAdditionInfo::FindPhoneTypesInArrayById(const int lId)
+CITIES* CAdditionInfo::FindCityInArrayById(const int lId)
 {
-	for (INT_PTR nIndex = 0; nIndex < m_oPhoneTypesArray.GetCount(); nIndex++)
+	//Обхождаме всчки градове
+	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
 	{
-		PHONE_TYPES* pPhoneTypes = m_oPhoneTypesArray.GetAt(nIndex);
+		//Променлива за текущ елемент от масива с данни
+		CITIES* pCity = m_oCitiesArray.GetAt(nIndex);
 
-		if (pPhoneTypes == nullptr)
+		//При открит град по подаденот ид връщаме обект от тип градове
+		if (pCity->lId == lId)
 		{
-			return NULL;
-		}
-
-		if (pPhoneTypes->lId == lId)
-		{
-			return pPhoneTypes->czPhoneType;
+			return pCity;
 		}
 	}
-	return NULL;
+	//Не е  открит град по подаденото ид
+	return nullptr;
+}
+
+PHONE_TYPES* CAdditionInfo::FindPhoneTypesInArrayById(const int lId)
+{
+	//Обхождаме всчки телефонни типове
+	for (INT_PTR nIndex = 0; nIndex < m_oPhoneTypesArray.GetCount(); nIndex++)
+	{
+		//Променлива за текущ елемент от масива с данни
+		PHONE_TYPES* pPhoneTypes = m_oPhoneTypesArray.GetAt(nIndex);
+
+		//При открит тип по подаденот ид връщаме обект от тип телефонен номер
+		if (pPhoneTypes->lId == lId)
+		{
+			return pPhoneTypes;
+		}
+	}
+
+	//Не е  открит тип тилифонен номер по подаденото ид
+	return nullptr;
 }

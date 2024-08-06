@@ -1,6 +1,6 @@
 #pragma once
 
-/*#include "PhoneTypesData.h"
+#include "PhoneTypesData.h"
 #include "Structures.h"
 #include "EnumsWithFlags.h"
 
@@ -33,9 +33,15 @@ public:
 // ----------------
 
 
-	// Methods
+// Methods
 // ----------------
 public:
+	/// <summary>
+	/// Метод за селект на всички типове телефонни номера 
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
+	BOOL SelectAllPhoneTypesFromData();
+
 	/// <summary>
 	/// Селектира един запис от таблицата с типове телефони
 	/// </summary>
@@ -57,14 +63,14 @@ public:
 	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
 	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Insert(PHONE_TYPES& recPhoneType);
+	BOOL InsertPhoneType(PHONE_TYPES& recPhoneType);
 
 	/// <summary>
 	/// Изтриване на запис от таблицата с градове
 	/// </summary>
 	/// <param name="recPhoneType"> запис за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Delete(const PHONE_TYPES& recPhoneType);
+	BOOL DeletePhoneType(const PHONE_TYPES& recPhoneType);
 
 	/// <summary>
 	/// Достъп до член променлива на класа
@@ -76,7 +82,7 @@ public:
 	/// Метод, за достъп до размера на масива с типове телефони
 	/// </summary>
 	/// <returns></returns>
-	INT_PTR GetPhoneTypesArrayElementsCount();
+	INT_PTR GetPhoneTypesArrayCount();
 
 
 	// Members
@@ -105,4 +111,3 @@ public:
 #endif
 #endif
 };
-*/

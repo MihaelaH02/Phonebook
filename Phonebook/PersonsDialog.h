@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsDialog dialog
 
-class CPersonsDialog : public CDialogEx
+class CPersonsDialog : public CDialog
 {
 // Macros
 // ----------------
@@ -47,9 +47,6 @@ protected:
 
 // MFC Message Handlers
 // ----------------
-	afx_msg void OnBnClickedAdd();
-	afx_msg void OnBnClickedEdit();
-	afx_msg void OnBnClickedDelete();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 
@@ -108,7 +105,7 @@ private:
 	/// </summary>
 	/// <param name="lParam1">Асоцира се с първия елемент, който ще се сравнява</param>
 	/// <param name="lParam2">Асоцира се с втори елемент, който ще се сравнява</param>
-	/// <param name="lParamSort">Параметър, който приложението си генерира </param>
+	/// <param name="lParamSort">Параметър, който предава указател към настоящия диалог </param>
 	/// <returns>Връща се резултат то сравнението</returns>
 	int static CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
@@ -160,7 +157,7 @@ private:
 	/// <summary>
 	/// Член променлива за по-дълга текстова контрола за адрес на клиент
 	/// </summary>
-	CRichEditCtrl m_recAddress;
+	CEdit m_edbAddress;
 
 	/// <summary>
 	/// Член променлива за лест контрола с телефонни номера на клиент

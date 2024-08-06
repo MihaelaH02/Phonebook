@@ -201,6 +201,7 @@
     <ClInclude Include="PersonsView.h" />
     <ClInclude Include="PhoneNumbersAccessor.h" />
     <ClInclude Include="PhoneNumbersTable.h" />
+    <ClInclude Include="PhoneTypesDialog.h" />
     <ClInclude Include="PhoneTypesAccessor.h" />
     <ClInclude Include="PhoneTypesData.h" />
     <ClInclude Include="PhoneTypesDoc.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="PersonsDoc.cpp" />
     <ClCompile Include="PersonsView.cpp" />
     <ClCompile Include="Phonebook.cpp" />
+    <ClCompile Include="PhoneTypesDialog.cpp" />
     <ClCompile Include="PhoneTypesData.cpp" />
     <ClCompile Include="PhoneTypesDoc.cpp" />
     <ClCompile Include="PhoneTypeView.cpp" />

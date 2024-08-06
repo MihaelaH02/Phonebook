@@ -5,7 +5,7 @@
 #include "Phonebook.h"
 #include "PhoneTypesDoc.h"
 
-/*
+
 /////////////////////////////////////////////////////////////////////////////
 //  CPhoneTypesDoc.cpp : implementation of the CCitiesDoc class
 
@@ -36,16 +36,15 @@ BOOL CPhoneTypesDoc::OnNewDocument()
 		return FALSE;
 	}
 
-	//Зареждане на данните от базата данни в масив
-	if (!m_oPhoneTypesData.SelectAll(m_oPhoneTypesArray))
+	if (!SelectAllPhoneTypesFromData())
 	{
 		return FALSE;
 	}
+
 	return TRUE;
 }
 
 #ifndef _WIN32_WCE
-// CPhoneTypesDoc serialization
 
 void CPhoneTypesDoc::Serialize(CArchive& ar)
 {
@@ -63,6 +62,17 @@ void CPhoneTypesDoc::Serialize(CArchive& ar)
 
 // Methods
 // ----------------
+BOOL CPhoneTypesDoc::SelectAllPhoneTypesFromData()
+{
+	//Зареждане на данните от базата данни в масив
+	if (!m_oPhoneTypesData.SelectAll(m_oPhoneTypesArray))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 BOOL CPhoneTypesDoc::SelectPhoneType(const long lID, PHONE_TYPES& recPhoneType)
 {
 	if (!m_oPhoneTypesData.SelectWhereID(lID, recPhoneType))
@@ -104,7 +114,7 @@ BOOL CPhoneTypesDoc::UpdatePhoneType(const PHONE_TYPES& recPhoneType)
 	return FALSE;
 }
 
-BOOL CPhoneTypesDoc::Insert(PHONE_TYPES& recPhoneType)
+BOOL CPhoneTypesDoc::InsertPhoneType(PHONE_TYPES& recPhoneType)
 {
 	if (!m_oPhoneTypesData.Insert(recPhoneType))
 	{
@@ -119,7 +129,7 @@ BOOL CPhoneTypesDoc::Insert(PHONE_TYPES& recPhoneType)
 	return TRUE;
 }
 
-BOOL CPhoneTypesDoc::Delete(const PHONE_TYPES& recPhoneType)
+BOOL CPhoneTypesDoc::DeletePhoneType(const PHONE_TYPES& recPhoneType)
 {
 
 	if (!m_oPhoneTypesData.DeleteWhereID(recPhoneType.lId))
@@ -141,7 +151,7 @@ const CPhoneTypesArray& CPhoneTypesDoc::GetPhoneTypesArray()
 	return m_oPhoneTypesArray;
 }
 
-INT_PTR CPhoneTypesDoc::GetPhoneTypesArrayElementsCount()
+INT_PTR CPhoneTypesDoc::GetPhoneTypesArrayCount()
 {
 	return m_oPhoneTypesArray.GetCount();
 }
@@ -162,4 +172,3 @@ void CPhoneTypesDoc::Dump(CDumpContext& dc) const
 #endif
 #endif //_DEBUG
 
-*/
