@@ -15,8 +15,8 @@ IMPLEMENT_DYNAMIC(CPersonsDialog, CDialog)
 // Constructor / Destructor
 // ----------------
 
-CPersonsDialog::CPersonsDialog(const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls /*= ENABLE_DIALOG_PHERSON_CTR_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_PERSONS_DIALOG, pParent), m_oAdditionalInfo(oAdditionInfo), m_oEnableControlsParam(oEnableControls)
+CPersonsDialog::CPersonsDialog(const CAdditionPersonInfo& oAdditionInfo, LPARAM lEnableControls /*= ENABLE_DIALOG_PHERSON_CTR_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+	: CDialog(IDD_PERSONS_DIALOG, pParent), m_oAdditionalInfo(oAdditionInfo), m_oEnableControlsParam(lEnableControls)
 {
 	//Инициализираме всички член променливи
 	m_strFirstName = "";
@@ -27,8 +27,8 @@ CPersonsDialog::CPersonsDialog(const CAdditionPersonInfo& oAdditionInfo, LPARAM 
 	m_strAddress = "";
 }
 
-CPersonsDialog::CPersonsDialog(const CPersonInfo& oPersonInfo, const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls /*= ENABLE_DIALOG_PHERSON_CTR_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_PERSONS_DIALOG, pParent), m_oPhoneNumbersMap(oPersonInfo.GetPhoneNumbers()), m_oAdditionalInfo(oAdditionInfo), m_oEnableControlsParam(oEnableControls)
+CPersonsDialog::CPersonsDialog(CPersonInfo& oPersonInfo, const CAdditionPersonInfo& oAdditionInfo, LPARAM lEnableControls /*= ENABLE_DIALOG_PHERSON_CTR_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+	: CDialog(IDD_PERSONS_DIALOG, pParent), m_oPhoneNumbersMap(oPersonInfo.GetPhoneNumbers()), m_oAdditionalInfo(oAdditionInfo), m_oEnableControlsParam(lEnableControls)
 {
 	//Подаваме всички данни за клиент към член променливите, които съхраняват съответните данни
 	PERSONS recPerson = oPersonInfo.GetPerson();
@@ -43,6 +43,7 @@ CPersonsDialog::CPersonsDialog(const CPersonInfo& oPersonInfo, const CAdditionPe
 CPersonsDialog::~CPersonsDialog()
 {
 }
+
 
 // MFC Overrides
 // ----------------
@@ -83,7 +84,7 @@ BOOL CPersonsDialog::OnInitDialog()
 		return FALSE;
 	}
 
-	//Задаваме селектирания елемент да подадения от структурата с клиента
+	//Задаваме селектирания елемент да е подадения от структурата с клиента
 	for (int nIndex = 0; nIndex < m_cmbCities.GetCount(); nIndex++)
 	{
 		if (m_cmbCities.GetItemData(nIndex) == m_lIdCity)
@@ -122,10 +123,17 @@ BOOL CPersonsDialog::OnInitDialog()
 
 void CPersonsDialog::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	//Извършване на операция селект
-	ViewPhoneNumberInfo();
+	//Проверка дали се намираме в лест контролата
+	CWnd* pWnd = ChildWindowFromPoint(point);
+
+	if (pWnd != nullptr && *pWnd  == m_lscPhoneNumbers)
+	{
+		//Извършване на операция селект
+		ViewPhoneNumberInfo();
+	}
 
 	CPersonsDialog::OnLButtonDblClk(nFlags, point);
+
 }
 
 void CPersonsDialog::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -135,74 +143,15 @@ void CPersonsDialog::OnRButtonUp(UINT /* nFlags */, CPoint point)
 	OnContextMenu(this, point);
 }
 
-void CPersonsDialog::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+
+void CPersonsDialog::OnContextMenu(CWnd*  pWnd , CPoint point)
 {
-	switch (nChar)
-	{
-
-		//При натискане на бутон Ctrl + I да се добави нов запис
-	case 'I':
-	{
-		InsertPhoneNumber();
-		return;
-	}
-	break;
-
-	//При натискане на бутон Ctrl + F да се търси запис
-	case 'F':
-	{
-		FindPhoneNumber();
-		return;
-	}
-	break;
-
-	//При натискане на бутон Ctrl + R да се презаредят записите
-	case 'R':
-	{
-		ReloadPhoneNumbers();
-		return;
-	}
-	break;
-	}
-
-	//Другите опрерации са вързможни само ако има избран елемент
-	if (m_oListCtrlManager.GetIndexSelectedItemListCtrl(m_lscPhoneNumbers) == -1)
+	//Отваряне на контекстно меню само при натискане в пространството на лист контролата
+	if (*pWnd != m_lscPhoneNumbers)
 	{
 		return;
 	}
 
-	switch (nChar)
-	{
-		//При натискане на бутон Delete да се изтрие записа
-	case VK_DELETE:
-	{
-		DeletePhoneNumber();
-		return;
-	}
-	break;
-
-	//При натискане на бутона Enter да се изведе в режим преглед записа
-	case VK_RETURN:
-	{
-		ViewPhoneNumberInfo();
-		return;
-	}
-	break;
-
-	//При натискане на Ctrl + U да се редактира селектирания запис
-	case 'U':
-	{
-		UpdatePhoneNumber();
-		return;
-	}
-	break;
-	}
-
-	CPersonsDialog::OnKeyDown(nChar, nRepCnt, nFlags);
-}
-
-void CPersonsDialog::OnContextMenu(CWnd* /* pWnd */, CPoint point)
-{
 	//Инстнация на контекстно меню
 	CMenu oMenu;
 	oMenu.LoadMenu(IDR_CONTEXT_MANU);
@@ -241,7 +190,6 @@ BEGIN_MESSAGE_MAP(CPersonsDialog, CDialog)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDBLCLK()
-	ON_WM_KEYDOWN()
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CPersonsDialog::InsertPhoneNumber)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CPersonsDialog::UpdatePhoneNumber)
 	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CPersonsDialog::DeletePhoneNumber)
@@ -269,23 +217,14 @@ void CPersonsDialog::OnBnClickedOk()
 
 void CPersonsDialog::OnBnClickedCancel()
 {
-	// TODO: Add your control notification handler code here
 	CDialog::OnCancel();
 }
 
 void CPersonsDialog::ViewPhoneNumberInfo()
 {
-	//Индекс на селектирания запис
-	int nIndexItem = m_oListCtrlManager.GetIndexSelectedItemListCtrl(m_lscPhoneNumbers);
-
-	//Проверка за избран елемент
-	if (nIndexItem == -1)
-	{
-		return;
-	}
-
+	
 	//Достъпваме данните от лист контролата
-	PHONE_NUMBERS* pPhoneNumber = m_oListCtrlManager.GetItemByIndex(m_lscPhoneNumbers, nIndexItem);
+	PHONE_NUMBERS* pPhoneNumber = m_oListCtrlManager.GetSelectedItemListCtrl(m_lscPhoneNumbers);
 
 	//Проверка за открит елемент
 	if (pPhoneNumber == nullptr)
@@ -326,6 +265,7 @@ void CPersonsDialog::InsertPhoneNumber()
 			return;
 		}
 
+
 		//Превръщаме телефиния номер в масив със стрингови данни, които ще се презентират в лист контролата
 		CTableDataArray<CString> strPhoneNumbersInfoArrayToDisplayInListCtrl;
 		if (!ConvertElementPhoneNumberToArrayWithDisplayData(recPhoneNumber, strPhoneNumbersInfoArrayToDisplayInListCtrl))
@@ -335,7 +275,7 @@ void CPersonsDialog::InsertPhoneNumber()
 		}
 
 		//Добавяме нов елемент в лист контролата
-		if (!m_oListCtrlManager.ManageAddingDataInElementListCtr(m_lscPhoneNumbers, recPhoneNumber, strPhoneNumbersInfoArrayToDisplayInListCtrl))
+		if (!m_oListCtrlManager.ManageAddOrEditElementListCtr(m_lscPhoneNumbers, recPhoneNumber, strPhoneNumbersInfoArrayToDisplayInListCtrl))
 		{
 			AfxMessageBox(_T("Failed to add new element in list!\n Try to reload."));
 			return;
@@ -349,7 +289,7 @@ void CPersonsDialog::UpdatePhoneNumber()
 	int nIndexItem = m_oListCtrlManager.GetIndexSelectedItemListCtrl(m_lscPhoneNumbers);
 
 	//Инстанция на обект от тип структура с телефонни номера, със стойности селектирания запис от лист контролата
-	PHONE_NUMBERS* pPhoneNumber = m_oListCtrlManager.GetItemByIndex(m_lscPhoneNumbers, nIndexItem);
+	PHONE_NUMBERS* pPhoneNumber = m_oListCtrlManager.GetSelectedItemListCtrl(m_lscPhoneNumbers);
 
 	//Проверка за открит елемент
 	if (pPhoneNumber == nullptr)
@@ -359,58 +299,64 @@ void CPersonsDialog::UpdatePhoneNumber()
 	}
 
 	//Намираме флага под който е записан елемента в мапа с данни
-	LPARAM oFlag = m_oPhoneNumbersMap.FindKeyByValue(*pPhoneNumber);
-	if (oFlag == -1)
+	LPARAM lFlag = m_oPhoneNumbersMap.FindKeyByValue(*pPhoneNumber);
+	if (lFlag == -1)
 	{
 		AfxMessageBox(_T("Failed to update phone number to list!\n Try to reload."));
 		return;
 	}
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CPhoneNumbersDialog oDialog(m_oAdditionalInfo.GetAllPhoneTypes() ,*pPhoneNumber);
+	CPhoneNumbersDialog oDialog(m_oAdditionalInfo.GetAllPhoneTypes(), *pPhoneNumber);
 
 	//Проверка за натиснат бутон OK в диалога
-	if (oDialog.DoModal() == IDOK)
+	if (oDialog.DoModal() != IDOK)
 	{
-		//Присвояваме ноивте данни от контролите в диалога със старото ид
-		if (!oDialog.GetControlsData(*pPhoneNumber))
-		{
-			AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
-			return;
-		}
+		return;
+	}
+	//Инстанция на телефонен номер, който съдържа копие на стойностите от старите данни
+	PHONE_NUMBERS recUpdatedPhoneNumber = *pPhoneNumber;
 
-		//Премахваме елеметта от мавива с флаг прочетени данни в мапа с телефонни номера
-		if (!m_oPhoneNumbersMap.RemoveElemetFromKey(*pPhoneNumber, oFlag))
-		{
-			AfxMessageBox(_T("Failed to update phone number to list!\n Try to reload."));
-			return;
-		}
-		if (oFlag != OPERATIONS_WITH_DATA_FLAGS_INSERT)
-		{
-			oFlag = OPERATIONS_WITH_DATA_FLAGS_UPDATE;
-		}
+	//Присвояваме ноивте данни от контролите в диалога в променливата копие
+	if (!oDialog.GetControlsData(recUpdatedPhoneNumber))
+	{
+		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		return;
+	}
 
-		//Добавяме елемента към масива с флаг за редакция на данни в мапа с гтелефонни номера
-		if (!m_oPhoneNumbersMap.AddOneElementToKey(*pPhoneNumber, oFlag))
-		{
-			AfxMessageBox(_T("Failed to update phone number to list!\n Try to reload."));
-			return;
-		}
+	//Премахваме стария елемент от мавива с флаг прочетени данни в мапа с телефонни номера
+	if (!m_oPhoneNumbersMap.RemoveElemetFromKey(*pPhoneNumber, lFlag))
+	{
+		AfxMessageBox(_T("Failed to update phone number to list!\n Try to reload."));
+		return;
+	}
 
-		// Превръщаме телефонния номер в масив със стрингови данни, които ще се презентират в лист контролата
-		CTableDataArray<CString> strPhoneNumbersInfoArrayToDisplayInListCtrl;
-		if (!ConvertElementPhoneNumberToArrayWithDisplayData(*pPhoneNumber, strPhoneNumbersInfoArrayToDisplayInListCtrl))
-		{
-			AfxMessageBox(_T("Failed to process data of new element in list!\n Try to reload."));
-			return;
-		}
+	//Ако тизи елемент е в група за добавяне, да не се проминя флага му
+	if (lFlag != OPERATIONS_WITH_DATA_FLAGS_INSERT)
+	{
+		lFlag = OPERATIONS_WITH_DATA_FLAGS_UPDATE;
+	}
 
-		//Редактираме, по открития индекс, данните
-		if (!m_oListCtrlManager.ManageAddingDataInElementListCtr(m_lscPhoneNumbers, *pPhoneNumber, strPhoneNumbersInfoArrayToDisplayInListCtrl, nIndexItem))
-		{
-			AfxMessageBox(_T("Failed to update element in list!\n Try to reload."));
-			return;
-		}
+	//Добавяме новиея елемент към масива с флаг за редакция на данни в мапа с телефонни номера
+	if (!m_oPhoneNumbersMap.AddOneElementToKey(recUpdatedPhoneNumber, lFlag))
+	{
+		AfxMessageBox(_T("Failed to update phone number to list!\n Try to reload."));
+		return;
+	}
+
+	//Превръщаме номия телефонен номер в масив със стрингови данни, които ще се презентират в лист контролата
+	CTableDataArray<CString> strPhoneNumberToDisplayInListCtrl;
+	if (!ConvertElementPhoneNumberToArrayWithDisplayData(recUpdatedPhoneNumber, strPhoneNumberToDisplayInListCtrl))
+	{
+		AfxMessageBox(_T("Failed to process data of new element in list!\n Try to reload."));
+		return;
+	}
+
+	//Редактираме, по открития индекс, с новите данни
+	if (!m_oListCtrlManager.ManageAddOrEditElementListCtr(m_lscPhoneNumbers, recUpdatedPhoneNumber, strPhoneNumberToDisplayInListCtrl, nIndexItem))
+	{
+		AfxMessageBox(_T("Failed to update element in list!\n Try to reload."));
+		return;
 	}
 }
 
@@ -424,12 +370,11 @@ void CPersonsDialog::DeletePhoneNumber()
 	{
 		return;
 	}
-
 	//Достъпваме индекса на селектирания запис
 	int nIndexItem = m_oListCtrlManager.GetIndexSelectedItemListCtrl(m_lscPhoneNumbers);
 
 	//Достъпваме селектирания запис
-	PHONE_NUMBERS* pPhoneNumber = m_oListCtrlManager.GetItemByIndex(m_lscPhoneNumbers, nIndexItem);
+	PHONE_NUMBERS* pPhoneNumber = m_oListCtrlManager.GetSelectedItemListCtrl(m_lscPhoneNumbers);
 
 	//Проверка за открит елемент
 	if (pPhoneNumber == nullptr)
@@ -439,31 +384,28 @@ void CPersonsDialog::DeletePhoneNumber()
 	}
 
 	//Намираме флага под който е записан елемента в мапа с данни
-	LPARAM oFlag = m_oPhoneNumbersMap.FindKeyByValue(*pPhoneNumber);
-	if (oFlag == -1)
+	LPARAM lFlag = m_oPhoneNumbersMap.FindKeyByValue(*pPhoneNumber);
+	if (lFlag == -1)
 	{
 		AfxMessageBox(_T("Failed to update phone number to list!\n Try to reload."));
 		return;
 	}
 
 	//Премахваме елеметта от мавива с флаг прочетени данни в мапа с телефонни номера
-	if (!m_oPhoneNumbersMap.RemoveElemetFromKey(*pPhoneNumber, oFlag))
+	if (!m_oPhoneNumbersMap.RemoveElemetFromKey(*pPhoneNumber, lFlag))
 	{
 		AfxMessageBox(_T("Failed to delete phone number to list!\n Try to reload."));
 	}
 
-	//Добавяме елемента към масива с флаг за изтриване на данни в мапа с гтелефонни номера
-	if (!m_oPhoneNumbersMap.AddOneElementToKey(*pPhoneNumber, OPERATIONS_WITH_DATA_FLAGS_DELETE))
+	//Ако тизи елемент е в група за добавяне, да не се добавя към мапа
+	if (lFlag != OPERATIONS_WITH_DATA_FLAGS_INSERT)
 	{
-		AfxMessageBox(_T("Failed to delete phone number to list!\n Try to reload."));
-	}
 
-	// Превръщаме телефонния номер в масив със стрингови данни, които ще се презентират в лист контролата
-	CTableDataArray<CString> strPhoneNumbersInfoArrayToOperateInListCtrl;
-	if (!ConvertElementPhoneNumberToArrayWithDisplayData(*pPhoneNumber, strPhoneNumbersInfoArrayToOperateInListCtrl))
-	{
-		AfxMessageBox(_T("Failed to process data of new element in list!\n Try to reload."));
-		return;
+		//Добавяме елемента към масива с флаг за изтриване на данни в мапа с гтелефонни номера
+		if (!m_oPhoneNumbersMap.AddOneElementToKey(*pPhoneNumber, OPERATIONS_WITH_DATA_FLAGS_DELETE))
+		{
+			AfxMessageBox(_T("Failed to delete phone number to list!\n Try to reload."));
+		}
 	}
 
 	//Изтриваме ред по поданен индекс
@@ -502,7 +444,7 @@ void CPersonsDialog::FilterPhoneNumbersByType()
 			return ;
 		}
 
-		//Филтрираме елементите от лист контролата
+		//Филтрираме елементите от лист контролата по колона тип телефон
 		if (!FilterItemsFromListCtrByCol(pPhoneType->czPhoneType, PHONE_NUMBERS_LIST_CTR_COLUMN_TYPE_PHONE))
 		{
 			AfxMessageBox(_T("Failed to filter elements by type in list!\n Try to reload."));
@@ -531,7 +473,7 @@ void CPersonsDialog::FindPhoneNumber()
 			return;
 		}
 
-		//Филтрираме елементите от лист контролата
+		//Филтрираме елементите от лист контролата по колона телефонен номер
 		if (!FilterItemsFromListCtrByCol(recPhoneNumber.szPhone, PHONE_NUMBERS_LIST_CTR_COLUMN_PHONE_NUMBER))
 		{
 			return;
@@ -544,6 +486,7 @@ void CPersonsDialog::ReloadPhoneNumbers()
 	//Зареждане на всички данни
 	if (!LoadPhoneNumbersInListCtrlFromArray())
 	{
+		AfxMessageBox(_T("Failed to reload data in list!\n Try to reload."));
 		return;
 	}
 
@@ -559,10 +502,10 @@ void CPersonsDialog::ReloadPhoneNumbers()
 // Methods
 // ---------------
 
-BOOL CPersonsDialog::EnableControls(LPARAM oEnableControls)
+BOOL CPersonsDialog::EnableControls(LPARAM lEnableControls)
 {
 	//Задаване на всички контроли като неактивни за писане
-	if (oEnableControls == ENABLE_DIALOG_PERSON_CTR_FLAG_NONE)
+	if (lEnableControls == ENABLE_DIALOG_PERSON_CTR_FLAG_NONE)
 	{
 		m_edbFirstName.EnableWindow(FALSE);
 		m_edbSecondName.EnableWindow(FALSE);
@@ -573,7 +516,7 @@ BOOL CPersonsDialog::EnableControls(LPARAM oEnableControls)
 		m_lscPhoneNumbers.EnableWindow(FALSE);
 		//menu
 	}
-	else if(oEnableControls == ENABLE_DIALOG_PERSON_CTR_FLAG_ALL)
+	else if(lEnableControls == ENABLE_DIALOG_PERSON_CTR_FLAG_ALL)
 	{
 		m_edbFirstName.EnableWindow(TRUE);
 		m_edbSecondName.EnableWindow(TRUE);
@@ -617,60 +560,14 @@ BOOL CPersonsDialog::AddItemsInCmbCities()
 		m_cmbCities.SetItemData(nIndexRow, pCities->lId);
 	}
 
-	/*if (!SortItemsInCmbCities())
-	{
-		return FALSE;
-	}*/
-
 	return TRUE;
 }
 
-/*BOOL CPersonsDialogSortItemsInCmbCities()
-{
-
-}
-
-int CALLBACK CPersonsDialog::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
-{
-	//Инстанция на диалога, с която ще достъпваме нестатични член променливи
-	CPersonsDialog* pDialog = (CPersonsDialog*)lParamSort;
-	if (pDialog == nullptr)
-	{
-		return 0;
-	}
-
-	// Достъпваме указателите от подадените параметри
-	PHONE_NUMBERS* pPhoneNumber1 = (PHONE_NUMBERS*)lParam1;
-	PHONE_NUMBERS* pPhoneNumber2 = (PHONE_NUMBERS*)lParam2;
-
-	//Проверяваме дали указателите не са нулеви
-	if (pPhoneNumber1 == nullptr || pPhoneNumber2 == nullptr)
-	{
-		return 0;
-	}
-
-	//Провенливи, които съдържат типа телефонен номер
-	PHONE_TYPES* pPhoneType1 = pDialog->m_oAdditionalInfo.FindPhoneTypesInArrayById(pPhoneNumber1->lIdPhoneType);
-	PHONE_TYPES* pPhoneType2 = pDialog->m_oAdditionalInfo.FindPhoneTypesInArrayById(pPhoneNumber2->lIdPhoneType);
-
-	//Проверка за открити телефонни типове
-	if (pPhoneType1 == nullptr || pPhoneType2 == nullptr)
-	{
-		return 0;
-	}
-
-	//Сравнение на двата типа телефонни номера
-	int nResult = _tcscmp(pPhoneType1->czPhoneType, pPhoneType2->czPhoneType);
-
-	//Връщаме резултата от сравнението
-	return nResult;
-}*/
-
 BOOL CPersonsDialog::LoadPhoneNumbersInListCtrlFromArray()
 {
-	//Достъпваме масива с телефонни номера
+	//Достъпваме масива с всички неизтрити телефонни номера
 	CPhoneNumbersArray oPhoneNumbersArray;
-	if (!m_oPhoneNumbersMap.GetOnlyNonDeletedElementsInArray(oPhoneNumbersArray))
+	if (!m_oPhoneNumbersMap.GetOnlyActiveValuesFromAllKeysInArray(oPhoneNumbersArray))
 	{
 		return FALSE;
 	}
@@ -693,7 +590,7 @@ BOOL CPersonsDialog::LoadPhoneNumbersInListCtrlFromArray()
 	return TRUE;
 }
 
-BOOL CPersonsDialog::FilterItemsFromListCtrByCol(const CString& strDataToFind, LPARAM oColName)
+BOOL CPersonsDialog::FilterItemsFromListCtrByCol(const CString& strDataToFind, LPARAM lColName)
 {
 	//Проверка дали всички данни от документа са налични
 	if (!IsAllPhoneNumbersLoadFromArray())
@@ -710,7 +607,7 @@ BOOL CPersonsDialog::FilterItemsFromListCtrByCol(const CString& strDataToFind, L
 	for (int nIndex = nListCrtCountItems - 1; nIndex >= 0; --nIndex)
 	{
 		//Проверка на тип телефон ако е подаден
-		CString strDataToCompare = m_lscPhoneNumbers.GetItemText(nIndex, oColName);
+		CString strDataToCompare = m_lscPhoneNumbers.GetItemText(nIndex, (int)lColName);
 
 		if (strDataToCompare == strDataToFind)
 		{
@@ -728,9 +625,9 @@ BOOL CPersonsDialog::FilterItemsFromListCtrByCol(const CString& strDataToFind, L
 
 BOOL CPersonsDialog::IsAllPhoneNumbersLoadFromArray()
 {
-	//Променилава масив, която съдържа всички телефонни номера за клиент
+	//Променилава масив, която съдържа всички неизтрити телефонни номера за клиент
 	CPhoneNumbersArray oPhoneNumbersArray;
-	if (!m_oPhoneNumbersMap.GetOnlyNonDeletedElementsInArray(oPhoneNumbersArray))
+	if (!m_oPhoneNumbersMap.GetOnlyActiveValuesFromAllKeysInArray(oPhoneNumbersArray))
 	{
 		return FALSE;
 	}

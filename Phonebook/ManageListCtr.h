@@ -28,7 +28,7 @@ public:
 		return lscListCtr.GetNextSelectedItem(oPositionCursor);
 	}
 
-	BOOL ManageAddingDataInElementListCtr(CListCtrl& lscListCtr, const CTypeElements oTypeElement, const CTableDataArray<CString>& strArrayWithDataToDisplay,  int nOldIndexExistingElement = -1)
+	BOOL ManageAddOrEditElementListCtr(CListCtrl& lscListCtr, const CTypeElements& oTypeElement, const CTableDataArray<CString>& strArrayWithDataToDisplay,  int nOldIndexExistingElement = -1)
 	{		
 		//Ако е подаден индекс на стар елемент да се изтрие
 		if (nOldIndexExistingElement != -1)
@@ -55,7 +55,7 @@ public:
 		return TRUE;
 	}
 
-	CTypeElements* GetItemByIndex(CListCtrl& lscListCtr, const int nIndexItem)
+	CTypeElements* GetDataInListCtrlByIndex(CListCtrl& lscListCtr, const int nIndexItem)
 	{
 		//Нов обект от типа на елементите в лист контролата
 		CTypeElements* pElement = (CTypeElements*)(lscListCtr.GetItemData(nIndexItem));
@@ -96,7 +96,7 @@ public:
 				return FALSE;
 			}
 			//Добавяне на нов елемент
-			if (!ManageAddingDataInElementListCtr(lscListCtr, *pElement, *pElementToDisplay))
+			if (!ManageAddOrEditElementListCtr(lscListCtr, *pElement, *pElementToDisplay))
 			{
 				return FALSE;
 			}
@@ -150,21 +150,35 @@ public:
 			}
 
 			//Проверка за открит елемент
-			/*if (*pElement == oTypeElement)
+			if (*pElement == oTypeElement)
 			{
 				return nIndex;
-			}*/
+			}
 		}
 
 		//Не е открит елемент
 		return -1;
 	}
 
+	CTypeElements* GetSelectedItemListCtrl(CListCtrl& lscListCtr)
+	{
+		//Достъп до индекса на селектирания запис
+		int nIndexItem = GetIndexSelectedItemListCtrl(lscListCtr);
+
+		if (nIndexItem == -1)
+		{
+			return nullptr;
+		}
+
+		//Достъпваме селектирания клиент от лист контролата
+		return GetDataInListCtrlByIndex(lscListCtr, nIndexItem);
+	}
+
 private:
 	int AddDataToElementListCtr(CListCtrl& lscListCtr, const CTypeElements& oTypeElement)
 	{
 		//Указател към елемента
-		CTypeElements* pElement = new CTypeElements(oTypeElement);
+		const CTypeElements* pElement = new CTypeElements(oTypeElement);
 
 		if (pElement == nullptr)
 		{

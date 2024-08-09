@@ -23,32 +23,37 @@ protected:
 // Constructor / Destructor
 // ----------------
 protected:
-	CPersonsView();           // protected constructor used by dynamic creation
+	CPersonsView(); 
 	virtual ~CPersonsView();
 
 
 // Methods
 // ----------------
 public:
+	/// <summary>
+	/// Метод за достъп до документа
+	/// </summary>
+	/// <returns>Връща указател към елемента</returns>
 	CPersonsDoc* GetDocument() const;
+
 private:
 
 	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
 	/// </summary>
-	BOOL LoadDataInListCtrFromDoc();
+	BOOL LoadPersonsInListCtrFromDoc();
 
 	/// <summary>
 	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните в документа
 	/// </summary>
 	/// <returns>Връща TRUE при равенство и FALSE при разминаване</returns>
-	BOOL IsAllDataLoadFromDoc();
+	BOOL IsAllPersonsLoadFromDoc();
 
 	/// <summary>
 	/// Метод за сортиране на елементите в контролата по област и имена на клиент
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SortItemsListCtr();
+	BOOL SortPersonsInListCtr();
 
 	/// <summary>
 	/// Метод, който сравнява елементи
@@ -65,7 +70,7 @@ private:
 	/// <param name="oPersonsArray">Масив с клиенти</param>
 	/// <param name="strPersonsArrayToDisplayInListCtrl">Масив с презентационни данни на всички клиенти</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertAllElementPersonsInfoToArrayWithDisplayData(const CTableDataArray<CPersonInfo>& oPersonsInfoArray, CTableDataArray<CTableDataArray<CString>>& strPersonsArrayToDisplayInListCtrl);
+	BOOL ConvertAllElementsPersonsToArrayWithDisplayData(const CPersonsArray& oPersonsArray, CTableDataArray<CTableDataArray<CString>>& strPersonsArrayToDisplayInListCtrl);
 
 	/// <summary>
 	/// Метод, който записва презентационните данни на един елемент клиент в нов масив
@@ -73,15 +78,8 @@ private:
 	/// <param name="recPerson">Еменет от тип структура с клиенти</param>
 	/// <param name="strPersonArray">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertElementPersonInfoToArrayWithDisplayData(const PERSONS& recPerson, CTableDataArray<CString>& strPersonArray);
+	BOOL ConvertToDisplayDataInListCtrl(const PERSONS& recPerson, CTableDataArray<CString>& strPersonArray);
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="strParamToFind"></param>
-	/// <param name="FIND_BY_COLUMN"></param>
-	/// <returns></returns>
-	BOOL FilterItemsFromListCtr(const CString& strParamToFind, PERSONS_LIST_CTR_COLUMN FIND_BY_COLUMN);
 
 // Overrides
 // ----------------
@@ -97,6 +95,8 @@ protected:
 	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 
 // Generated message map functions
+// ----------------
+
 	/// <summary>
 	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
 	/// </summary>
@@ -127,32 +127,22 @@ public:
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void InsertPerson();
+	afx_msg void InsertPersonInfo();
 
 	/// <summary>
 	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void UpdatePerson();
+	afx_msg void UpdatePersonInfo();
 
 	/// <summary>
 	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void DeletePerson();
+	afx_msg void DeletePersonInfo();
 
 	/// <summary>
-	/// Метод, който търси даден клиент по егн
+	/// Метод за зареждане на всички клиенти
 	/// </summary>
-	afx_msg void FindPersonByEgn();
-
-	/// <summary>
-	/// Метод, който филтрира клиентите по регион
-	/// </summary>
-	afx_msg void FilterPersonsByRegion();
-
-	/// <summary>
-	/// Метод за зареждане на всички градове
-	/// </summary>
-	afx_msg void ReloadPersons();
+	afx_msg void ReloadPersonsInfo();
 
 // Members
 // ----------------
@@ -160,7 +150,7 @@ public:
 	/// <summary>
 	///Член проминлива от тип клас, който ще управлява елемените в лист контролата
 	/// </summary>
-	CListCtrlManager<CPersonInfo> m_oManagerListCtr;
+	CListCtrlManager<PERSONS> m_oManagerListCtr;
 
 public:
 #ifdef _DEBUG

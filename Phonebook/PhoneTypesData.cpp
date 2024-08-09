@@ -19,7 +19,7 @@ CPhoneTypesData::~CPhoneTypesData()
 
 // Methods
 // ----------------
-BOOL CPhoneTypesData::SelectAll(CPhoneTypesArray& oPhoneTypesArray)
+BOOL CPhoneTypesData::SelectAllPhoneTypes(CPhoneTypesArray& oPhoneTypesArray)
 {
 	//Инстанция на класа с табличните данни
 	CPhoneTypesTable oPhoneTypesTable;
@@ -31,7 +31,7 @@ BOOL CPhoneTypesData::SelectAll(CPhoneTypesArray& oPhoneTypesArray)
 	return TRUE;
 }
 
-BOOL CPhoneTypesData::SelectWhereID(const long lID, PHONE_TYPES& recPhoneTypes)
+BOOL CPhoneTypesData::SelectPhoneTypeWhereID(const long lID, PHONE_TYPES& recPhoneTypes)
 {
 	//Инстанция на класа с табличните данни
 	CPhoneTypesTable oPhoneTypesTable;
@@ -43,7 +43,7 @@ BOOL CPhoneTypesData::SelectWhereID(const long lID, PHONE_TYPES& recPhoneTypes)
 	return TRUE;
 }
 
-BOOL CPhoneTypesData::UpdateWhereID(const long lID, const PHONE_TYPES& recPhoneTypes)
+BOOL CPhoneTypesData::UpdatePhoneTypeWhereID(const long lID, const PHONE_TYPES& recPhoneTypes)
 {
 	//Инстанция на класа с табличните данни
 	CPhoneTypesTable oPhoneTypesTable;
@@ -55,7 +55,7 @@ BOOL CPhoneTypesData::UpdateWhereID(const long lID, const PHONE_TYPES& recPhoneT
 	return TRUE;
 }
 
-BOOL CPhoneTypesData::Insert(PHONE_TYPES& recPhoneTypes)
+BOOL CPhoneTypesData::InsertPhoneType(PHONE_TYPES& recPhoneTypes)
 {
 	//Инстанция на класа с табличните данни
 	CPhoneTypesTable oPhoneTypesTable;
@@ -68,7 +68,7 @@ BOOL CPhoneTypesData::Insert(PHONE_TYPES& recPhoneTypes)
 }
 
 
-BOOL CPhoneTypesData::DeleteWhereID(const long lID)
+BOOL CPhoneTypesData::DeletePhoneTypeWhereID(const long lID)
 {
 	//Инстанция на класа с табличните данни
 	CPhoneTypesTable oPhoneTypesTable;

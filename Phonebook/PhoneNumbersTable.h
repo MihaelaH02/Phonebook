@@ -7,7 +7,7 @@
 // CPhoneTypesTable
 
 /// <summary>
-/// Клас изпълняващ CRUD операции към таблица с градове наследяващ базисния клас
+/// Клас изпълняващ CRUD операции към таблица с телефонни номера, наследяващ базисния клас
 /// </summary>
 
 class CPhoneNumbersTable :public CBaseTable<CPhoneNumbersAccessor, PHONE_NUMBERS>
@@ -19,8 +19,10 @@ class CPhoneNumbersTable :public CBaseTable<CPhoneNumbersAccessor, PHONE_NUMBERS
 	// Constructor / Destructor
 	// ----------------
 public:
-	CPhoneNumbersTable(CDatabaseTransactionManager& oDatabaseTransactionManager)
-		:CBaseTable(oDatabaseTransactionManager)
+
+	/// <param name="oDatabaseTransactionManager">Параметър указател към клас управляващ сисии</param>
+	CPhoneNumbersTable(CInitializeSession* oDatabaseSession)
+		:CBaseTable(oDatabaseSession)
 	{
 	};
 
@@ -29,7 +31,10 @@ public:
 
 	// Methods
 	// ----------------
-
+	CString ColIdPerson()
+	{
+		return _T("ID_PERSON");
+	}
 
 	// Overrides
 	// ----------------
@@ -48,7 +53,7 @@ private:
 	/// Метод за достъп до член променливата в клас CPhoneNumbersAccessor
 	/// </summary>
 	/// <returns>Връща структура от тип PHONE_NUMBERS</returns>
-	PHONE_NUMBERS& GetRowData() override
+	const PHONE_NUMBERS& GetSelectedRowData() override
 	{
 		return m_recPhoneNumber;
 	}
@@ -57,7 +62,7 @@ private:
 	/// Метод за промяна на стойностите на член променливата в клас CPhoneNumbersAccessorer
 	/// </summary>
 	/// <param name="recPhoneNumbers">Променлива от тип структура PHONE_NUMBERS, с чиито стойности ще се замени член променливата</param>
-	void SetRowData(const PHONE_NUMBERS& recPhoneNumbers) override
+	void SetNewDataToSelectedRow(const PHONE_NUMBERS& recPhoneNumbers) override
 	{
 		m_recPhoneNumber = recPhoneNumbers;
 	}
@@ -66,7 +71,7 @@ private:
 	/// Метод за достъп до ИД на записа
 	/// </summary>
 	/// <returns>Връща ИД на записа</returns>
-	long GetRowId() override
+	long const GetSelectedRowId() override
 	{
 		return m_recPhoneNumber.lId;
 	}
@@ -75,7 +80,7 @@ private:
 	/// Метод за промяна на стойност за lUpdateCounter на член променливата в клас CPhoneNumbersAccessor
 	/// </summary>
 	/// <param name="lUpdateCounterNew">Параметър, с който ще се замени стойноста в lUpdateCounter</param>
-	void IncrementUpdateCounter() override
+	void IncrementUpdateCounterOfSelectedRow() override
 	{
 		m_recPhoneNumber.lUpdateCounter = m_recPhoneNumber.lUpdateCounter++;
 	}
@@ -84,7 +89,7 @@ private:
 	/// Метод за достъп до член променлива lUpdateCounter в клас CPhoneNumbersAccessor
 	/// </summary>
 	/// <returns>Връща член променлива lUpdateCounter</returns>
-	long GetUpdateCounter() override
+	long const GetSelectedRowUpdateCounter() override
 	{
 		return m_recPhoneNumber.lUpdateCounter;
 	}

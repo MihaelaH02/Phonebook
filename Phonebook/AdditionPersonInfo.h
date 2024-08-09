@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include "Structures.h"
 #include "CitiesData.h"
@@ -21,19 +20,18 @@ public:
 
 	~CAdditionPersonInfo();
 
-
 // Methods
 // ----------------
 
 public:
 	/// <summary>
-	/// Запълване на член променливата масив с градове с данни
+	/// Запълване на член променливата масив с градове
 	/// </summary>
 	/// <param name="oCitiesArray">Масив съдържащ данните с градове</param>
 	void SetCitiesData(const CCitiesArray& oCitiesArray);
 
 	/// <summary>
-	/// Запълване на член променливата масив с типове телефони с данни
+	/// Запълване на член променливата масив с типове телефони
 	/// </summary>
 	/// <param name="oPhoneTypesArray">Масив съдържащ данните с типове телефони</param>
 	void SetPhoneTypesData(const CPhoneTypesArray& oPhoneTypesArray);
@@ -49,17 +47,17 @@ public:
 	const CPhoneTypesArray& GetAllPhoneTypes();
 
 	/// <summary>
-	/// Метод за търсене на област по ид
+	/// Метод за търсене на област в масива с градове по ИД
 	/// </summary>
-	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
-	/// <returns>Връща указалет към открит обект или nullptr при неуспех</returns>
+	/// <param name="lId">Параметър за ИД на запис, който ще се търси</param>
+	/// <returns>Връща указател към открит обект или nullptr при неуспех</returns>
 	CITIES* CAdditionPersonInfo::FindCityInArrayById(const int lId);
 
 	/// <summary>
-	/// Метод за търсене на телефонен номер по ид
+	/// Метод за търсене на телефонен номер в масива с номера по ИД
 	/// </summary>
 	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
-	/// <returns>Връща указалет към открит обект или nullptr при неуспех</returns>
+	/// <returns>Връща указател към открит обект или nullptr при неуспех</returns>
 	PHONE_TYPES* CAdditionPersonInfo::FindPhoneTypesInArrayById(const int lId);
 
 
@@ -71,12 +69,12 @@ public:
 // ----------------
 private:
 	/// <summary>
-	/// Променлива масив, който съдържа всички градове
+	/// Член променлива масив, която съдържа всички градове
 	/// </summary>
 	CCitiesArray m_oCitiesArray;
 
 	/// <summary>
-	/// Променлива масив, който съдържа всчики типове телефони
+	/// Член променлива масив, която съдържа всчики типове телефони
 	/// </summary>
 	CPhoneTypesArray m_oPhoneTypesArray;
 };

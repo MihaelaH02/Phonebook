@@ -188,6 +188,7 @@
     <ClInclude Include="CitiesDialog.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="CitiesAccessor.h" />
+    <ClInclude Include="DatabaseQueryBuilder.h" />
     <ClInclude Include="DatabaseTransactionManager.h" />
     <ClInclude Include="EnumsDialogCtrInfo.h" />
     <ClInclude Include="EnumsWithFlags.h" />
@@ -209,7 +210,6 @@
     <ClInclude Include="PhoneTypesDoc.h" />
     <ClInclude Include="PhoneTypesTable.h" />
     <ClInclude Include="PhoneTypeView.h" />
-    <ClInclude Include="SessionTransactionManager.h" />
     <ClInclude Include="TableDataArray.h" />
     <ClInclude Include="CitiesDoc.h" />
     <ClInclude Include="Structures.h" />
@@ -235,6 +235,7 @@
     <ClCompile Include="CitiesDoc.cpp" />
     <ClCompile Include="CitiesView.cpp" />
     <ClCompile Include="DatabaseConnection.cpp" />
+    <ClCompile Include="DatabaseQueryBuilder.cpp" />
     <ClCompile Include="DatabaseTransactionManager.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">

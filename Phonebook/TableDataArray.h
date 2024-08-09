@@ -51,6 +51,11 @@ public:
 		return Add(pStruct);
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oCTableDataArray"></param>
+	/// <returns></returns>
 	BOOL AddAllElements(const CTableDataArray& oCTableDataArray)
 	{
 		for (INT_PTR nIndex = 0; nIndex < oCTableDataArray.GetCount(); nIndex++)
@@ -70,6 +75,11 @@ public:
 		return TRUE;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="recStructData"></param>
+	/// <returns></returns>
 	BOOL RemoveElement(const CClass& recStructData)
 	{
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); nIndex++)
@@ -80,15 +90,15 @@ public:
 				return FALSE;
 			}
 
-			if (pElement->lId == recStructData.lId)
+			if (*pElement == recStructData)
 			{
 				delete pElement;
 				RemoveAt(nIndex);
+				break;
 			}
 		}
 		return TRUE;
 	}
-
 
 	/// <summary>
 	/// Метод за премахване на всички елементи от масива динамично
@@ -127,6 +137,19 @@ public:
 		//При неуспех
 		return -1;
 	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="lId"></param>
+	/// <returns></returns>
+	void ReplaceDataOfElementByIndex(INT_PTR lIndex, const CClass& recNewDataElement)
+	{
+		CClass* pNewdataForElement = new CClass(recNewDataElement);
+		SetAt(lIndex, pNewdataForElement);
+	}
+
+
 // Overrides
 // ----------------
 

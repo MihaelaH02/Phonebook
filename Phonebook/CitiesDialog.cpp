@@ -10,21 +10,21 @@ IMPLEMENT_DYNAMIC(CCitiesDialog, CDialog)
 
 // Constructor / Destructor
 // ----------------
-CCitiesDialog::CCitiesDialog(LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+CCitiesDialog::CCitiesDialog(LPARAM lEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_CITIES_DIALOG, pParent)
 {
 	m_strName = "";
 	m_strRegion = "";
-	m_oEnableControlsParam = oEnableControls;
+	m_lEnableControlsParam = lEnableControls;
 }
 
-CCitiesDialog::CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+CCitiesDialog::CCitiesDialog(const CITIES& recCity, LPARAM lEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_CITIES_DIALOG, pParent)
 {
 	//Подаване на параметри
 	m_strName = recCity.szCityName;
 	m_strRegion = recCity.szRegion;
-	m_oEnableControlsParam = oEnableControls;
+	m_lEnableControlsParam = lEnableControls;
 }
 
 CCitiesDialog::~CCitiesDialog()
@@ -63,7 +63,7 @@ BOOL CCitiesDialog::OnInitDialog()
 	}
 
 	//Промяна на активността на контролите, според подадения параметър
-	EnableControls(m_oEnableControlsParam);
+	EnableControls(m_lEnableControlsParam);
 
 	return TRUE;
 }
@@ -112,10 +112,10 @@ void CCitiesDialog::OnBnClickedCancel()
 // Methods
 // ---------------
 
-void CCitiesDialog::EnableControls(LPARAM oEnableControls)
+void CCitiesDialog::EnableControls(LPARAM lEnableControls)
 {
 	//В зависимост от поданета стойност от тип енъм, се активират/деактивират контролите за писане
-	switch (oEnableControls)
+	switch (lEnableControls)
 	{
 		case ENABLE_DIALOG_CITIES_CTR_FLAG_ALL:
 		{

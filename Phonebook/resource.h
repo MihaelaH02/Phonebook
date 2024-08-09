@@ -19,6 +19,9 @@
 #define IDR_MAINFRAME_256               129
 #define IDR_PhonebookTYPE               130
 #define ID_WINDOW_MANAGER               131
+#define IDR_CITIES_DOC                  132
+#define IDR_PHONE_TYPES_DOC             133
+#define IDR_PERSONS_DOC                 134
 #define IDR_THEME_MENU                  200
 #define ID_SET_STYLE                    201
 #define ID_VIEW_APPLOOK_WIN_2000        205
@@ -83,13 +86,15 @@
 #define ID_CONTEXT_MANU_DATA_FIND       32805
 #define ID_CONTEXT_MENU_DATA_RELOAD     32809
 #define ID_CONTEXT_MENU_DATA_FILTER     32810
+#define ID_NEW_PHONETYPES               32811
+#define ID_NEW_PERSONS                  32812
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        322
-#define _APS_NEXT_COMMAND_VALUE         32811
+#define _APS_NEXT_COMMAND_VALUE         32813
 #define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -1,6 +1,6 @@
 #pragma once
 
-//Енумерация за указване кои полета да се активират в диалога
+//Енумерация за указване кои полета да се активират в съответния диалог 
 enum ENABLE_DIALOG_CITIES_CTR_FLAG
 {
 	ENABLE_DIALOG_CITIES_CTR_FLAG_ALL,
@@ -17,7 +17,13 @@ enum ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG
 	ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ONLY_PHONE_TYPE
 };
 
-//Енумерация за указване на извършена опреция за вюто
+enum ENABLE_DIALOG_PHONE_TYPES_CTR_FLAG
+{
+	ENABLE_DIALOG_PERSON_CTR_FLAG_ALL,
+	ENABLE_DIALOG_PERSON_CTR_FLAG_NONE
+};
+
+//Енумерация за указване на извършена опреция
 enum OPERATIONS_WITH_DATA_FLAGS
 {
 	OPERATIONS_WITH_DATA_FLAGS_READED,
@@ -26,9 +32,4 @@ enum OPERATIONS_WITH_DATA_FLAGS
 	OPERATIONS_WITH_DATA_FLAGS_DELETE,
 };
 
-enum ENABLE_DIALOG_PERSON_CTR_FLAG
-{
-	ENABLE_DIALOG_PERSON_CTR_FLAG_ALL,
-	ENABLE_DIALOG_PERSON_CTR_FLAG_NONE
-};
 

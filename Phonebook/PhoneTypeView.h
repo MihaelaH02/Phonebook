@@ -93,6 +93,7 @@ protected:
 
 
 	// Generated message map functions
+	// ----------------
 public:
 	/// <summary>
 	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
@@ -137,7 +138,7 @@ public:
 	afx_msg void DeletePhoneType();
 
 	/// <summary>
-	/// Метод, който търси даден клиент по егн
+	/// Метод, който търси даден тип телефон
 	/// </summary>
 	afx_msg void FindPhoneType();
 

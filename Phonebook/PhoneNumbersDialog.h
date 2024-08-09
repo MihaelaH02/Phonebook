@@ -26,8 +26,8 @@ class CPhoneNumbersDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
-	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, LPARAM oEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr); 
-	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, const PHONE_NUMBERS& recPhoneNumber, LPARAM oEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, LPARAM lEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr); 
+	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, const PHONE_NUMBERS& recPhoneNumber, LPARAM lEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 	virtual ~CPhoneNumbersDialog();
 
 
@@ -62,7 +62,7 @@ public:
 	/// <summary>
 	/// Метод за забрана за писане по контролите
 	/// </summary>
-	void EnableControls(LPARAM oEnableControls);
+	void EnableControls(LPARAM lEnableControls);
 
 	/// <summary>
 	/// Метод, който довабя елементи в комбо бокса с телефонни номера
@@ -101,7 +101,7 @@ private:
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
 	/// </summary>
-	LPARAM m_oEnableControlsParam;
+	LPARAM m_lEnableControlsParam;
 
 	/// <summary>
 	/// Инстанция на клас за верификация на данни

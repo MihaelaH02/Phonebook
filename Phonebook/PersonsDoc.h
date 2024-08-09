@@ -24,6 +24,7 @@ public:
 	CPersonsDoc();
 	virtual ~CPersonsDoc();
 
+
 // Overrides
 // ----------------
 public:
@@ -39,9 +40,10 @@ public:
 #endif
 #endif
 
+
 // Methods
 // ----------------
-
+public:
 	/// <summary>
 	/// Достъп до член променлива на класа
 	/// </summary>
@@ -52,13 +54,19 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
+	BOOL GetAllPersons(CPersonsArray& oPersonsArray);
+
+	/// <summary>
+	/// Метод, който връща клас с допълнителни данни
+	/// </summary>
+	/// <returns>Връща се кляс с допълнителни данни</returns>
 	CAdditionPersonInfo& GetAdditionalPersonInfo();
 
 	/// <summary>
 	/// Метод, който достъпва броя на клиентите
 	/// </summary>
-	/// <returns>Връща броя на елемените в масива с информация на кленти</returns>
-	INT_PTR GetPersonsArrayElementsCount();
+	/// <returns>Връща броя на елемените в масива, който съдържа информация за кленти</returns>
+	INT_PTR GetPersonsInfoArrayElementsCount();
 
 	/// <summary>
 	/// Метод, който селектира клиеит по ид
@@ -66,14 +74,41 @@ public:
 	/// <param name="lID">Ид на клиент по което ще се търсят данни</param>
 	/// <param name="oPersonInfo">Масив с намерена ииформация за клиет</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SelectPersonInfoWithId(const long lID, CPersonInfo& oPersonInfo);
+	BOOL SelectPersonInfoWithIdFromDatabase(const long lID,  CPersonInfo& oPersonInfo);
 
 	/// <summary>
 	/// Метод за обработка на операции с информацията за клиенти
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo, LPARAM oOperationFlag);
+	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo,const LPARAM lOperationFlag);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="LId"></param>
+	/// <returns></returns>
+	BOOL GetPersonInfoByPersonId(const long LId, CPersonInfo& oPersonInfo);
+
+private:
+	/// <summary>
+	/// Метод, който синхронизира напарвените промени в базата данни на елемент, по подадено ИД на клиент
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL RenewElementInPersonInfoArray(CPersonInfo& oPersonInfoToBeRenewInArray, const LPARAM lOperationFlag);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="oNewDataPersonInfo"></param>
+	/// <returns></returns>
+	BOOL ManageInsertUpdateElementInPersonsInfoArray(const CPersonInfo& oNewDataPersonInfo);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="lId"></param>
+	/// <returns></returns>
+	INT_PTR FindIndexOfElementInPersonsInfoArrayByPersonId(const long lId);
 
 // Members
 // ----------------

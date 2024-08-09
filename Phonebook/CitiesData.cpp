@@ -19,66 +19,66 @@ CCitiesData::~CCitiesData()
 
 // Methods
 // ----------------
-	BOOL CCitiesData::SelectAll(CCitiesArray& oCitiesArray)
+BOOL CCitiesData::SelectAllCities(CCitiesArray& oCitiesArray)
+{
+	//Инстанция на класа с табличните данни
+	CCitiesTable oCitiesTable;
+
+	if (!oCitiesTable.SelectAll(oCitiesArray))
 	{
-		//Инстанция на класа с табличните данни
-		CCitiesTable oCitiesTable;
-
-		if (!oCitiesTable.SelectAll(oCitiesArray))
-		{
-			return FALSE;
-		}
-		return TRUE;
+		return FALSE;
 	}
+	return TRUE;
+}
 
-	BOOL CCitiesData::SelectWhereID(const long lID, CITIES& recCity)
+BOOL CCitiesData::SelectCityWhereID(const long lID, CITIES& recCity)
+{
+	//Инстанция на класа с табличните данни
+	CCitiesTable oCitiesTable;
+
+	if (!oCitiesTable.SelectWhereID(lID, recCity))
 	{
-		//Инстанция на класа с табличните данни
-		CCitiesTable oCitiesTable;
-
-		if (!oCitiesTable.SelectWhereID(lID, recCity))
-		{
-			return FALSE;
-		}
-		return TRUE;
+		return FALSE;
 	}
+	return TRUE;
+}
 
-	BOOL CCitiesData::UpdateWhereID(const long lID, const CITIES& recCity)
+BOOL CCitiesData::UpdateCityWhereID(const long lID, const CITIES& recCity)
+{
+	//Инстанция на класа с табличните данни
+	CCitiesTable oCitiesTable;
+
+	if (!oCitiesTable.UpdateWhereID(lID, recCity))
 	{
-		//Инстанция на класа с табличните данни
-		CCitiesTable oCitiesTable;
-
-		if (!oCitiesTable.UpdateWhereID(lID, recCity))
-		{
-			return FALSE;
-		}
-		return TRUE;
+		return FALSE;
 	}
+	return TRUE;
+}
 
-	BOOL CCitiesData::Insert(CITIES& recCity) 
+BOOL CCitiesData::InsertCity(CITIES& recCity) 
+{
+	//Инстанция на класа с табличните данни
+	CCitiesTable oCitiesTable;
+
+	if (!oCitiesTable.Insert(recCity))
 	{
-		//Инстанция на класа с табличните данни
-		CCitiesTable oCitiesTable;
-
-		if (!oCitiesTable.Insert(recCity))
-		{
-			return FALSE;
-		}
-		return TRUE;
+		return FALSE;
 	}
+	return TRUE;
+}
 
 
-	BOOL CCitiesData::DeleteWhereID(const long lID) 
+BOOL CCitiesData::DeleteCityWhereID(const long lID) 
+{
+	//Инстанция на класа с табличните данни
+	CCitiesTable oCitiesTable;
+
+	if (!oCitiesTable.DeleteWhereID(lID))
 	{
-		//Инстанция на класа с табличните данни
-		CCitiesTable oCitiesTable;
-
-		if (!oCitiesTable.DeleteWhereID(lID))
-		{
-			return FALSE;
-		}
-		return TRUE;
+		return FALSE;
 	}
+	return TRUE;
+}
 
 // Overrides
 // ----------------

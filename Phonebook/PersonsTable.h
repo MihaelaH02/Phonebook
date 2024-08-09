@@ -8,7 +8,7 @@
 // CPhersonsTable
 
 /// <summary>
-/// Клас изпълняващ CRUD операции към таблица с градове наследяващ базисния клас
+/// Клас изпълняващ CRUD операции към таблица с клиенти наследяващ базисния клас
 /// </summary>
 
 class CPersonsTable :public CBaseTable<CPersonsAccessor, PERSONS>
@@ -21,8 +21,9 @@ class CPersonsTable :public CBaseTable<CPersonsAccessor, PERSONS>
 // ----------------
 public:
 
-	CPersonsTable(CDatabaseTransactionManager& oDatabaseTransactionManager)
-		:CBaseTable(oDatabaseTransactionManager)
+	/// <param name="oDatabaseTransactionManager">Параметър указател към клас управляващ сесии</param>
+	CPersonsTable(CInitializeSession* pDatabaseSession)
+		:CBaseTable(pDatabaseSession)
 	{
 	};
 
@@ -48,11 +49,12 @@ private:
 		return _T("PERSONS");
 	}
 
+	
 	/// <summary>
 	/// Метод за достъп до член променливата в клас CPersonsAccessor
 	/// </summary>
 	/// <returns>Връща структура от тип PERSONS</returns>
-	PERSONS& GetRowData() override
+	const PERSONS& GetSelectedRowData() override
 	{
 		return m_recPersons;
 	}
@@ -61,7 +63,7 @@ private:
 	/// Метод за промяна на стойностите на член променливата в клас CPersonsAccessor
 	/// </summary>
 	/// <param name="recPerson">Променлива от тип структура PERSONS, с чиито стойности ще се замени член променливата</param>
-	void SetRowData(const PERSONS& recPerson) override
+	void SetNewDataToSelectedRow(const PERSONS& recPerson) override
 	{
 		m_recPersons = recPerson;
 	}
@@ -70,7 +72,7 @@ private:
 	/// Метод за достъп до ИД на записа
 	/// </summary>
 	/// <returns>Връща ИД на записа</returns>
-	long GetRowId() override
+	long const GetSelectedRowId() override
 	{
 		return m_recPersons.lId;
 	}
@@ -79,7 +81,7 @@ private:
 	/// Метод за промяна на стойност за lUpdateCounter на член променливата в клас CPersonsAccessor
 	/// </summary>
 	/// <param name="lUpdateCounterNew">Параметър, с който ще се замени стойноста в lUpdateCounter</param>
-	void IncrementUpdateCounter() override
+	void IncrementUpdateCounterOfSelectedRow() override
 	{
 		m_recPersons.lUpdateCounter = m_recPersons.lUpdateCounter++;
 	}
@@ -88,7 +90,7 @@ private:
 	/// Метод за достъп до член променлива lUpdateCounter в клас CPersonsAccessor
 	/// </summary>
 	/// <returns>Връща член променлива lUpdateCounter</returns>
-	long GetUpdateCounter() override
+	long const GetSelectedRowUpdateCounter() override
 	{
 		return m_recPersons.lUpdateCounter;
 	}

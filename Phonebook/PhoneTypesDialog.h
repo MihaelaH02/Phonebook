@@ -26,9 +26,9 @@ class CPhoneTypesDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
-	CPhoneTypesDialog(LPARAM oEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneTypesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
-	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM oEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPhoneTypesDialog();
 
@@ -63,7 +63,7 @@ public:
 	/// <summary>
 	/// Метод за забрана за писане по контролите
 	/// </summary>
-	void EnableControls(LPARAM oEnableControls);
+	void EnableControls(LPARAM lEnableControls);
 
 
 // Members
@@ -82,5 +82,5 @@ private:
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
 	/// </summary>
-	LPARAM m_oEnableControlsParam;
+	LPARAM m_lEnableControlsParam;
 };

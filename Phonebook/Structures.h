@@ -147,14 +147,38 @@ struct PERSONS
 		{
 			return FALSE;
 		}
-		return TRUE;
 
-			/* szFirstName == recPerson.szFirstName &&
-			szSecondName = recPerson.szSecondName &&
-			szLastName == recPerson.szLastName &&
-			szAddress == recPerson.szAddress &&
-			szEGN == recPerson.szEGN &&
-			lIdCity == recPerson.lIdCity;*/
+		if (szFirstName != recPerson.szFirstName)
+		{
+			return FALSE;
+		}
+
+		if (szSecondName != recPerson.szSecondName)
+		{
+			return FALSE;
+		}
+
+		if (szLastName != recPerson.szLastName)
+		{
+			return FALSE;
+		}
+
+		if (szAddress != recPerson.szAddress)
+		{
+			return FALSE;
+		}
+
+		if (szEGN != recPerson.szEGN)
+		{
+			return FALSE;
+		}
+
+		if (lIdCity != recPerson.lIdCity)
+		{
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 };
@@ -203,6 +227,7 @@ struct PHONE_NUMBERS
 		{
 			return FALSE;
 		}
+
 		if(lIdPhoneType != recPhoneNumber.lIdPhoneType)
 		{
 			return FALSE;

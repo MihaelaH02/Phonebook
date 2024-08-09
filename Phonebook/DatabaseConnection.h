@@ -74,5 +74,5 @@ public:
 	/// <summary>
 	/// Променива указател, сочещ единствената инстанция на класа
 	/// </summary>
-	static CDatabaseConnection* pInstancePtr;
+	static CDatabaseConnection* m_pInstancePtr;
 };

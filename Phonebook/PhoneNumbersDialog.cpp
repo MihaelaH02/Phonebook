@@ -14,21 +14,21 @@ IMPLEMENT_DYNAMIC(CPhoneNumbersDialog, CDialog)
 
 // Constructor / Destructor
 // ----------------
-CPhoneNumbersDialog::CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, LPARAM oEnableControls /*= ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL*/,CWnd* pParent /*=nullptr*/)
+CPhoneNumbersDialog::CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, LPARAM lEnableControls /*= ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL*/,CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DIALOG_PHONE_NUMBERS, pParent), m_oPhoneTypesArray(oPhoneTypesArray)
 {
 	m_strPhoneNumber = "";
 	m_lPhoneType = -1;
-	m_oEnableControlsParam = oEnableControls;
+	m_lEnableControlsParam = lEnableControls;
 }
 
-CPhoneNumbersDialog::CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, const PHONE_NUMBERS& recPhoneNumber, LPARAM oEnableControls /*= ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+CPhoneNumbersDialog::CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, const PHONE_NUMBERS& recPhoneNumber, LPARAM lEnableControls /*= ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_DIALOG_PHONE_NUMBERS, pParent), m_oPhoneTypesArray(oPhoneTypesArray)
 {
 	//Подаване на параметри
 	m_strPhoneNumber = recPhoneNumber.szPhone;
 	m_lPhoneType = recPhoneNumber.lIdPhoneType;
-	m_oEnableControlsParam = oEnableControls;
+	m_lEnableControlsParam = lEnableControls;
 }
 
 CPhoneNumbersDialog::~CPhoneNumbersDialog()
@@ -78,7 +78,7 @@ BOOL CPhoneNumbersDialog::OnInitDialog()
 		}
 	}
 	//Промяна на активността на контролите, според подадения параметър
-	EnableControls(m_oEnableControlsParam);
+	EnableControls(m_lEnableControlsParam);
 
 	return TRUE;
 }
@@ -108,10 +108,10 @@ void CPhoneNumbersDialog::OnBnClickedCancel()
 // Methods
 // ---------------
 
-void CPhoneNumbersDialog::EnableControls(LPARAM oEnableControls)
+void CPhoneNumbersDialog::EnableControls(LPARAM lEnableControls)
 {
 	//В зависимост от поданета стойност от тип енъм, се активират/деактивират контролите за писане
-	switch (oEnableControls)
+	switch (lEnableControls)
 	{
 	case ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL:
 	{

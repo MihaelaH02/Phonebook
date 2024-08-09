@@ -26,12 +26,13 @@ public:
 	/// <summary>
 	/// Функция за отваряне на нова сесия
 	/// </summary>
-	/// <returns>Функцията връща променлива от тип сесията при успех и хвърля грешки при неуспех</returns>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL OpenSession();
 
 	/// <summary>
 	/// Затвяряне на сесията
 	/// </summary>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL CloseSession();
 
 	/// <summary>
@@ -41,10 +42,28 @@ public:
 	CSession& GetSession();
 
 	/// <summary>
-	/// 
+	/// Метод за проверка на отворена сесия
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL IsSessionOpen();
+
+	/// <summary>
+	/// Метод за отваряне на транзакция
+	/// </summary>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
+	BOOL StartTransacion();
+
+	/// <summary>
+	/// Метод затваряне на транзакция с успех и запазване на данните
+	/// </summary>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
+	BOOL CommitTransaction();
+
+	/// <summary>
+	/// Метод за затваряне на транзакция с неуспех и връщане на старите данни
+	/// </summary>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
+	BOOL RollbackTransaction();
 
 
 // Overrides

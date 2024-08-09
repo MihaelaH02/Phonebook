@@ -64,7 +64,8 @@ void CPhoneTypesDoc::Serialize(CArchive& ar)
 // ----------------
 BOOL CPhoneTypesDoc::SelectPhoneType(const long lID, PHONE_TYPES& recPhoneType)
 {
-	if (!m_oPhoneTypesData.SelectWhereID(lID, recPhoneType))
+	//Селект на записа
+	if (!m_oPhoneTypesData.SelectPhoneTypeWhereID(lID, recPhoneType))
 	{
 		return FALSE;
 	}
@@ -73,8 +74,8 @@ BOOL CPhoneTypesDoc::SelectPhoneType(const long lID, PHONE_TYPES& recPhoneType)
 
 BOOL CPhoneTypesDoc::UpdatePhoneType(const PHONE_TYPES& recPhoneType)
 {
-	//Редакция в базата данни
-	if (!m_oPhoneTypesData.UpdateWhereID(recPhoneType.lId, recPhoneType))
+	//Редакция на записа
+	if (!m_oPhoneTypesData.UpdatePhoneTypeWhereID(recPhoneType.lId, recPhoneType))
 	{
 		return FALSE;
 	}
@@ -105,7 +106,8 @@ BOOL CPhoneTypesDoc::UpdatePhoneType(const PHONE_TYPES& recPhoneType)
 
 BOOL CPhoneTypesDoc::InsertPhoneType(PHONE_TYPES& recPhoneType)
 {
-	if (!m_oPhoneTypesData.Insert(recPhoneType))
+	//Добавяне на записа
+	if (!m_oPhoneTypesData.InsertPhoneType(recPhoneType))
 	{
 		return FALSE;
 	}
@@ -120,8 +122,8 @@ BOOL CPhoneTypesDoc::InsertPhoneType(PHONE_TYPES& recPhoneType)
 
 BOOL CPhoneTypesDoc::DeletePhoneType(const PHONE_TYPES& recPhoneType)
 {
-
-	if (!m_oPhoneTypesData.DeleteWhereID(recPhoneType.lId))
+	//Изтриване на записа
+	if (!m_oPhoneTypesData.DeletePhoneTypeWhereID(recPhoneType.lId))
 	{
 		return FALSE;
 	}
@@ -137,11 +139,6 @@ BOOL CPhoneTypesDoc::DeletePhoneType(const PHONE_TYPES& recPhoneType)
 
 const CPhoneTypesArray& CPhoneTypesDoc::GetPhoneTypesArray()
 {
-	/*if (!SelectAllPhoneTypesFromData())
-	{ 
-		//return;
-	}*/
-
 	return m_oPhoneTypesArray;
 }
 
@@ -153,7 +150,7 @@ INT_PTR CPhoneTypesDoc::GetPhoneTypesArrayCount()
 BOOL CPhoneTypesDoc::SelectAllPhoneTypesFromData()
 {
 	//Зареждане на данните от базата данни в масив
-	if (!m_oPhoneTypesData.SelectAll(m_oPhoneTypesArray))
+	if (!m_oPhoneTypesData.SelectAllPhoneTypes(m_oPhoneTypesArray))
 	{
 		return FALSE;
 	}

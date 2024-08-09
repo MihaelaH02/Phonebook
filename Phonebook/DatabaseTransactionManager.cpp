@@ -9,46 +9,71 @@
 // ----------------
 CDatabaseTransactionManager::CDatabaseTransactionManager()
 {
+	
+	m_pSession = new CInitializeSession();
+
 }
 
 CDatabaseTransactionManager::~CDatabaseTransactionManager()
 {
+	if (m_pSession != nullptr)
+	{
+		delete m_pSession;
+		m_pSession = nullptr;
+	}
 }
 
 
 // Methods
 // ----------------
-BOOL CDatabaseTransactionManager::StartTransacion()
+
+CInitializeSession* CDatabaseTransactionManager::GetSession()
 {
-	if (!OpenSession())
+	return m_pSession;
+}
+
+BOOL CDatabaseTransactionManager::OpenSafeTransaction()
+{
+	if (!m_pSession->StartTransacion())
 	{
+		delete m_pSession;
+		m_pSession = nullptr;
 		return FALSE;
 	}
-
-	HRESULT hResult = GetSession().StartTransaction();
-	if (FAILED(hResult))
-	{
-		return FALSE;
-	}
-
 	return TRUE;
 }
 
-BOOL CDatabaseTransactionManager::CommitTransaction()
+BOOL CDatabaseTransactionManager::CloseSafeTransactoin(BOOL bFlagForError)
 {
-	HRESULT hResult = GetSession().Commit();
-	if (FAILED(hResult))
+	//Затвяряне на транзакцията пир подаден флаг за грешка с неуспух
+	if (bFlagForError)
 	{
-		return FALSE;
-	}
-		
-	if (!CloseSession())
-	{
-		return FALSE;
+		if (!m_pSession->RollbackTransaction())
+		{
+			delete m_pSession;
+			m_pSession = nullptr;
+			return FALSE;
+		}
 	}
 
+	//Затваряне на транзакцията с успех
+	else 
+	{
+		if (!m_pSession->CommitTransaction())
+		{
+			return FALSE;
+			delete m_pSession;
+			m_pSession = nullptr;
+		}
+	}
+
+	delete m_pSession;
+	m_pSession = nullptr;
 	return TRUE;
 }
+
 
 // Overrides
 // ----------------
+
+

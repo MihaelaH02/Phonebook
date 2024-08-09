@@ -30,11 +30,14 @@ class CPersonsDialog : public CDialog
 // Constructor / Destructor
 // ----------------
 public:
+	/// <param name="oAdditionInfo">Параметър клас с допълнителни данни</param>
 	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
 	CPersonsDialog(const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="oPerson">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
-	CPersonsDialog(const CPersonInfo& oPerson, const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	/// <param name="oAdditionInfo">Параметър клас с допълнителни данни</param>
+	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
+	CPersonsDialog(CPersonInfo& oPerson, const CAdditionPersonInfo& oAdditionInfo, LPARAM lEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPersonsDialog();
 
@@ -95,18 +98,17 @@ public:
 	afx_msg void DeletePhoneNumber();
 
 	/// <summary>
-	/// Метод, който филтрира градовете по подаден регион
+	/// Метод, който филтрира телефонните номера по тип
 	/// </summary>
-	/// <param name="strRegion">Променлива стринг, по който ще се филтрират градовете</param>
 	afx_msg void FilterPhoneNumbersByType();
 
 	/// <summary>
-	/// Метод, който търси даден град по подадени данни
+	/// Метод, който търси даден телефонен номер по номер
 	/// </summary>
 	afx_msg void FindPhoneNumber();
 
 	/// <summary>
-	/// Метод за зареждане на всички градове
+	/// Метод за зареждане на всички телефонни номера
 	/// </summary>
 	afx_msg void ReloadPhoneNumbers();
 
@@ -119,10 +121,11 @@ public:
 // ----------------
 public:
 	/// <summary>
-	/// 
+	/// Метод за достъп до данните в контролите в диалога
 	/// </summary>
-	/// <returns></returns>
-	 BOOL GetControlsData(CPersonInfo& oPersonInfo);
+	/// <param name="oPersonInfo">Параметър клас, който ще съдържа данните</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL GetControlsData(CPersonInfo& oPersonInfo);
 
 private:
 	/// <summary>
@@ -130,24 +133,26 @@ private:
 	/// </summary>
 	/// <param name="oEnableControls">Флаг, който определя активонстта на контролите</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL EnableControls(LPARAM oEnableControls);
+	BOOL EnableControls(LPARAM lEnableControls);
 
 	/// <summary>
 	/// Метод за добавяне на елементи в комбо бокс контрола с градове
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL CPersonsDialog::AddItemsInCmbCities();
+	BOOL AddItemsInCmbCities();
 
 	/// <summary>
 	/// Метод за зареждане на всички данни от списък с телефонни номера в лист контролата
 	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL LoadPhoneNumbersInListCtrlFromArray();
 
 	/// <summary>
 	/// Метод за търсене на всички елементи от лист контролата по даден критерий
 	/// </summary>
-	/// <param name="recPerson">Структура, по която ще се търсият записи</param>
-	BOOL FilterItemsFromListCtrByCol(const CString& strListCtrElementToFind, LPARAM oColName);
+	/// <param name="strListCtrElementToFind">Параметър за стойност,която се търси</param>
+	/// <param name="strListCtrElementToFind">Параметър за колона в която ще се търси стойността</param>
+	BOOL FilterItemsFromListCtrByCol(const CString& strListCtrElementToFind, LPARAM lColName);
 
 	/// <summary>
 	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните от масива
@@ -261,12 +266,12 @@ private:
 	CString m_strAddress;
 
 	/// <summary>
-	/// Член променлива масив, която съдържа всички телефонни номера за клиент
+	/// Член променлива мап, която съдържа всички телефонни номера за клиент
 	/// </summary>
 	CPhoneNumbersMap m_oPhoneNumbersMap;
 
 	/// <summary>
-	/// Член променлива от тип клас, който съдържа допълнителна информация
+	/// Член променлива от тип клас, която съдържа допълнителна информация
 	/// </summary>
 	CAdditionPersonInfo m_oAdditionalInfo;
 
