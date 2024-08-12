@@ -19,56 +19,12 @@ CPersonsData::~CPersonsData()
 
 // Methods
 // ----------------
-BOOL CPersonsData::SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsInfoArray)
+BOOL CPersonsData::SelectAllPersons(CPersonsArray& oPersonsArray)
 {
-	//Инстанция на клас, който управлява сесиите и транзакциите
-	CDatabaseTransactionManager oDatabaseTransactionManager;
-
-	//Начало на транзакция
-	if (!oDatabaseTransactionManager.OpenSafeTransaction())
-	{
-		return FALSE;
-	}
-
 	//Инстанция на дватата класа с табличните данни, подавайки им една сесия
-	CPersonsTable oPersonsTable(oDatabaseTransactionManager.GetSession());
-	CPhoneNumbersTable oPhoneNumbersTable(oDatabaseTransactionManager.GetSession());
-
-	//Декларация на масив с прочетени клиенти от базата данни
-	CPersonsArray oPersonsArray;
+	CPersonsTable oPersonsTable;
 
 	if (!oPersonsTable.SelectAll(oPersonsArray))
-	{
-		oDatabaseTransactionManager.CloseSafeTransactoin(FALSE);
-		return FALSE;
-	}
-
-	//Преминава се през всеки прочетен клиент от базата данни 
-	for (INT_PTR nIndexPersons = 0; nIndexPersons < oPersonsArray.GetCount(); nIndexPersons++)
-	{
-		//Достъпваме настоящия елемент от масива с клиенти
-		PERSONS* pPerson = oPersonsArray.GetAt(nIndexPersons);
-		if (pPerson == nullptr)
-		{
-			return FALSE;
-		}
-
-		//Декларация на масив с прочетени телефонни номера за един клиент
-		CPhoneNumbersArray oPhoneNumbersArrayForPerson;
-
-		//Достъпваме всички телефонни номера за съответния клиент
-		if (!oPhoneNumbersTable.SelectWhereID(pPerson->lId, oPhoneNumbersArrayForPerson, oPhoneNumbersTable.ColIdPerson()))
-		{
-			oDatabaseTransactionManager.CloseSafeTransactoin(FALSE);
-			return FALSE;
-		}
-
-		//Добавяме данните за клиент и масива, с телефонните му номера, към мап
-		oPersonsInfoArray.AddElement(CPersonInfo(*pPerson, CPhoneNumbersMap(oPhoneNumbersArrayForPerson)));
-	}
-
-	//Затваряне на транзакцията
-	if (!oDatabaseTransactionManager.CloseSafeTransactoin())
 	{
 		return FALSE;
 	}
@@ -76,7 +32,7 @@ BOOL CPersonsData::SelectAllPersonsInfo(CTableDataArray<CPersonInfo>& oPersonsIn
 	return TRUE;
 }
 
-BOOL CPersonsData::SelectPersonInfoWithPersonId(const long lID, CPersonInfo& oPersonInfo)
+BOOL CPersonsData::SelectPersonInfoWithPersonId(const long& lID, CPersonDBModel& oPersonDBModel)
 {
 	//Инстанция на клас, който управлява сесиите и транзакциите
 	CDatabaseTransactionManager oDatabaseTransactionManager;
@@ -122,8 +78,8 @@ BOOL CPersonsData::SelectPersonInfoWithPersonId(const long lID, CPersonInfo& oPe
 	}
 
 	//Добавяме данните за клиент и масив с телефонните му номера към променвилата с всички данни за клиент
-	oPersonInfo.AddPerson(recPersonToFind);
-	if (!oPersonInfo.AddAllPhoneNumbers(CPhoneNumbersMap(oPhoneNumbersForPerson)))
+	oPersonDBModel.AddPerson(recPersonToFind);
+	if (!oPersonDBModel.AddAllPhoneNumbers(CPhoneNumbersMap(oPhoneNumbersForPerson)))
 	{
 		return FALSE;
 	}
@@ -131,7 +87,7 @@ BOOL CPersonsData::SelectPersonInfoWithPersonId(const long lID, CPersonInfo& oPe
 	return TRUE;
 }
 
-BOOL CPersonsData::DoOperationWithPersonInfo(CPersonInfo& oPersonInfo, LPARAM lOperationFlag)
+BOOL CPersonsData::DoOperationWithPerson(CPersonDBModel& oPersonDBModel, LPARAM lOperationFlag)
 {
 	//Инстанция на клас, който управлява сесиите и транзакциите
 	CDatabaseTransactionManager oDatabaseTransactionManager;
@@ -141,7 +97,7 @@ BOOL CPersonsData::DoOperationWithPersonInfo(CPersonInfo& oPersonInfo, LPARAM lO
 	}
 
 	//Извършване на опреации с клиентските данни
-	if (!ManagePersonInfoOperations(oDatabaseTransactionManager.GetSession(), oPersonInfo, lOperationFlag))
+	if (!ProcessPersonOperations(oDatabaseTransactionManager.GetSession(), oPersonDBModel, lOperationFlag))
 	{
 		oDatabaseTransactionManager.CloseSafeTransactoin(FALSE);
 		return FALSE;
@@ -153,13 +109,12 @@ BOOL CPersonsData::DoOperationWithPersonInfo(CPersonInfo& oPersonInfo, LPARAM lO
 		return FALSE;
 	}
 
-	//Изчистване на заделенат памет
 	AfxMessageBox(_T("Successful operation!"));
 
 	return TRUE;
 }
 
-BOOL CPersonsData::ManagePersonInfoOperations(CInitializeSession* pInitializeSession, CPersonInfo& oPersonInfo, LPARAM lFlagOperation)
+BOOL CPersonsData::ProcessPersonOperations(CInitializeSession* pInitializeSession, CPersonDBModel& oPersonDBModel, LPARAM& lFlagOperation)
 {
 	if (pInitializeSession == nullptr)
 	{
@@ -171,19 +126,12 @@ BOOL CPersonsData::ManagePersonInfoOperations(CInitializeSession* pInitializeSes
 	CPhoneNumbersTable oPhoneNumbersTable(pInitializeSession);
 
 	//Инстнация на клиент, върху който ще се извършват операции
-	PERSONS recPerson = oPersonInfo.GetPerson();
+	PERSONS recPerson = oPersonDBModel.GetPerson();
 
 	switch (lFlagOperation)
 	{
 
 	case OPERATIONS_WITH_DATA_FLAGS_READED:
-	{
-		//Извършване на операции само за телефонни номер
-		if (!ManagePhoneNumbersOperations(oPhoneNumbersTable, oPersonInfo.GetPhoneNumbers()))
-		{
-			return FALSE;
-		}
-	}
 	break;
 
 	//Извършване на операция добавяне на клиентски данни
@@ -195,16 +143,16 @@ BOOL CPersonsData::ManagePersonInfoOperations(CInitializeSession* pInitializeSes
 			return FALSE;
 		}
 		//Добавяне на новогенерирани ИД на клиент
-		oPersonInfo.SetIdPerson(recPerson.lId);
+		oPersonDBModel.SetIdPerson(recPerson.lId);
 
 		//Добавяне на ид на клиент за всички телефонни номера
-		if (!oPersonInfo.CheckAndConnectAllPhoneNumbersWithPersonId())
+		if (!oPersonDBModel.SetPhoneNumbersPersonId())
 		{
 			return FALSE;
 		}
 
 		//Извършване на операции само за телефонни номер
-		if (!ManagePhoneNumbersOperations(oPhoneNumbersTable, oPersonInfo.GetPhoneNumbers()))
+		if (!ProcessPhoneNumbers(oPhoneNumbersTable, oPersonDBModel.GetPhoneNumbers()))
 		{
 			return FALSE;
 		}
@@ -215,7 +163,7 @@ BOOL CPersonsData::ManagePersonInfoOperations(CInitializeSession* pInitializeSes
 	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
 	{
 		//Изтриване на всички телефонни номера за клиента
-		if (!ManagePhoneNumbersOperations(oPhoneNumbersTable, oPersonInfo.GetPhoneNumbers()))
+		if (!ProcessPhoneNumbers(oPhoneNumbersTable, oPersonDBModel.GetPhoneNumbers()))
 		{
 			return FALSE;
 		}
@@ -237,7 +185,7 @@ BOOL CPersonsData::ManagePersonInfoOperations(CInitializeSession* pInitializeSes
 		}
 
 		//Извършване на операции само за телефонни номер
-		if (!ManagePhoneNumbersOperations(oPhoneNumbersTable, oPersonInfo.GetPhoneNumbers()))
+		if (!ProcessPhoneNumbers(oPhoneNumbersTable, oPersonDBModel.GetPhoneNumbers()))
 		{
 			return FALSE;
 		}
@@ -253,16 +201,16 @@ BOOL CPersonsData::ManagePersonInfoOperations(CInitializeSession* pInitializeSes
 	}
 
 	//Обновление на мапа с телефинни номера
-	CPhoneNumbersMap oPhoneNumbersMap = oPersonInfo.GetPhoneNumbers();
-	oPhoneNumbersMap.MoveActiveValuesIntoKey();
+	CPhoneNumbersMap oPhoneNumbersOperationsMap = oPersonDBModel.GetPhoneNumbers();
+	oPhoneNumbersOperationsMap.ChangeValuesToOperation();
 
 	return TRUE;
 }
 	
-BOOL CPersonsData::ManagePhoneNumbersOperations(CPhoneNumbersTable& oPhoneNumbersTable,const CPhoneNumbersMap& oPhoneNumbersMap)
+BOOL CPersonsData::ProcessPhoneNumbers(CPhoneNumbersTable& oPhoneNumbersTable,const CPhoneNumbersMap& oPhoneNumbersOperationsMap)
 {
 	//Променливи за обход на мап
-	POSITION oPos = oPhoneNumbersMap.GetStartPosition();
+	POSITION oPos = oPhoneNumbersOperationsMap.GetStartPosition();
 	LPARAM lFlagOperation;
 	CPhoneNumbersArray* pPhoneNumberArray;
 
@@ -274,7 +222,7 @@ BOOL CPersonsData::ManagePhoneNumbersOperations(CPhoneNumbersTable& oPhoneNumber
 	while (oPos != NULL)
 	{
 		//Достъпваме настоящ елемент
-		oPhoneNumbersMap.GetNextAssoc(oPos, lFlagOperation, pPhoneNumberArray);
+		oPhoneNumbersOperationsMap.GetNextAssoc(oPos, lFlagOperation, pPhoneNumberArray);
 
 		if (pPhoneNumberArray == nullptr)
 		{
@@ -295,7 +243,7 @@ BOOL CPersonsData::ManagePhoneNumbersOperations(CPhoneNumbersTable& oPhoneNumber
 	return TRUE;
 }
 
-BOOL CPersonsData::ChoosePhoneNumbersOperation(CPhoneNumbersTable& oPhoneNumbersTable, LPARAM lFlagOperation, const CPhoneNumbersArray& oPhoneNumberArray)
+BOOL CPersonsData::ChoosePhoneNumbersOperation(CPhoneNumbersTable& oPhoneNumbersTable, LPARAM& lFlagOperation, const CPhoneNumbersArray& oPhoneNumberArray)
 {
 	switch (lFlagOperation)
 	{

@@ -1,9 +1,9 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "ValidateStringData.h"
+#include "CValidateDialogControlsData.h"
 #include "EnumsWithFlags.h"
-#include "EnumsDialogCtrInfo.h"
+#include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPhoneTypesDialog dialog
@@ -45,6 +45,7 @@ private:
 private:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnEnChangeEdbPhoneTypes();
 
 
 // Overrides
@@ -65,6 +66,24 @@ public:
 	/// </summary>
 	void EnableControls(LPARAM lEnableControls);
 
+	/// <summary>
+	/// Метод за проверка, дали контролата е на фокус
+	/// </summary>
+	/// <param name="oControla">Контрола, която ще се проверява</param>
+	/// <returns>Връща TRUE ако на фокус и FALSE ,ако не е</returns>
+	BOOL IsControlOnFocus(CWnd& oControla);
+
+	/// <summary>
+	/// Метод за извеждане на съобщение в контрола
+	/// </summary>
+	/// <param name="strText">Контрола, чийто текст ще се валидира</param>
+	/// <param name="nControlaID">Контрола, в която ще се съдържа текста</param>
+	void PrintErrorMsg(const CString& strText, int nControlaID);
+
+	/// <summary>
+	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
+	/// </summary>
+	BOOL HasErrorMsg();
 
 // Members
 // ----------------
@@ -77,10 +96,15 @@ private:
 	/// <summary>
 	/// 
 	/// </summary>
-	CString m_strPhoneType;
+	PHONE_TYPES m_recPhoneType;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
 	/// </summary>
 	LPARAM m_lEnableControlsParam;
+
+	/// <summary>
+	/// Инстанция на клас за верификация на данни
+	/// </summary>
+	CValidateDialogControlsData m_oValidateStringData;
 };

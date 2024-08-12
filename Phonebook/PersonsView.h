@@ -68,17 +68,16 @@ private:
 	/// Метод, който записва всички презентационни данни от всички елементи тип клиент в нов масив
 	/// </summary>
 	/// <param name="oPersonsArray">Масив с клиенти</param>
-	/// <param name="strPersonsArrayToDisplayInListCtrl">Масив с презентационни данни на всички клиенти</param>
+	/// <param name="oRowsDataArray">Масив с презентационни данни на всички клиенти</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertAllElementsPersonsToArrayWithDisplayData(const CPersonsArray& oPersonsArray, CTableDataArray<CTableDataArray<CString>>& strPersonsArrayToDisplayInListCtrl);
+	BOOL SetColumnDisplayDataArray(const CPersonsArray& oPersonsArray, CTypedPtrDataArray<CRowDataListCtrl<PERSONS>>& oRowsDataArray);
 
 	/// <summary>
 	/// Метод, който записва презентационните данни на един елемент клиент в нов масив
 	/// </summary>
-	/// <param name="recPerson">Еменет от тип структура с клиенти</param>
-	/// <param name="strPersonArray">Масив с презентационни данни за този елемент</param>
+	/// <param name="oRowData">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertToDisplayDataInListCtrl(const PERSONS& recPerson, CTableDataArray<CString>& strPersonArray);
+	BOOL SetColumnDisplayData(CRowDataListCtrl<PERSONS>& oRowData);
 
 
 // Overrides
@@ -146,12 +145,8 @@ public:
 
 // Members
 // ----------------
-	
-	/// <summary>
-	///Член проминлива от тип клас, който ще управлява елемените в лист контролата
-	/// </summary>
-	CListCtrlManager<PERSONS> m_oManagerListCtr;
 
+	
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;

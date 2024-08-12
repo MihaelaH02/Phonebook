@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ValidateStringData.h"
+#include "CValidateDialogControlsData.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CValidateStringData class
@@ -11,11 +11,11 @@
 // Constructor / Destructor
 // ----------------
 
-CValidateStringData::CValidateStringData() 
+CValidateDialogControlsData::CValidateDialogControlsData() 
 {
 }
 
-CValidateStringData::~CValidateStringData() 
+CValidateDialogControlsData::~CValidateDialogControlsData() 
 {
 }
 
@@ -27,7 +27,7 @@ CValidateStringData::~CValidateStringData()
 // Methods
 // ----------------
 
-CString CValidateStringData::SendStatusMsgForValidStringFormat(const CString& strText)
+CString CValidateDialogControlsData::SendStatusMsgForValidFormat(const CString& strText, BOOL bValidateString, const int& nValidLenght)
 {
 	//Проверка за празни полета
 	if (IsEmptyString(strText))
@@ -35,8 +35,16 @@ CString CValidateStringData::SendStatusMsgForValidStringFormat(const CString& st
 		return _T("Filed can not be empty!");
 	}
 
+	//Проверка дали въведения текст отговаря на максималната дължина на полета 
+	if (!IsValidLenght(strText, nValidLenght))
+	{
+		CString strErrorMsg;
+		strErrorMsg.Format(_T("Field must contain %d charachters!"), nValidLenght);
+		return strErrorMsg;
+	}
+
 	//Проверка дали са въведени само букви
-	if (!IsOnlyLettersCString(strText))
+	if (bValidateString && !IsOnlyLettersCString(strText))
 	{
 		return _T("Field must contain only letters!");
 	}
@@ -45,7 +53,7 @@ CString CValidateStringData::SendStatusMsgForValidStringFormat(const CString& st
 	return _T("");
 }
 
-void CValidateStringData::ValidateDataUpperLetter(CString& strText)
+void CValidateDialogControlsData::ValidateDataUpperLetter(CString& strText)
 {
 	//Променлива, която проверява колко празни символа имаме преди въведените букви
 	int nFindStartSpaces = 0;
@@ -90,17 +98,26 @@ void CValidateStringData::ValidateDataUpperLetter(CString& strText)
 	}
 }
 
-BOOL CValidateStringData::IsEmptyString(const CString& strText)
+BOOL CValidateDialogControlsData::IsEmptyString(const CString& strText)
 {
 	//Проверка, дали подадения стринг е празен
-	if (strText.IsEmpty())
+	if (strText.IsEmpty() || strText == "0")
 	{
 		return TRUE;
 	}
 	return FALSE;
 }
 
-BOOL CValidateStringData::IsOnlyLettersCString(const CString& strText)
+BOOL CValidateDialogControlsData::IsValidLenght(const CString& strText, const int nValidLenght)
+{
+	if (strText.GetLength() >= nValidLenght)
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
+
+BOOL CValidateDialogControlsData::IsOnlyLettersCString(const CString& strText)
 {
 	//Флаг, който следи за въведена поне една буква
 	bool bFlagOneFinedLetter = false;

@@ -11,20 +11,13 @@ IMPLEMENT_DYNAMIC(CCitiesDialog, CDialog)
 // Constructor / Destructor
 // ----------------
 CCitiesDialog::CCitiesDialog(LPARAM lEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CITIES_DIALOG, pParent)
+	: CDialog(IDD_CITIES_DIALOG, pParent), m_lEnableControlsParam(lEnableControls)
 {
-	m_strName = "";
-	m_strRegion = "";
-	m_lEnableControlsParam = lEnableControls;
 }
 
 CCitiesDialog::CCitiesDialog(const CITIES& recCity, LPARAM lEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CITIES_DIALOG, pParent)
+	: CDialog(IDD_CITIES_DIALOG, pParent), m_recCity(recCity), m_lEnableControlsParam(lEnableControls)
 {
-	//Подаване на параметри
-	m_strName = recCity.szCityName;
-	m_strRegion = recCity.szRegion;
-	m_lEnableControlsParam = lEnableControls;
 }
 
 CCitiesDialog::~CCitiesDialog()
@@ -51,11 +44,11 @@ BOOL CCitiesDialog::OnInitDialog()
 	m_edbRegion.SetLimitText(DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
 
 	//Задаване на стойности за контролите
-	m_edbName.SetWindowTextW(m_strName);
-	m_edbRegion.SetWindowTextW(m_strRegion);
+	m_edbName.SetWindowTextW(m_recCity.szCityName);
+	m_edbRegion.SetWindowTextW(m_recCity.szRegion);
 
 	//Проверка дали са поданени стойности за текстовите променливи
-	if (!m_strName.IsEmpty() && !m_strRegion.IsEmpty())
+	if (m_recCity.szCityName != nullptr && m_recCity.szRegion != nullptr)
 	{
 		//Задаване на начална празна стойност на контролите за съобщения за грешки  
 		SetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, _T(""));
@@ -87,12 +80,16 @@ void CCitiesDialog::OnBnClickedOk()
 		//Превръщаме въведените данни в коректни с валидатора, ако контролата е активна за писане
 		if (m_edbName.IsWindowEnabled())
 		{
-			m_oValidateStringData.ValidateDataUpperLetter(m_strName);
+			CString strEnteredCityName = m_recCity.szCityName;
+			m_oValidateStringData.ValidateDataUpperLetter(strEnteredCityName);
+			_tcscpy_s(m_recCity.szCityName, strEnteredCityName);
 		}
 
 		if (m_edbRegion.IsWindowEnabled())
 		{
-			m_oValidateStringData.ValidateDataUpperLetter(m_strRegion);
+			CString strEnteredCityRegion = m_recCity.szRegion;
+			m_oValidateStringData.ValidateDataUpperLetter(strEnteredCityRegion);
+			_tcscpy_s(m_recCity.szRegion, strEnteredCityRegion);
 		}
 
 		CDialog::OnOK();
@@ -148,17 +145,27 @@ void CCitiesDialog::EnableControls(LPARAM lEnableControls)
 
 void CCitiesDialog::OnEnChangeName()
 {
+	//Времаме данните от котролата
+	CString strControlText;
+	m_edbName.GetWindowTextW(strControlText);
+	_tcscpy_s(m_recCity.szCityName, strControlText);
+
 	//Извърване на необходими действия свързани със засичане на грешка
-	DoOnEnChangeEdbControla(m_edbName, m_strName, IDC_STT_CITIES_NAME_ERROR_MSG);
+	DoOnEnChangeEdbControla(m_edbName, strControlText, IDC_STT_CITIES_NAME_ERROR_MSG);
 }
 
 void CCitiesDialog::OnEnChangeRegion()
 {
+	//Времаме данните от котролата
+	CString strControlText;
+	m_edbRegion.GetWindowTextW(strControlText);
+	_tcscpy_s(m_recCity.szRegion, strControlText);
+
 	//Извърване на необходими действия свързани със засичане на грешка
-	DoOnEnChangeEdbControla(m_edbRegion, m_strRegion, IDC_STT_CITIES_REGION_ERROR_MSG);
+	DoOnEnChangeEdbControla(m_edbRegion, strControlText, IDC_STT_CITIES_REGION_ERROR_MSG);
 }
 
-void CCitiesDialog::DoOnEnChangeEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithErroe)
+void CCitiesDialog::DoOnEnChangeEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithError)
 {
 	//Проверка за фокус на контролата
 	if (!IsControlOnFocus(oControla))
@@ -166,21 +173,15 @@ void CCitiesDialog::DoOnEnChangeEdbControla(CWnd& oControla, CString& strText, i
 		return;
 	}
 
-	//Времаме данните от котролата
-	oControla.GetWindowTextW(strText);
-
 	//Извеждаме подходящо съобщение за грешка
-	PrintErrorMsg(strText, nControlaIDWithErroe);
+	PrintErrorMsg(strText, nControlaIDWithError);
 }
 
-CITIES& CCitiesDialog::GetControlsData()
+BOOL CCitiesDialog::GetControlsData(CITIES& recCity)
 {
-	//Задаване на нова структура, която съдържа данните от конторлите
-	CITIES recCity;
-	_tcscpy_s(recCity.szCityName, m_strName);
-	_tcscpy_s(recCity.szRegion, m_strRegion);
+	recCity = m_recCity;
 
-	return recCity;
+	return TRUE;
 }
 
 BOOL CCitiesDialog::IsControlOnFocus(CWnd& oControla)
@@ -197,7 +198,7 @@ BOOL CCitiesDialog::IsControlOnFocus(CWnd& oControla)
 void CCitiesDialog::PrintErrorMsg(const CString& strText, int nControlaID)
 {
 	//Визуализираме съобщение за грешка, ако е намерена такава с класа валидатор
-	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidStringFormat(strText);
+	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidFormat(strText);
 
 	//Задаване на съобщението, като текст в подадената контрола
 	SetDlgItemText(nControlaID, strResivedMgs);

@@ -48,13 +48,7 @@ public:
 	/// Достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с информацията за клиенти</returns>
-	CTableDataArray<CPersonInfo>& GetPersonInfo();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
-	BOOL GetAllPersons(CPersonsArray& oPersonsArray);
+	CPersonsArray& GetPersons();
 
 	/// <summary>
 	/// Метод, който връща клас с допълнителни данни
@@ -66,62 +60,38 @@ public:
 	/// Метод, който достъпва броя на клиентите
 	/// </summary>
 	/// <returns>Връща броя на елемените в масива, който съдържа информация за кленти</returns>
-	INT_PTR GetPersonsInfoArrayElementsCount();
+	INT_PTR GetPersonsArrayCount();
 
 	/// <summary>
 	/// Метод, който селектира клиеит по ид
 	/// </summary>
 	/// <param name="lID">Ид на клиент по което ще се търсят данни</param>
-	/// <param name="oPersonInfo">Масив с намерена ииформация за клиет</param>
+	/// <param name="oPersonDBModel">Масив с намерена ииформация за клиет</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SelectPersonInfoWithIdFromDatabase(const long lID,  CPersonInfo& oPersonInfo);
+	BOOL SelectPerson(const long& lID,  CPersonDBModel& oPersonDBModel);
 
 	/// <summary>
 	/// Метод за обработка на операции с информацията за клиенти
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ManagePersonInfo(CPersonInfo& oPersonInfo,const LPARAM lOperationFlag);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="LId"></param>
-	/// <returns></returns>
-	BOOL GetPersonInfoByPersonId(const long LId, CPersonInfo& oPersonInfo);
+	BOOL ProcessPerson(CPersonDBModel& oPersonDBModel,const LPARAM& lOperationFlag);
 
 private:
 	/// <summary>
 	/// Метод, който синхронизира напарвените промени в базата данни на елемент, по подадено ИД на клиент
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL RenewElementInPersonInfoArray(CPersonInfo& oPersonInfoToBeRenewInArray, const LPARAM lOperationFlag);
+	BOOL ProccesPersonInArray(PERSONS& recPerson, const LPARAM& lOperationFlag, INT_PTR& lIndex);
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="oNewDataPersonInfo"></param>
-	/// <returns></returns>
-	BOOL ManageInsertUpdateElementInPersonsInfoArray(const CPersonInfo& oNewDataPersonInfo);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="lId"></param>
-	/// <returns></returns>
-	INT_PTR FindIndexOfElementInPersonsInfoArrayByPersonId(const long lId);
 
 // Members
 // ----------------
 private:
-	/// <summary>
-	///Член променлива с за досъп до бизнес логиката
-	/// </summary>
-	CPersonsData m_oPersonsData;
 
 	/// <summary>
 	///Член променлива, съдърщата масив с данните от таблицата с градове
 	/// </summary>
-	CTableDataArray<CPersonInfo> m_oPersonsInfo;
+	CPersonsArray m_oPersonsArray;
 
 	/// <summary>
 	/// Член променилва от тип клас с дъполнителни данни

@@ -29,19 +29,24 @@ CPersonsDoc::~CPersonsDoc()
 // ----------------
 BOOL CPersonsDoc::OnNewDocument()
 {
+	SetTitle(_T("Persons"));
+
 	if (!CDocument::OnNewDocument())
 	{
 		return FALSE;
 	}
 
+	///Променлива за досъп до бизнес логиката
+	CPersonsData oPersonsData;
+
 	//Зареждане на клиенти от базата данни в масив
-	if (!m_oPersonsData.SelectAllPersonsInfo(m_oPersonsInfo))
+	if (!oPersonsData.SelectAllPersons(m_oPersonsArray))
 	{
 		return FALSE;
 	}
 
 	//Зареждане на допълнителнита данните от базата данни в масив
-	if (!m_oPersonsData.LoadAllAdditionalPersonInfo(m_oAdditionalInfo))
+	if (!oPersonsData.LoadAllAdditionalPersonInfo(m_oAdditionalInfo))
 	{
 		return FALSE;
 	}
@@ -49,33 +54,14 @@ BOOL CPersonsDoc::OnNewDocument()
 	return TRUE;
 }
 
-CTableDataArray<CPersonInfo>& CPersonsDoc::GetPersonInfo()
+CPersonsArray& CPersonsDoc::GetPersons()
 {
-	return m_oPersonsInfo;
+	return m_oPersonsArray;
 }
 
-INT_PTR CPersonsDoc::GetPersonsInfoArrayElementsCount()
+INT_PTR CPersonsDoc::GetPersonsArrayCount()
 {
-	return m_oPersonsInfo.GetCount();
-}
-
- BOOL CPersonsDoc::GetAllPersons(CPersonsArray& oPersonsArray)
-{
-	for (INT_PTR lIndex = 0; lIndex < m_oPersonsInfo.GetCount(); lIndex++)
-	{
-		CPersonInfo* pPersonInfo = m_oPersonsInfo.GetAt(lIndex);
-		if (pPersonInfo == nullptr)
-		{
-			return FALSE;
-		}
-
-		if (oPersonsArray.AddElement(pPersonInfo->GetPerson()) == -1)
-		{
-			return FALSE;
-		}
-
-	}
-	return TRUE;
+	return m_oPersonsArray.GetCount();
 }
 
 CAdditionPersonInfo& CPersonsDoc::GetAdditionalPersonInfo()
@@ -83,133 +69,96 @@ CAdditionPersonInfo& CPersonsDoc::GetAdditionalPersonInfo()
 	return m_oAdditionalInfo;
 }
 
-BOOL CPersonsDoc::SelectPersonInfoWithIdFromDatabase(const long lID, CPersonInfo& oPersonInfo)
+BOOL CPersonsDoc::SelectPerson(const long& lID, CPersonDBModel& oPersonDBModel)
 {
+	///Променлива за досъп до бизнес логиката
+	CPersonsData oPersonsData;
+
 	//Селект на клиент и информацията за него по ид
-	if (!m_oPersonsData.SelectPersonInfoWithPersonId(lID, oPersonInfo))
+	if (!oPersonsData.SelectPersonInfoWithPersonId(lID, oPersonDBModel))
 	{
 		return FALSE;
 	}
 	return TRUE;
 }
 
-BOOL CPersonsDoc::ManagePersonInfo(CPersonInfo& oPersonInfo, const LPARAM lOperationFlag)
+BOOL CPersonsDoc::ProcessPerson(CPersonDBModel& oPersonDBModel, const LPARAM& lOperationFlag)
 {
-	//Указател към старите данни
-	CPersonInfo* pPersonInfoData = &oPersonInfo;
+	//Копие на клиента, преди дабъде променен
+	PERSONS recPeroson = oPersonDBModel.GetPerson();
+
+	//Достъпваме индекса на елемента в масива
+	INT_PTR lIndex = m_oPersonsArray.FindIndexByElement(recPeroson, CompareId);
+
+	///Променлива за досъп до бизнес логиката
+	CPersonsData oPersonsData;
 
 	//Ивършване на операции в зависимост от флага
-	if (!m_oPersonsData.DoOperationWithPersonInfo(oPersonInfo, lOperationFlag))
+	if (!oPersonsData.DoOperationWithPerson(oPersonDBModel, lOperationFlag))
 	{
 		return FALSE;
 	}
 
 	//Обновяване на засегнатия елемент в масива с данни за клиенти
-	if (!RenewElementInPersonInfoArray(oPersonInfo, lOperationFlag))
+	if(!ProccesPersonInArray(recPeroson, lOperationFlag, lIndex))
 	{
 		return FALSE;
-	}
-
-	//Достъпваме индекса на променения елемент
-	INT_PTR lIndexRenewElementInPersonsInfoArray = FindIndexOfElementInPersonsInfoArrayByPersonId(oPersonInfo.GetPerson().lId);
-
-	if (lIndexRenewElementInPersonsInfoArray != -1)
-	{
-		//Достъпваме обновения елемент ако не е бил изтрит
-		pPersonInfoData = m_oPersonsInfo.GetAt(lIndexRenewElementInPersonsInfoArray);
 	}
 
 	//Обновяване на информацията за клиент във вюто, при изтрит елемент се подават сатрите данни
-	UpdateAllViews(nullptr, lOperationFlag, (CObject*)&pPersonInfoData->GetPerson());
+	UpdateAllViews(nullptr, lOperationFlag, (CObject*)&recPeroson);
 
 	return TRUE;
 }
 
-BOOL CPersonsDoc::GetPersonInfoByPersonId(const long LId, CPersonInfo& oPersonInfo)
+BOOL CPersonsDoc::ProccesPersonInArray(PERSONS& recPerson, const LPARAM& lOperationFlag, INT_PTR& lIndex)
 {
-	//Нямираме индекса на елемнта по ИД на клиент в масива с клиенски данни
-	INT_PTR lIndex = FindIndexOfElementInPersonsInfoArrayByPersonId(LId);
-	if (lIndex == -1)
+	switch (lOperationFlag)
 	{
-		return FALSE;
-	} 
+	//При подаване на флаг за прочетен елемент, да не се изпълнява операция
+	case OPERATIONS_WITH_DATA_FLAGS_READED:
+	break;
 
-	//Достъпваме цялата информация за открития клиент
-	CPersonInfo* pFindPersonInfo =  m_oPersonsInfo.GetAt(lIndex);
-	if (pFindPersonInfo == nullptr)
+	//При подаване на флаг за добавяне, да се добави елемента от масива с клиенти
+	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
 	{
-		return FALSE;
-	}
-
-	//Задаваме нови стойности на подадения параметър
-	if (!oPersonInfo.AddPersonInfo(pFindPersonInfo->GetPerson(), pFindPersonInfo->GetPhoneNumbers()))
-	{
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-BOOL CPersonsDoc::RenewElementInPersonInfoArray(CPersonInfo& oPersonInfoToBeRenewInArray,const  LPARAM lOperationFlag)
-{
-	//Ако сме подали флаг за изтриване, да се прелахне елемента от масива с клиентски данни
-	if (lOperationFlag == OPERATIONS_WITH_DATA_FLAGS_DELETE)
-	{
-		if (!m_oPersonsInfo.RemoveElement(oPersonInfoToBeRenewInArray))
+		if (m_oPersonsArray.AddElement(recPerson) == -1)
 		{
 			return FALSE;
 		}
-
-		return TRUE;
 	}
+	break;
 
-	//Добавяне или редактиране на елемент в клиентския масив
-	if (!ManageInsertUpdateElementInPersonsInfoArray(oPersonInfoToBeRenewInArray))
+	//При подаване на флаг за редакция, да се редактира елемента от масива с клиенти
+	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
 	{
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-BOOL CPersonsDoc::ManageInsertUpdateElementInPersonsInfoArray(const CPersonInfo& oNewDataPersonInfo) 
-{
-	//Търси се в масива с клиентки данни клиент с ИД на подаден елемент за обновление
-	INT_PTR lIndexOfElement = FindIndexOfElementInPersonsInfoArrayByPersonId(oNewDataPersonInfo.GetPerson().lId);
-
-	if(lIndexOfElement != -1)
-	{
-		m_oPersonsInfo.ReplaceDataOfElementByIndex(lIndexOfElement, oNewDataPersonInfo);
-		return TRUE;
-	}
-
-	//Ако елемента не присъства в масива с клиентски данни да се добави
-	if (m_oPersonsInfo.AddElement(oNewDataPersonInfo) == -1)
-	{
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-INT_PTR CPersonsDoc::FindIndexOfElementInPersonsInfoArrayByPersonId(const long lId)
-{
-	for (INT_PTR lIndex = 0; lIndex < m_oPersonsInfo.GetCount(); lIndex++)
-	{
-		//Достъп до текущ елемент
-		CPersonInfo* oPersonInfo = m_oPersonsInfo.GetAt(lIndex);
-
-		//Сравнение на ид на двата клиента
-		if (oPersonInfo->GetPerson().lId == lId)
+		if (!m_oPersonsArray.ReplaceElement(lIndex, recPerson))
 		{
-			return lIndex;
+			return FALSE;
 		}
 	}
+	break;
 
-	//Връщаме -1 при липса на клиент в масива с подадено ИД
-	return -1;
+	//При подаване на флаг за изтриване, да се прелахне елемента от масива с клиенти
+	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
+	{
+		if (!m_oPersonsArray.RemoveElement(recPerson, CompareId))
+		{
+			return FALSE;
+		}
+	}
+	break;
+
+	//При подаден грешен флаг
+	default:
+	{
+		return FALSE;
+	}
+	break;
+	}
+
+	return TRUE;
 }
-
 
 // CPersonsDoc diagnostics
 
@@ -242,6 +191,3 @@ void CPersonsDoc::Serialize(CArchive& ar)
 	}
 }
 #endif
-
-
-// CPersonsDoc commands

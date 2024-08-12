@@ -106,6 +106,9 @@ void CCitiesView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 
 void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
@@ -138,7 +141,7 @@ void CCitiesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	//Другите опрерации са вързможни само ако има избран елемент
-	if (m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities) == -1)
+	if (oListCtrManager.GetIndexSelectedItem(lscCities) == -1)
 	{
 		return;
 	}
@@ -183,11 +186,15 @@ void CCitiesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	{
 		return;
 	}
+
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
+	int nSelectedIndex = oListCtrManager.GetIndexSelectedItem(lscCities);
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -217,67 +224,52 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		return;
 	}
 
-	//Обект, който ще се обработва, ако е подаден такъв
-	if (pHint == nullptr)
-	{
-		return;
-	}
-	CITIES& recCity = *(CITIES*)pHint;
-
-	//Превръщаме града в масив с стрингови данни, които ще се презентират в лист контролата
-	CTableDataArray<CString> strCitiesArrayToOperateInListCtrl;
-	if (!ConvertElementCitiesToArrayWithDisplayData(recCity, strCitiesArrayToOperateInListCtrl))
-	{
-		return;
-	}
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
 
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = m_oListCtrManager.GetIndexSelectedItemListCtrl(lscCities);
-
-	switch (lHint)
-	{
-		//Проверка за изпълнение на операция добавяне на елемент
-	case OPERATIONS_WITH_DATA_FLAGS_INSERT:
-	{
-		//Добавяме данни
-		if (!m_oListCtrManager.ManageAddOrEditElementListCtr(lscCities, recCity, strCitiesArrayToOperateInListCtrl))
-		{
-			AfxMessageBox(_T("Failed to insert city in list!\n Try to reload."));
-			return;
-		}
-	}
-	break;
-
-	//Проверка за изпълнение на операция редакция на елемент
-	case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
-	{
-		//Редактираме, по открития индекс, данните
-		if (!m_oListCtrManager.ManageAddOrEditElementListCtr(lscCities, recCity, strCitiesArrayToOperateInListCtrl, nIndexItem))
-		{
-			AfxMessageBox(_T("Failed to insert city in list!\n Try to reload."));
-			return;
-		}
-	}
-	break;
+	int nIndexItem = oListCtrManager.GetIndexSelectedItem(lscCities);
 
 	//Проверка за изпълнение на операция изтриване на елемент
-	case OPERATIONS_WITH_DATA_FLAGS_DELETE:
+	if (lHint == OPERATIONS_WITH_DATA_FLAGS_DELETE)
 	{
-		if (!m_oListCtrManager.DeleteElementListCtr(lscCities, nIndexItem))
+		if (!oListCtrManager.RemoveElement(lscCities, nIndexItem))
 		{
-			AfxMessageBox(_T("Failed to insert city in list!\n Try to reload."));
-			return;
+			AfxMessageBox(_T("Failed to do operation in list!\n Try to reload."));
 		}
-	}
-	break;
+		return;
 	}
 
-	//Сортировка
+	//Обект, който ще се обработва
+	if (pHint == nullptr)
+	{
+		return;
+	}
+
+	CITIES& recCity = *(CITIES*)pHint;
+
+	//Превръщаме града в масив с стрингови данни, които ще се презентират в лист контролата
+	CRowDataListCtrl<CITIES> oCitiesRowsDataListCtrl;
+	oCitiesRowsDataListCtrl.SetData(recCity);
+	if (!SetColumnDisplayData(oCitiesRowsDataListCtrl))
+	{
+		return;
+	}
+
+	//Проверка за изпълнение на операция добавяне или редакция на елемент
+	if (!oListCtrManager.AddOrEditElement(lscCities, oCitiesRowsDataListCtrl, nIndexItem))
+	{
+		AfxMessageBox(_T("Failed to do operation in list!\n Try to reload."));
+		return;
+	}
+
+	//Сортировка на елементите в лист контролата след направен промени
 	if (!SortItemsListCtr())
 	{
+		AfxMessageBox(_T("Failed to sort data in list!\n Try to reload."));
 		return;
 	}
 }
@@ -287,11 +279,14 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 // ---------------
 void CCitiesView::ViewCityInfo()
 {
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Достъпваме данните от лист контролата
-	CITIES* pCity = m_oListCtrManager.GetSelectedItemListCtrl(lscCities);
+	CITIES* pCity = oListCtrManager.GetSelectedItem(lscCities);
 
 	//Проверка за открит елемент
 	if (pCity == nullptr)
@@ -322,7 +317,11 @@ void CCitiesView::InsertCity()
 	}
 
 	//Вземаме данните от контролите от диалога
-	recCity = oDialog.GetControlsData();
+	if (!oDialog.GetControlsData(recCity))
+	{
+		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		return;
+	}
 
 	//Добавяме данните в документа
 	if (!(GetDocument() && GetDocument()->InsertCity(recCity)))
@@ -333,11 +332,14 @@ void CCitiesView::InsertCity()
 
 void CCitiesView::UpdateCity()
 {
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
-	CITIES* pCity = m_oListCtrManager.GetSelectedItemListCtrl(lscCities);
+	CITIES* pCity = oListCtrManager.GetSelectedItem(lscCities);
 
 	//Проверка за открит елемент
 	if (pCity == nullptr)
@@ -357,8 +359,13 @@ void CCitiesView::UpdateCity()
 	{
 		return;
 	}
+
 	//Присвояваме ноивте данни от контролите в диалога със старото ид
-	*pCity = oDialog.GetControlsData();
+	if (!oDialog.GetControlsData(*pCity))
+	{
+		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		return;
+	}
 	pCity->lId = lId;
 
 	//Редактираме данните в документа като подаваме стуртура с обновени данни
@@ -379,11 +386,14 @@ void CCitiesView::DeleteCity()
 		return;
 	}
 
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Достъпваме селектирания запис
-	CITIES* pCity = m_oListCtrManager.GetSelectedItemListCtrl(lscCities);
+	CITIES* pCity = oListCtrManager.GetSelectedItem(lscCities);
 
 	//Проверка за открит елемент
 	if (pCity == nullptr)
@@ -404,21 +414,26 @@ void CCitiesView::FilterCitiesByRegion()
 	//Достъпваме диалога
 	CCitiesDialog oDialog(ENABLE_DIALOG_CITIES_CTR_FLAG_ONLY_REGION);
 
-	//Нова структура, която ще съдържа данни за новия запис
-	CITIES recCity;
-
 	//При натиснат бутон ОК
 	if (oDialog.DoModal() != IDOK)
 	{
 		return;
 	}
 
+	//Нова структура, която ще съдържа данни за новия запис
+	CITIES recCity;
+
 	//Вземаме данните от контролите от диалога
-	recCity = oDialog.GetControlsData();
+	if (!oDialog.GetControlsData(recCity))
+	{
+		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		return;
+	}
 
 	//Филтрираме елементите от лист контролата
 	if (!FilterItemsFromListCtr(recCity))
 	{
+		AfxMessageBox(_T("Failed to filter data in list!\n Try to reload."));
 		return;
 	}
 
@@ -431,20 +446,26 @@ void CCitiesView::FindOneCity()
 	//Достъпваме диалога
 	CCitiesDialog oDialog;
 
-	//Нова структура, която ще съдържа данни за новия запис
-	CITIES recCity;
-
 	//При натиснат бутон ОК
 	if (oDialog.DoModal() != IDOK)
 	{
 		return;
 	}
+
+	//Нова структура, която ще съдържа данни за новия запис
+	CITIES recCity;
+
 	//Вземаме данните от контролите от диалога
-	recCity = oDialog.GetControlsData();
+	if (!oDialog.GetControlsData(recCity))
+	{
+		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		return;
+	}
 
 	//Филтрираме елементите от лист контролата
 	if (!FilterItemsFromListCtr(recCity))
 	{
+		AfxMessageBox(_T("Failed to find data from list!\n Try to reload."));
 		return;
 	}
 }
@@ -467,6 +488,9 @@ void CCitiesView::ReloadCities()
 
 BOOL CCitiesView::LoadDataInListCtrFromDoc()
 {
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
@@ -476,18 +500,21 @@ BOOL CCitiesView::LoadDataInListCtrFromDoc()
 	{
 		return FALSE;
 	}
+
+	//Инстанция на масив с всички градове от документа
 	const CCitiesArray& oCitiesArray = pCitiesDoc->GetCitiesArray();
 
-	//Запълваме масив с всички презентационни данни на всички елементи
-	CTableDataArray<CTableDataArray<CString>> strCitiesArrayToOperateInListCtrl;
+	//Инстанция на масив, с всички нужни данни на лист контролата, за висчки градове
+	CTypedPtrDataArray<CRowDataListCtrl<CITIES>> oRowsDisplayDataListCtrl;
 
-	if (!ConvertAllElementCitiesToArrayWithDisplayData(oCitiesArray, strCitiesArrayToOperateInListCtrl))
+	//Запълване на масива 
+	if (!SetColumnDisplayDataArray(oCitiesArray, oRowsDisplayDataListCtrl))
 	{
 		return FALSE;
 	}
 
 	//Зареждаме данните от масива в лист контролата
-	if (!m_oListCtrManager.LoadDataInListCtrFromResourse(lscCities, oCitiesArray, strCitiesArrayToOperateInListCtrl))
+	if (!oListCtrManager.LoadDataFromResourse(lscCities, oRowsDisplayDataListCtrl))
 	{
 		return FALSE;
 	}
@@ -550,6 +577,9 @@ BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
 
 BOOL CCitiesView::IsAllDataLoadFromDoc()
 {
+	//Променлива от тип клас, който управлява елементите в лист контролата
+	CListCtrlManager<CITIES> oListCtrManager;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscCities = GetListCtrl();
 
@@ -562,7 +592,7 @@ BOOL CCitiesView::IsAllDataLoadFromDoc()
 	}
 
 	//връщаме резултата за успех или не
-	if (!m_oListCtrManager.IsAllDataLoadFromResourse(lscCities, pCitiesDoc->GetCitiesArrayCount()))
+	if (!oListCtrManager.IsAllDataLoadFromResourse(lscCities, pCitiesDoc->GetCitiesArrayCount()))
 	{
 		return FALSE;
 	}
@@ -575,7 +605,10 @@ BOOL CCitiesView::SortItemsListCtr()
 	CListCtrl& lscCities = GetListCtrl();
 
 	//Изпълняваме метод за сортиране по азбучен ред
-	lscCities.SortItems(CompareFunc, 0);
+	if (!lscCities.SortItems(CompareFunc, 0))
+	{
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -604,16 +637,17 @@ int CALLBACK CCitiesView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lPa
 	return nResult;
 }
 
-BOOL CCitiesView::ConvertElementCitiesToArrayWithDisplayData(const CITIES recCity, CTableDataArray<CString>& strCitiesArray)
+BOOL CCitiesView::SetColumnDisplayData(CRowDataListCtrl<CITIES>& oRowDataListCtrl)
 {
+	const CITIES& recCity = oRowDataListCtrl.GetData();
 	//Добавяме първи елемент, който ще се презентира
-	if (strCitiesArray.AddElement(recCity.szRegion) == -1)
+	if (oRowDataListCtrl.AddElementToDisplayData(recCity.szRegion) == -1)
 	{
 		return FALSE;
 	}
 
 	//Добавяме втори елемент, който ще се презентира
-	if (strCitiesArray.AddElement(recCity.szCityName) == -1)
+	if (oRowDataListCtrl.AddElementToDisplayData(recCity.szCityName) == -1)
 	{
 		return FALSE;
 	}
@@ -621,7 +655,7 @@ BOOL CCitiesView::ConvertElementCitiesToArrayWithDisplayData(const CITIES recCit
 	return TRUE;
 }
 
-BOOL CCitiesView::ConvertAllElementCitiesToArrayWithDisplayData(const CCitiesArray& oCitiesArray, CTableDataArray<CTableDataArray<CString>>& strCitiesArrayToPresentInListCtrl)
+BOOL CCitiesView::SetColumnDisplayDataArray(const CCitiesArray& oCitiesArray, CTypedPtrDataArray<CRowDataListCtrl<CITIES>>& oCitiesArrayToDisplay)
 {
 	//Преминаваме през висчки елементи на масива с данни за градове
 	for (INT_PTR nIndex = 0; nIndex < oCitiesArray.GetCount(); nIndex++)
@@ -634,14 +668,16 @@ BOOL CCitiesView::ConvertAllElementCitiesToArrayWithDisplayData(const CCitiesArr
 		}
 
 		//Инициализираме масив, който ще съдържа данните от елемента, който ще се презентира
-		CTableDataArray<CString> strArrayOneElement;
-		if (!ConvertElementCitiesToArrayWithDisplayData(*recCity, strArrayOneElement))
+		CRowDataListCtrl<CITIES> oOneRowDisplayData;
+		oOneRowDisplayData.SetData(*recCity);
+
+		if (!SetColumnDisplayData(oOneRowDisplayData))
 		{
 			return FALSE;
 		}
 
 		//Добавяме масива с презентационни данни съм масива с всички данни на всички елементи
-		if (strCitiesArrayToPresentInListCtrl.AddElement(strArrayOneElement) == -1)
+		if (oCitiesArrayToDisplay.AddElement(oOneRowDisplayData) == -1)
 		{
 			return FALSE;
 		}

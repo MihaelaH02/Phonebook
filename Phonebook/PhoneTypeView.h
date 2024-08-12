@@ -64,17 +64,16 @@ private:
 	/// Метод, който записва всички презентационни данни от всички елементи тип клиент в нов масив
 	/// </summary>
 	/// <param name="oPhonetypesArray">Масив с типове телефони</param>
-	/// <param name="strPhonetypesArrayToDisplayInListCtrl">Масив с презентационни данни на всички типове телефони</param>
+	/// <param name="oRowsDataArray">Масив с презентационни данни на всички типове телефони</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertAllElementsPhoneTypesToArrayWithDisplayData(const CTableDataArray<PHONE_TYPES>& oPhonetypesArray, CTableDataArray<CTableDataArray<CString>>& strPhonetypesArrayToDisplayInListCtrl);
+	BOOL SetColumnDisplayDataArray(const CTypedPtrDataArray<PHONE_TYPES>& oPhoneTypesArray, CTypedPtrDataArray<CRowDataListCtrl<PHONE_TYPES>>& oRowsDataArray);
 
 	/// <summary>
 	/// Метод, който записва презентационните данни на един елемент тип телефон в нов масив
 	/// </summary>
-	/// <param name="recPhoneType">Еменет от тип структура с типове телефони</param>
-	/// <param name="strPhoneType">Масив с презентационни данни за този елемент</param>
+	/// <param name="oRowData">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertElementPhoneTypeToArrayWithDisplayData(const PHONE_TYPES& recPhoneType, CTableDataArray<CString>& strPhoneType);
+	BOOL SetColumnDisplayData(CRowDataListCtrl<PHONE_TYPES>& oRowData);
 
 
 
@@ -120,7 +119,7 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void SelectPhoneType();
+	afx_msg void ViewPhoneType();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
@@ -149,11 +148,6 @@ public:
 
 // Members
 // ----------------
-
-	/// <summary>
-	///Член проминлива от тип клас, който ще управлява елемените в лист контролата
-	/// </summary>
-	CListCtrlManager<PHONE_TYPES> m_oManagerListCtr;
 
 public:
 #ifdef _DEBUG

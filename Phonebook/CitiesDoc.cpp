@@ -41,6 +41,8 @@ CCitiesDoc::~CCitiesDoc()
 
 BOOL CCitiesDoc::OnNewDocument()
 {
+	SetTitle(_T("Cities"));
+
 	if (!CDocument::OnNewDocument())
 	{
 		return FALSE;
@@ -136,7 +138,7 @@ BOOL CCitiesDoc::DeleteCity(const CITIES& recCity)
 	}
 
 	//Премахване на елемента от масива
-	m_oCitiesArray.RemoveElement(recCity);
+	m_oCitiesArray.RemoveElement(recCity, CompareId);
 
 	//Редакция на вютата, подаване на параметър за изтриване и обект, който е засегнат
 	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_DELETE, (CObject*)&recCity);

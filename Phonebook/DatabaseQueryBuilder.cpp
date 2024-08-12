@@ -59,6 +59,11 @@ CString CDatabaseQueryBuilder::Build()
     return m_strQuery;
 }
 
+void CDatabaseQueryBuilder::Clear()
+{
+    m_strQuery = "";
+}
+
 
 // Overrides
 // ----------------

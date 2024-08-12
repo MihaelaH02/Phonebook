@@ -1,9 +1,9 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "ValidateStringData.h"
+#include "CValidateDialogControlsData.h"
 #include "EnumsWithFlags.h"
-#include "EnumsDialogCtrInfo.h"
+#include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPhoneNumbersDialog dialog
@@ -44,6 +44,9 @@ protected:
 private:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnEnChangePhoneNumber();
+	afx_msg void OnCbnSelchangePhoneType();
+
 
 // Overrides
 // ----------------
@@ -70,6 +73,26 @@ public:
 	/// <returns>Връща TRUE при успех и FALSE при открита грешка</returns>
 	BOOL AddItemsInCmbPhoneNumber();
 
+	/// <summary>
+	/// Метод за проверка, дали контролата е на фокус
+	/// </summary>
+	/// <param name="oControla">Контрола, която ще се проверява</param>
+	/// <returns>Връща TRUE ако на фокус и FALSE ,ако не е</returns>
+	BOOL IsControlOnFocus(CWnd& oControla);
+
+	/// <summary>
+	/// Метод за извеждане на съобщение в контрола
+	/// </summary>
+	/// <param name="strText">Контрола, чийто текст ще се валидира</param>
+	/// <param name="nControlaID">Контрола, в която ще се съдържа текста</param>
+	void PrintErrorMsg(int nControlaID, const CString& strErrorMsg = _T("NULL"));
+
+	/// <summary>
+	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
+	/// </summary>
+	BOOL HasErrorMsg();
+
+
 // Members
 // ----------------
 private:
@@ -79,19 +102,14 @@ private:
 	CEdit m_edbPhoneNumber;
 
 	/// <summary>
-	/// Член променлива за текстова контрола за област
+	/// Член променлива за комбо бокс за тип телефон
 	/// </summary>
 	CComboBox m_cmbPhoneType;
 
 	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за име на град
+	/// Член променлива, която съдържа данни за телефонен номер
 	/// </summary>
-	CString m_strPhoneNumber;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за област
-	/// </summary>
-	long m_lPhoneType;
+	PHONE_NUMBERS m_recPhoneNumber;
 
 	/// <summary>
 	/// Член променлива масив, която съдържа всички типове телефони
@@ -106,5 +124,5 @@ private:
 	/// <summary>
 	/// Инстанция на клас за верификация на данни
 	/// </summary>
-	CValidateStringData m_oValidateStringData;
+	CValidateDialogControlsData m_oValidateStringData;
 };

@@ -1,9 +1,9 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "ValidateStringData.h"
+#include "CValidateDialogControlsData.h"
 #include "EnumsWithFlags.h"
-#include "EnumsDialogCtrInfo.h"
+#include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesDialog dialog
@@ -64,7 +64,7 @@ public:
 	/// Достъп до стойности за стринговите член променливи
 	/// </summary>
 	/// <returns>Връща структура от тип градове</returns>
-	CITIES& GetControlsData();
+	BOOL GetControlsData(CITIES& recCity);
 
 private:
 	/// <summary>
@@ -124,14 +124,9 @@ private:
 	CEdit m_edbRegion;
 
 	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за име на град
+	/// Член променлива, която съдържа данните за града
 	/// </summary>
-	CString m_strName;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за област
-	/// </summary>
-	CString m_strRegion;
+	CITIES m_recCity;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
@@ -141,5 +136,5 @@ private:
 	/// <summary>
 	/// Инстанция на клас за верификация на данни
 	/// </summary>
-	CValidateStringData m_oValidateStringData;
+	CValidateDialogControlsData m_oValidateStringData;
 };

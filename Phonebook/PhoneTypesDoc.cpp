@@ -31,6 +31,8 @@ CPhoneTypesDoc::~CPhoneTypesDoc()
 // ----------------
 BOOL CPhoneTypesDoc::OnNewDocument()
 {
+	SetTitle(_T("Phone types"));
+
 	if (!CDocument::OnNewDocument())
 	{
 		return FALSE;
@@ -80,28 +82,22 @@ BOOL CPhoneTypesDoc::UpdatePhoneType(const PHONE_TYPES& recPhoneType)
 		return FALSE;
 	}
 
-	//Редакция в масива с данни
-	for (INT_PTR nIndex = 0; nIndex < m_oPhoneTypesArray.GetCount(); nIndex++)
+	//Достъпваме индекса на елемента в масива
+	INT_PTR lIndex = m_oPhoneTypesArray.FindIndexByElement(recPhoneType, CompareId);
+	if (lIndex == -1)
 	{
-		//Превъщаме указател от масива в променлива от тип структура с градове
-		PHONE_TYPES* pCurrentPhoneTypeFromArray = m_oPhoneTypesArray.GetAt(nIndex);
-		if (pCurrentPhoneTypeFromArray == nullptr)
-		{
-			return FALSE;
-		}
-
-		//Търсим ИД на текущия елемент от масива дали отговаря на подадения, който трябва да се редактира
-		if (pCurrentPhoneTypeFromArray->lId == recPhoneType.lId)
-		{
-			//Редактираме стойностите на елемента в масива, с тези на подадения като пакаметър структура
-			*pCurrentPhoneTypeFromArray = recPhoneType;
-
-			//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
-			UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_UPDATE, (CObject*)pCurrentPhoneTypeFromArray);
-			return TRUE;
-		}
+		return FALSE;
 	}
-	return FALSE;
+
+	//Промяна на стойностте на елемента на контретен иднекс
+	if (!m_oPhoneTypesArray.ReplaceElement(lIndex, recPhoneType))
+	{
+		return FALSE;
+	}
+
+	//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
+	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_UPDATE, (CObject*)&recPhoneType);
+	return TRUE;
 }
 
 BOOL CPhoneTypesDoc::InsertPhoneType(PHONE_TYPES& recPhoneType)
@@ -129,7 +125,10 @@ BOOL CPhoneTypesDoc::DeletePhoneType(const PHONE_TYPES& recPhoneType)
 	}
 
 	//Премахване на елемента от масива
-	m_oPhoneTypesArray.RemoveElement(recPhoneType);
+	if (!m_oPhoneTypesArray.RemoveElement(recPhoneType, CompareId))
+	{
+		return FALSE;
+	}
 
 	//Редакция на вютата, подаване на параметър за изтриване и обект, който е засегнат
 	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_DELETE, (CObject*)&recPhoneType);

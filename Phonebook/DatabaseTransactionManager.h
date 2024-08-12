@@ -36,7 +36,7 @@ public:
 	/// </summary>
 	/// <param name="bFlagForError">Параметър за флаг, който указва дали има</param>
 	/// <returns></returns>
-	BOOL CloseSafeTransactoin(BOOL bFlagForError = TRUE);
+	BOOL CloseSafeTransactoin(BOOL bFlagForError = FALSE);
 
 
 // Overrides

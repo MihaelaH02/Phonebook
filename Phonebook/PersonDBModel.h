@@ -3,9 +3,9 @@
 #include "Structures.h"
 #include "EnumsWithFlags.h"
 /////////////////////////////////////////////////////////////////////////////
-// CPersonInfo
+// CPersonDBModel
 
-class CPersonInfo
+class CPersonDBModel
 {
 // Constants
 // ----------------
@@ -14,23 +14,23 @@ class CPersonInfo
 // Constructor / Destructor
 // ----------------
 public:
-	CPersonInfo();
+	CPersonDBModel();
 
 	/// <summary>
 	/// Копи параметризиран конструктор
 	/// </summary>
-	CPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& recPhoneNumbers);
+	CPersonDBModel(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbers);
 
 	/// <summary>
 	/// Копи параметризиран конструктор
 	/// </summary>
-	/// <param name="oPersonInfo">Параметър за подаден клас с данни</param>
-	CPersonInfo(const CPersonInfo& oPersonInfo);
+	/// <param name="oPersonDBModel">Параметър за подаден клас с данни</param>
+	CPersonDBModel(const CPersonDBModel& oPersonDBModel);
 
-	~CPersonInfo();
+	~CPersonDBModel();
 
-	bool operator==(const CPersonInfo& other)  {
-		return GetPerson().lId == other.GetPerson().lId;
+	bool operator==(const CPersonDBModel& oPersonDBModelToCmp)  {
+		return GetPerson().lId == oPersonDBModelToCmp.GetPerson().lId;
 	}
 // Methods
 // ----------------
@@ -64,9 +64,9 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="recPerson"></param>
-	/// <param name="oPhoneNumbersMap"></param>
+	/// <param name="oPhoneNumbersOperationsMap"></param>
 	/// <returns></returns>
-	BOOL AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersMap);
+	BOOL AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersOperationsMap);
 
 	/// <summary>
 	/// Метод за добавяне на клиент
@@ -84,9 +84,9 @@ public:
 	/// <summary>
 	/// Метод за добавяне на всички телефонни номера
 	/// </summary>
-	/// <param name="oPhoneNumbersMap">Параметър за мап, който ще се добавя</param>
+	/// <param name="oPhoneNumbersOperationsMap">Параметър за мап, който ще се добавя</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersMap);
+	BOOL AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersOperationsMap);
 
 	/// <summary>
 	/// Метод за примахване на всички телефонин номера от групите
@@ -97,7 +97,7 @@ public:
 	/// Метод, който задава ИД на вскички телефонни номера след добавен клиент
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL CheckAndConnectAllPhoneNumbersWithPersonId();
+	BOOL SetPhoneNumbersPersonId();
 
 
 // Overrides

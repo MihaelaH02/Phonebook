@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Structures.h"
-#include "TableDataArray.h"
+#include "TypePtrDataArray.h"
 #include "EnumsWithFlags.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@
 ///Темплейт клас отгоравящ за обработката на CTypedPtrArrays
 /// </summary>
 template<class Type>
-class CTableDataMap : public CMap<LPARAM, LPARAM, CTableDataArray<Type>*, CTableDataArray<Type>*>
+class CTableDataOperationsMap : public CMap<LPARAM, LPARAM, CTypedPtrDataArray<Type>*, CTypedPtrDataArray<Type>*>
 {
 
 // Constants
@@ -22,33 +22,31 @@ class CTableDataMap : public CMap<LPARAM, LPARAM, CTableDataArray<Type>*, CTable
 // ----------------
 
 public:
-	CTableDataMap()
+	CTableDataOperationsMap()
 	{
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTableDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTableDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTableDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTableDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTypedPtrDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTypedPtrDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTypedPtrDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTypedPtrDataArray<Type>());
 	};
 	
-	
-	CTableDataMap(const CTableDataMap& oTableDataMap)
+	CTableDataOperationsMap(const CTableDataOperationsMap& oTableDataMap)
 	{
 		InitializeMap();
 		AddAllNewElementsToMap(oTableDataMap);
 	}
 
 
-	CTableDataMap(const CTableDataArray<Type>& oTableDataArray)
+	CTableDataOperationsMap(const CTypedPtrDataArray<Type>& oTableDataArray)
 	{
 		InitializeMap();
-		AddAllElementsToKey(oTableDataArray);
+		AddAllElementsToDataOperations(oTableDataArray);
 	}
 
-
 	//Динамично се освобождава заделената памет
-	virtual ~CTableDataMap()
+	virtual ~CTableDataOperationsMap()
 	{
-		RemoveAllElementsInAllKeys();
+		SetEmptyDataOperationsValues();
 	};
 
 
@@ -56,25 +54,21 @@ public:
 // ----------------
 
 public:
-	void InitializeMap()
-	{
-		//Задаване на флагове и инициализация на масиви
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTableDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTableDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTableDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTableDataArray<Type>());
-	}
-
 	/// <summary>
 	/// Метод за добавяне на нов елемент по подаден ключ
 	/// </summary>
 	/// <param name="oType">Параметър за елемент, който ще се добавя</param>
 	/// <param name="oFlag"Параметър за флаг, към който ще се добавя></param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL AddOneElementToKey(const Type& oType, LPARAM lFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
+	BOOL AddOneElementToDataOperation(const Type& oType, LPARAM lFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
+		if (!CheckItIsKey(lFlag))
+		{
+			return FALSE;
+		}
+
 		//Добавяне на елемент към подаден флаг
-		CTableDataArray<Type>* pDataArray;
+		CTypedPtrDataArray<Type>* pDataArray;
 		if (!Lookup(lFlag, pDataArray))
 		{
 			return FALSE;
@@ -95,8 +89,13 @@ public:
 	/// <param name="oTableDataArray">Параметър за масив, който ще се добавя</param>
 	/// <param name="oFlag"Параметър за флаг, към който ще се добавя</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL AddAllElementsToKey(const CTableDataArray<Type>& oTableDataArray, LPARAM lFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
+	BOOL AddAllElementsToDataOperations(const CTypedPtrDataArray<Type>& oTableDataArray, LPARAM lFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
+		if (!CheckItIsKey(lFlag))
+		{
+			return FALSE;
+		}
+
 		//Обход на всички елементи от подаден масив
 		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
 		{
@@ -107,7 +106,7 @@ public:
 			}
 
 			//Добавяне на текущ елемен към ключ
-			if (!AddOneElementToKey(*pType, lFlag))
+			if (!AddOneElementToDataOperation(*pType, lFlag))
 			{
 				return FALSE;
 			}
@@ -120,15 +119,15 @@ public:
 	/// </summary>
 	/// <param name="oCTableDataMap">Параметър за масив, който ще се добавя</param>
 	/// <returns></returns>
-	BOOL AddAllNewElementsToMap(const CTableDataMap& oCTableDataMap)
+	BOOL AddAllNewElementsToMap(const CTableDataOperationsMap& oCTableDataMap)
 	{
 		//Премахване на старите данни
-		RemoveAllElementsInAllKeys();
+		SetEmptyDataOperationsValues();
 
 		//Обход на мапа
 		POSITION oPos = oCTableDataMap.GetStartPosition();
 		LPARAM lKey;
-		CTableDataArray<Type>* pValue;
+		CTypedPtrDataArray<Type>* pValue;
 		if (oPos == NULL)
 		{
 			return FALSE;
@@ -144,7 +143,7 @@ public:
 			}
 
 			//Добавяне на всички елементи към ключ текущ ключ
-			if (!AddAllElementsToKey(*pValue, lKey))
+			if (!AddAllElementsToDataOperations(*pValue, lKey))
 			{
 				return FALSE;
 			}
@@ -157,12 +156,12 @@ public:
 	/// </summary>
 	/// <param name="oType">Параметър за елемент, който ще се търси</param>
 	/// <returns>Метода връща открит ключ или -1 при неуспех</returns>
-	LPARAM FindKeyByValue(const Type& oType)
+	LPARAM FindDataOperationFlagByElement(const Type& oType)
 	{
 		//Обход на мапа
 		POSITION oPos = GetStartPosition();
 		LPARAM oKey;
-		CTableDataArray<Type>* pValue;
+		CTypedPtrDataArray<Type>* pValue;
 		if (oPos == NULL)
 		{
 			return -1;
@@ -178,7 +177,7 @@ public:
 			}
 
 			//Търсим дали е записан в текущия масив
-			INT_PTR nIndex = pValue->FindIndexByElement(oType);
+			INT_PTR nIndex = pValue->FindIndexByElement(oType, &CompareAll);
 
 			//Ако е открит връщаме ключа - флаг, под който е записан
 			if (nIndex != -1)
@@ -197,17 +196,22 @@ public:
 	/// <param name="lId">Параметър за елемент, който ще се изтрива</param>
 	/// <param name="oFlag"Параметър за флаг, от който ще се изтирва</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL RemoveElemetFromKey(const Type& oType, LPARAM oFlag)
+	BOOL RemoveElemetFromDataOperation(const Type& oType, LPARAM lFlag)
 	{
+		if (!CheckItIsKey(lFlag))
+		{
+			return FALSE;
+		}
+
 		//Достъпваме масива по поданен флаг-ключ
-		CTableDataArray<Type>* pDataArray;
-		if (!Lookup(oFlag, pDataArray))
+		CTypedPtrDataArray<Type>* pDataArray;
+		if (!Lookup(lFlag, pDataArray))
 		{
 			return FALSE;
 		}
 
 		//Премахване на подадения елемен от масива
-		if (!pDataArray->RemoveElement(oType))
+		if (!pDataArray->RemoveElement(oType, &CompareAll))
 		{
 			return FALSE;
 		}
@@ -219,10 +223,15 @@ public:
 	/// Метод за премахване на всички елементи от масива динамично
 	/// </summary>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL RemoveAllElementsFromKey(LPARAM oFlag)
+	BOOL RemoveAllElementsFromDataOperation(LPARAM oFlag)
 	{
+		if (!CheckItIsKey(oFlag))
+		{
+			return FALSE;
+		}
+
 		//Достъпваме масива по поданен флаг-ключ
-		CTableDataArray<Type>* pDataArray;
+		CTypedPtrDataArray<Type>* pDataArray;
 		if (!Lookup(oFlag, pDataArray))
 		{
 			return FALSE;
@@ -236,12 +245,12 @@ public:
 	/// <summary>
 	/// Метод, който премахва всички елемементи от всички ключове
 	/// </summary>
-	void RemoveAllElementsInAllKeys()
+	void SetEmptyDataOperationsValues()
 	{
-		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_READED);
-		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_INSERT);
-		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_UPDATE);
-		RemoveAllElementsFromKey(OPERATIONS_WITH_DATA_FLAGS_DELETE);
+		RemoveAllElementsFromDataOperation(OPERATIONS_WITH_DATA_FLAGS_READED);
+		RemoveAllElementsFromDataOperation(OPERATIONS_WITH_DATA_FLAGS_INSERT);
+		RemoveAllElementsFromDataOperation(OPERATIONS_WITH_DATA_FLAGS_UPDATE);
+		RemoveAllElementsFromDataOperation(OPERATIONS_WITH_DATA_FLAGS_DELETE);
 	}
 
 	/// <summary>
@@ -249,12 +258,12 @@ public:
 	/// </summary>
 	/// <param name="oType">Параметър за масив за резултат</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL GetOnlyActiveValuesFromAllKeysInArray(CTableDataArray<Type>& oType)
+	BOOL GetOnlyActiveValuesFromAllKeysInArray(CTypedPtrDataArray<Type>& oType)
 	{
 		//Обход на мапа
 		POSITION oPos = GetStartPosition();
 		LPARAM lKey;
-		CTableDataArray<Type>* pValue;
+		CTypedPtrDataArray<Type>* pValue;
 		if (oPos == NULL)
 		{
 			return FALSE;
@@ -268,7 +277,7 @@ public:
 			//При достигане на кюча-флаг с изтрити елементи спираме прочита на данни
 			if (lKey == OPERATIONS_WITH_DATA_FLAGS_DELETE)
 			{
-				break;
+				continue;
 			}
 
 			if (pValue == nullptr)
@@ -294,12 +303,17 @@ public:
 	/// Метод за преместване на всички елементи към първия елемент и изтрива по ключ-изтрито
 	/// </summary>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL MoveActiveValuesIntoKey(LPARAM oFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
+	BOOL ChangeValuesToOperation(LPARAM oFlag = OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
+		if (!CheckItIsKey(oFlag))
+		{
+			return FALSE;
+		}
+
 		//Обход на мапа
 		POSITION oPos = GetStartPosition();
 		LPARAM lKey;
-		CTableDataArray<Type>* pValue;
+		CTypedPtrDataArray<Type>* pValue;
 
 		if (oPos == NULL)
 		{
@@ -323,10 +337,10 @@ public:
 			}
 
 			//Променлива съдържаща елементите в текущ ключ 
-			CTableDataArray<Type> oDataArrayByKey = *pValue;
+			CTypedPtrDataArray<Type> oDataArrayByKey = *pValue;
 
 			//Премахват се всички елементи от текущия ключ
-			if (!RemoveAllElementsFromKey(lKey))
+			if (!RemoveAllElementsFromDataOperation(lKey))
 			{
 				AfxMessageBox(_T("Failed do move data!\n Try to reload."));
 			}
@@ -337,7 +351,7 @@ public:
 			}
 
 			//Добавят се всички прочетени елементи от текущия ключ към първия-прочетено
-			if (!AddAllElementsToKey(oDataArrayByKey, oFlag))
+			if (!AddAllElementsToDataOperations(oDataArrayByKey, oFlag))
 			{
 				AfxMessageBox(_T("Failed to do operation with phone numbers!\n Try to reload."));
 				return FALSE;
@@ -346,6 +360,44 @@ public:
 		return TRUE;
 	}
 
+private:
+
+	/// <summary>
+	/// Метод за начална инициализация на ключовете и стойностите в мапа
+	/// </summary>
+	void InitializeMap()
+	{
+		//Задаване на флагове и инициализация на масиви
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTypedPtrDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTypedPtrDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTypedPtrDataArray<Type>());
+		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTypedPtrDataArray<Type>());
+	}
+
+	/// <summary>
+	// Метод за проверка дали подаден флаг се съдържа като ключ от мапа
+	/// </summary>
+	/// <param name="oFlag">Параметър за флаг, който ще се търси</param>
+	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
+	BOOL CheckItIsKey(const LPARAM lFlag)
+	{
+		switch (lFlag)
+		{
+		case OPERATIONS_WITH_DATA_FLAGS_READED:
+		case OPERATIONS_WITH_DATA_FLAGS_INSERT:
+		case OPERATIONS_WITH_DATA_FLAGS_UPDATE:
+		case OPERATIONS_WITH_DATA_FLAGS_DELETE:
+		{
+			return TRUE;
+		}
+		break;
+		default:
+		{
+			return FALSE;
+		}
+		break;
+		}
+	}
 
 
 // Overrides

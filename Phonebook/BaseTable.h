@@ -3,8 +3,9 @@
 #include <typeinfo>
 
 #include "DatabaseTransactionManager.h"
-#include "TableDataArray.h"
+#include "TypePtrDataArray.h"
 #include "DatabaseQueryBuilder.h"
+#include "Structures.h"
 
 #define MSG_ERROR_EXEC_DATABASE_QUERY _T("Error executing query.\n Error: %d. Query: %s")
 #define MSG_FAIL_READ_DATA_FROM_DATABASE _T("Failed to read data from database!\n Error: %d")
@@ -82,7 +83,7 @@ public:
 	/// </summary>
 	/// <param name="oTableArray">Параметър масив за съответната дискова структура</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectAll(CTableDataArray<CStruct>& oTableArray)
+	BOOL SelectAll(CTypedPtrDataArray<CStruct>& oTableArray)
 	{
 		CDatabaseQueryBuilder oDatabaseQueryBuilder;
 		//Извършване на заявка за селект на всички записи от съответната таблица
@@ -125,7 +126,7 @@ public:
 	/// <param name="oTableArray">Параметър за масив, в който ще се съхраняват селектираните данни</param>
 	/// <param name="strFromToSelect">Параметър за колона, по която ще се търсят записи, по подразбиране взема колона за ИД на таблица</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectWhereID(const long lID, CTableDataArray<CStruct>& oTableArray, CString strColFromToSelect = GetIdentityCol())
+	BOOL SelectWhereID(const long lID, CTypedPtrDataArray<CStruct>& oTableArray, CString strColFromToSelect = GetIdentityCol())
 	{
 		//Изпълнение на заявка
 		CDatabaseQueryBuilder oDatabaseQueryBuilder;
@@ -169,10 +170,10 @@ public:
 	/// <param name="recCity">Параметър за структура, в която ще се съхранява открития запис</param>
 	/// <param name="strFromToSelect">Параметър за колона, по която ще се търсят записи, по подразбиране взема колона за ИД на таблица</param>
 	/// <returns></returns>
-	BOOL SelectWhereID(const long lID, CStruct& recCity, CString strFromToSelect = GetIdentityCol())
+	BOOL SelectWhereID(const long lID, CStruct& recCity)
 	{
-		CTableDataArray<CStruct> oCStructWithResultsArray;
-		if (!SelectWhereID(lID, oCStructWithResultsArray, strFromToSelect))
+		CTypedPtrDataArray<CStruct> oCStructWithResultsArray;
+		if (!SelectWhereID(lID, oCStructWithResultsArray, GetIdentityCol()))
 		{
 			return FALSE;
 		}
@@ -200,6 +201,7 @@ public:
 	BOOL UpdateWhereID(const long lID, const CStruct& recStruct)
 	{
 		CDatabaseQueryBuilder oDatabaseQueryBuilder;
+
 		//Извършване на заявка
 		CString strQuery = oDatabaseQueryBuilder
 			.SelectFromTable(GetTableName())
@@ -222,12 +224,19 @@ public:
 			return FALSE;
 		}
 
+		//Проверка дали записа в базата данни не съдържа същата информация, като тази с която искаме да редактираме
+		if (CompareAll(GetSelectedRowData(), recStruct))
+		{
+			return TRUE;
+		}
+
 		//Запазваме стойността от колоната за модификация и затваряме заявката
 		long lReadedUpdateCounterWithNolock = GetSelectedRowUpdateCounter();
 		Close();
 
 		//Инстанция на клас, коюто манипулира транзакции
 		CDatabaseTransactionManager oDatabaseInternalTransaction;
+
 		//Начало на транзакция
 		if (!oDatabaseInternalTransaction.OpenSafeTransaction())
 		{
@@ -236,6 +245,7 @@ public:
 		}
 
 		//Извършване на заявка
+		oDatabaseQueryBuilder.Clear();
 		CString strQueryWithUpdLock = oDatabaseQueryBuilder
 			.SelectFromTable(GetTableName())
 			.UpdLock()
@@ -417,19 +427,19 @@ public:
 	/// </summary>
 	/// <param name="oTableDataArray">Масив с група обекти за добавяне</param>
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL InsertAll(const CTableDataArray<CStruct>& oTableDataArray)
+	BOOL InsertAll(const CTypedPtrDataArray<CStruct>& oTableDataArray)
 	{
 		//транзакции и сесия
 		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
 		{
-			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
-			if (recStruct == nullptr)
+			CStruct* pStruct = oTableDataArray.GetAt(nIndex);
+			if (pStruct == nullptr)
 			{
 				CloseSafeQuery(MSG_FAIL_DO_DATABASE_OPERATION);
 				return FALSE;
 			}
 
-			if (!Insert(*recStruct))
+			if (!Insert(*pStruct))
 			{
 				return FALSE;
 			}
@@ -442,18 +452,18 @@ public:
 	/// </summary>
 	/// <param name="oTableDataArray">Масив с група обекти за редакция</param>
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL UpdateAll(const CTableDataArray<CStruct>& oTableDataArray)
+	BOOL UpdateAll(const CTypedPtrDataArray<CStruct>& oTableDataArray)
 	{
 		//транзакции и сесия
 		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
 		{
-			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
-			if (recStruct == nullptr)
+			CStruct* pStruct = oTableDataArray.GetAt(nIndex);
+			if (pStruct == nullptr)
 			{
 				CloseSafeQuery(MSG_FAIL_DO_DATABASE_OPERATION);
 				return FALSE;
 			}
-			if (!UpdateWhereID(recStruct->lId, *recStruct))
+			if (!UpdateWhereID(pStruct->lId, *pStruct))
 			{
 				return FALSE;
 			}
@@ -467,18 +477,18 @@ public:
 	/// </summary>
 	/// <param name="oTableDataArray">Масив с група обекти за изтриване</param>
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL DeleteAll(const CTableDataArray<CStruct>& oTableDataArray)
+	BOOL DeleteAll(const CTypedPtrDataArray<CStruct>& oTableDataArray)
 	{
 		//транзакции и сесия
 		for (INT_PTR nIndex = 0; nIndex < oTableDataArray.GetCount(); nIndex++)
 		{
-			CStruct* recStruct = oTableDataArray.GetAt(nIndex);
-			if (recStruct == nullptr)
+			CStruct* pStruct = oTableDataArray.GetAt(nIndex);
+			if (pStruct == nullptr)
 			{
 				CloseSafeQuery(MSG_FAIL_DO_DATABASE_OPERATION);
 				return FALSE;
 			}
-			if (!DeleteWhereID(recStruct->lId))
+			if (!DeleteWhereID(pStruct->lId))
 			{
 				return FALSE;
 			}
@@ -522,7 +532,7 @@ protected:
 	/// Метод, който отпределя наименованието на колоната за ИД в таблица
 	/// </summary>
 	/// <returns></returns>
-	static CString GetIdentityCol()
+	virtual CString GetIdentityCol()
 	{
 		return _T("ID");
 	}

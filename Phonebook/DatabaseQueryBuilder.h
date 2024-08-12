@@ -66,6 +66,11 @@ public:
     /// <returns>Връща стрингова изградена заявка</returns>
     CString Build();
 
+    /// <summary>
+    /// Метод, който почиства изграденат заявка
+    /// </summary>
+    void Clear();
+
 
  // Overrides
 // ----------------

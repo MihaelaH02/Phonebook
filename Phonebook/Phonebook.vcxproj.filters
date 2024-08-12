@@ -54,7 +54,7 @@
     <ClInclude Include="Structures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TableDataArray.h">
+    <ClInclude Include="TypePtrDataArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BaseTable.h">
@@ -69,7 +69,7 @@
     <ClInclude Include="CitiesData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ValidateStringData.h">
+    <ClInclude Include="CValidateDialogControlsData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnumsWithFlags.h">
@@ -102,7 +102,7 @@
     <ClInclude Include="PersonsData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PersonInfo.h">
+    <ClInclude Include="PersonDBModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PersonsDialog.h">
@@ -111,10 +111,10 @@
     <ClInclude Include="AdditionPersonInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TableDataMap.h">
+    <ClInclude Include="TableDataOperationsMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnumsDialogCtrInfo.h">
+    <ClInclude Include="DefinesDialogCtrInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ManageListCtr.h">
@@ -142,6 +142,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DatabaseQueryBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumsListCtrColumsInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RowDataListCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,13 +182,13 @@
     <ClCompile Include="CitiesData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ValidateStringData.cpp">
+    <ClCompile Include="CValidateDialogControlsData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhoneTypesData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PersonInfo.cpp">
+    <ClCompile Include="PersonDBModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PersonsData.cpp">

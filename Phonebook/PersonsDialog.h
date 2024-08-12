@@ -1,11 +1,11 @@
 #pragma once
 #include "afxdialogex.h"
-#include "PersonInfo.h"
+#include "PersonDBModel.h"
 #include "EnumsWithFlags.h"
 #include "AdditionPersonInfo.h"
 #include "ManageListCtr.h"
 #include "EnumsListCtrColumsInfo.h"
-#include "EnumsDialogCtrInfo.h"
+#include "DefinesDialogCtrInfo.h"
 #include "EnumsWithFlags.h"
 #include "PhoneNumbersDialog.h"
 
@@ -37,7 +37,7 @@ public:
 	/// <param name="oPerson">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
 	/// <param name="oAdditionInfo">Параметър клас с допълнителни данни</param>
 	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPersonsDialog(CPersonInfo& oPerson, const CAdditionPersonInfo& oAdditionInfo, LPARAM lEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPersonsDialog(CPersonDBModel& oPerson, const CAdditionPersonInfo& oAdditionInfo, LPARAM lEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPersonsDialog();
 
@@ -52,6 +52,8 @@ protected:
 
 // MFC Message Handlers
 // ----------------
+public:
+
 	afx_msg void OnBnClickedOk();
 
 	afx_msg void OnBnClickedCancel();
@@ -62,11 +64,6 @@ protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 
 	/// <summary>
-	/// Метод, който управлява действия свързани с ляво натискане на бутона на мишката
-	/// </summary>
-	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-
-	/// <summary>
 	/// Метод, който управлява действия свързани с визуализацията на контекстно меню
 	/// </summary>
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -74,9 +71,8 @@ protected:
 	/// <summary>
 	/// Метод, който управлява действия свързани с натискане на бутон от клавиатурата
 	/// </summary>
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnNMDblclkLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
 
-public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
@@ -112,6 +108,16 @@ public:
 	/// </summary>
 	afx_msg void ReloadPhoneNumbers();
 
+	afx_msg void OnEnChangeEdbPersonsLastname();
+
+
+	afx_msg void OnEnChangeEdbPersonsFirtsname();
+	afx_msg void OnEnChangeEdbPersonsSecondname();
+	afx_msg void OnEnChangeEdbPersonsEgn();
+	afx_msg void OnCbnSelchangeCmbPersonsCities();
+	afx_msg void OnEnChangeEdbPersonsAddress();
+	afx_msg void OnLvnDeleteitemLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
+
 
 // Overrides
 // ----------------
@@ -123,9 +129,9 @@ public:
 	/// <summary>
 	/// Метод за достъп до данните в контролите в диалога
 	/// </summary>
-	/// <param name="oPersonInfo">Параметър клас, който ще съдържа данните</param>
+	/// <param name="oPersonDBModel">Параметър клас, който ще съдържа данните</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL GetControlsData(CPersonInfo& oPersonInfo);
+	BOOL GetControlsData(CPersonDBModel& oPersonDBModel);
 
 private:
 	/// <summary>
@@ -179,17 +185,44 @@ private:
 	/// Метод, който записва всички презентационни данни от всички елементи тип телефонен номер в нов масив
 	/// </summary>
 	/// <param name="oPhoneNumbersArray">Масив с телефонни номера</param>
-	/// <param name="strPhoneNumbersArrayToDisplayInListCtrl">Масив с презентационни данни на всички телефонни номера</param>
+	/// <param name="oRowDataListCtrla">Масив с презентационни данни на всички телефонни номера</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertAllElementsPhoneNumbersToArrayWithDisplayData(const CPhoneNumbersArray& oPhoneNumbersArray, CTableDataArray<CTableDataArray<CString>>& strPhoneNumbersArrayToDisplayInListCtrl);
+	BOOL SetColumnDisplayDataArray(const CPhoneNumbersArray& oPhoneNumbersArray, CTypedPtrDataArray<CRowDataListCtrl<PHONE_NUMBERS>>& oRowDataListCtrla);
 
 	/// <summary>
 	/// Метод, който записва презентационните данни на един елемент телефонен номер в нов масив
 	/// </summary>
-	/// <param name="recPerson">Еменет от тип структура с телефонни номера</param>
-	/// <param name="strPersonArray">Масив с презентационни данни за този елемент</param>
+	/// <param name="oRowDataListCtrla">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertElementPhoneNumberToArrayWithDisplayData(const PHONE_NUMBERS& recPhoneNumbers, CTableDataArray<CString>& strPhoneNumbersArray);
+	BOOL SetColumnDisplayData(CRowDataListCtrl<PHONE_NUMBERS>& oRowDataListCtrla);
+
+	/// <summary>
+	/// Метод, който управлява началния текст в контролите за грешки при първоначална инициализация на другите контроли в диалога
+	/// </summary>
+	void ManageErrorMsgControlsInitValues();
+
+	void DoOnEnChangeStringEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithError);
+
+	/// <summary>
+	/// Метод за проверка, дали контролата е на фокус
+	/// </summary>
+	/// <param name="oControla">Контрола, която ще се проверява</param>
+	/// <returns>Връща TRUE ако на фокус и FALSE ,ако не е</returns>
+	BOOL IsControlOnFocus(CWnd& oControla);
+
+	/// <summary>
+	/// Метод за извеждане на съобщение в контрола
+	/// </summary>
+	/// <param name="strText">Контрола, чийто текст ще се валидира</param>
+	/// <param name="nControlaID">Контрола, в която ще се съдържа текста</param>
+	void PrintErrorMsg(int nControlaID, const CString& strErrorMsg = _T("NULL"), const int& nMaxValidLenght = DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING, BOOL bValidateString = TRUE);
+
+	/// <summary>
+	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
+	/// </summary>
+	BOOL HasErrorMsg();
+
+	BOOL HasErrorInOneControla(CWnd& oControla,const int& nControlaErrorMsgID);
 
 
 // Members
@@ -236,39 +269,14 @@ private:
 	CListCtrlManager<PHONE_NUMBERS> m_oListCtrlManager;
 
 	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за име на клиент
+	/// Член променилна, която съдържа данни за клиент
 	/// </summary>
-	CString m_strFirstName;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за презиме на клиент
-	/// </summary>
-	CString m_strSecondName;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за фамилия на клиент
-	/// </summary>
-	CString m_strLastName;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за егн на клиент
-	/// </summary>
-	CString m_strEGN;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за егн на клиент
-	/// </summary>
-	long m_lIdCity;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за егн на клиент
-	/// </summary>
-	CString m_strAddress;
+	PERSONS m_recPerson;
 
 	/// <summary>
 	/// Член променлива мап, която съдържа всички телефонни номера за клиент
 	/// </summary>
-	CPhoneNumbersMap m_oPhoneNumbersMap;
+	CPhoneNumbersMap m_oPhoneNumbersOperationsMap;
 
 	/// <summary>
 	/// Член променлива от тип клас, която съдържа допълнителна информация
@@ -278,6 +286,14 @@ private:
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
 	/// </summary>
-	LPARAM m_oEnableControlsParam;
-	
+	LPARAM m_lEnableControlsParam;
+
+	/// <summary>
+	/// Инстанция на клас за верификация на данни
+	/// </summary>
+	CValidateDialogControlsData m_oValidateStringData;
+
+public:
+	afx_msg void OnLvnKeydownLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnLvnItemchangedLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
 };

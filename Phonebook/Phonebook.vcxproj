@@ -190,11 +190,13 @@
     <ClInclude Include="CitiesAccessor.h" />
     <ClInclude Include="DatabaseQueryBuilder.h" />
     <ClInclude Include="DatabaseTransactionManager.h" />
-    <ClInclude Include="EnumsDialogCtrInfo.h" />
+    <ClInclude Include="DefinesDialogCtrInfo.h" />
+    <ClInclude Include="EnumsListCtrColumsInfo.h" />
     <ClInclude Include="EnumsWithFlags.h" />
     <ClInclude Include="EnumsStructsInfo.h" />
     <ClInclude Include="ManageListCtr.h" />
-    <ClInclude Include="PersonInfo.h" />
+    <ClInclude Include="RowDataListCtrl.h" />
+    <ClInclude Include="PersonDBModel.h" />
     <ClInclude Include="PersonsAccessor.h" />
     <ClInclude Include="PersonsData.h" />
     <ClInclude Include="PersonsDialog.h" />
@@ -210,7 +212,7 @@
     <ClInclude Include="PhoneTypesDoc.h" />
     <ClInclude Include="PhoneTypesTable.h" />
     <ClInclude Include="PhoneTypeView.h" />
-    <ClInclude Include="TableDataArray.h" />
+    <ClInclude Include="TypePtrDataArray.h" />
     <ClInclude Include="CitiesDoc.h" />
     <ClInclude Include="Structures.h" />
     <ClInclude Include="CitiesTable.h" />
@@ -223,9 +225,9 @@
     <ClInclude Include="Phonebook.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="InitializeSession.h" />
-    <ClInclude Include="TableDataMap.h" />
+    <ClInclude Include="TableDataOperationsMap.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ValidateStringData.h" />
+    <ClInclude Include="CValidateDialogControlsData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdditionPersonInfo.cpp" />
@@ -244,7 +246,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PersonInfo.cpp" />
+    <ClCompile Include="PersonDBModel.cpp" />
     <ClCompile Include="PersonsData.cpp" />
     <ClCompile Include="PersonsDialog.cpp" />
     <ClCompile Include="PersonsDoc.cpp" />
@@ -256,7 +258,7 @@
     <ClCompile Include="PhoneTypesDoc.cpp" />
     <ClCompile Include="PhoneTypeView.cpp" />
     <ClCompile Include="InitializeSession.cpp" />
-    <ClCompile Include="ValidateStringData.cpp" />
+    <ClCompile Include="CValidateDialogControlsData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Phonebook.rc" />

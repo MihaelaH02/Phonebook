@@ -6,6 +6,7 @@
 #include "CitiesDialog.h"
 #include "EnumsListCtrColumsInfo.h"
 #include "ManageListCtr.h"
+#include "RowDataListCtrl.h"
 
 class CCitiesView : public CListView
 {
@@ -72,15 +73,14 @@ private:
 	/// <param name="oCitiesArray">Масив с градове</param>
 	/// <param name="strCitiesArrayToDisplayInListCtrl">Масив с презентационни данни на всички градове</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertAllElementCitiesToArrayWithDisplayData(const CCitiesArray& oCitiesArray, CTableDataArray<CTableDataArray<CString>>& strCitiesArrayToDisplayInListCtrl);
+	BOOL SetColumnDisplayDataArray(const CCitiesArray& oCitiesArray, CTypedPtrDataArray<CRowDataListCtrl<CITIES>>& oRowsDataArray);
 
 	/// <summary>
 	/// Метод, който записва презентационните данни на един елемент град в нов масив
 	/// </summary>
-	/// <param name="recCity">Еменет от тип структура с градове</param>
 	/// <param name="strCitiesArray">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL ConvertElementCitiesToArrayWithDisplayData(const CITIES recCity, CTableDataArray<CString>& strCitiesArray);
+	BOOL SetColumnDisplayData(CRowDataListCtrl<CITIES>& oRowDataListCtrl);
 
 // Overrides
 // ----------------
@@ -167,8 +167,6 @@ public:
 
 // Members
 // ----------------
-	//Член променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<CITIES> m_oListCtrManager;
 };
 
 

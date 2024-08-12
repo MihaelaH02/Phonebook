@@ -137,10 +137,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CList<UINT, UINT> lstBasicCommands;
 
-	//lstBasicCommands.AddTail(ID_FILE_NEW);
 	lstBasicCommands.AddTail(ID_FILE_NEW_CITIES);
-	/*lstBasicCommands.AddTail(ID_FILE_NEW_PHONETYPES);
-	lstBasicCommands.AddTail(ID_FILE_NEW_CLIENTS);*/
 	lstBasicCommands.AddTail(ID_FILE_OPEN);
 	lstBasicCommands.AddTail(ID_FILE_SAVE);
 	lstBasicCommands.AddTail(ID_APP_EXIT);

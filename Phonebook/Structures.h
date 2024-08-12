@@ -1,8 +1,8 @@
 #pragma once
 
 #include <afxtempl.h>
-#include "TableDataArray.h"
-#include "TableDataMap.h"
+#include "TypePtrDataArray.h"
+#include "TableDataOperationsMap.h"
 #include "EnumsStructsInfo.h"
 
 /// <summary>
@@ -37,14 +37,14 @@ struct CITIES
 		_tcscpy_s(szRegion, recCity.szRegion);
 	}
 
-	BOOL operator==(const CITIES& recCity) const 
+	BOOL CompareAll(const CITIES& recCity) const 
 	{
-		if (szCityName != recCity.szCityName)
+		if (_tcscmp(szCityName, recCity.szCityName))
 		{
 			return FALSE;
 		}
 
-		if(szRegion != recCity.szRegion)
+		if(_tcscmp(szRegion, recCity.szRegion))
 		{
 			return FALSE;
 		}
@@ -52,8 +52,8 @@ struct CITIES
 		return TRUE;
 	}
 };
-///<summary> Псевдоним на  CTableDataArray<CITIES> с тип CITIES</summary> 
-typedef CTableDataArray<CITIES> CCitiesArray;
+///<summary> Псевдоним на  CTypePtrDataArray<CITIES> с тип CITIES</summary> 
+typedef CTypedPtrDataArray<CITIES> CCitiesArray;
 
 
 /// <summary> 
@@ -84,9 +84,9 @@ struct PHONE_TYPES
 		_tcscpy_s(czPhoneType, recPhoneType.czPhoneType);
 	}
 
-	BOOL operator==(const PHONE_TYPES& recPhoneType) const
+	BOOL CompareAll(const PHONE_TYPES& recPhoneType) const
 	{
-		if (czPhoneType != recPhoneType.czPhoneType)
+		if (_tcscmp(czPhoneType, recPhoneType.czPhoneType))
 		{
 			return FALSE;
 		}
@@ -95,8 +95,8 @@ struct PHONE_TYPES
 	}
 };
 
-///<summary> Псевдоним на  CTableDataArray<PHONE_TYPES> с тип PHONE_TYPES</summary> 
-typedef CTableDataArray<PHONE_TYPES> CPhoneTypesArray;
+///<summary> Псевдоним на  CTypePtrDataArray<PHONE_TYPES> с тип PHONE_TYPES</summary> 
+typedef CTypedPtrDataArray<PHONE_TYPES> CPhoneTypesArray;
 
 /// <summary> 
 /// Дискова структура по таблица Клиенти 
@@ -141,34 +141,29 @@ struct PERSONS
 		_tcscpy_s(szAddress, recPersons.szAddress);
 	}
 
-	BOOL operator==(const PERSONS& recPerson) const
+	BOOL CompareAll(const PERSONS& recPerson) const
 	{
-		if (lId != recPerson.lId)
+		if (_tcscmp(szFirstName, recPerson.szFirstName))
 		{
 			return FALSE;
 		}
 
-		if (szFirstName != recPerson.szFirstName)
+		if (_tcscmp(szSecondName, recPerson.szSecondName))
 		{
 			return FALSE;
 		}
 
-		if (szSecondName != recPerson.szSecondName)
+		if (_tcscmp(szLastName, recPerson.szLastName))
 		{
 			return FALSE;
 		}
 
-		if (szLastName != recPerson.szLastName)
+		if (_tcscmp(szAddress, recPerson.szAddress))
 		{
 			return FALSE;
 		}
 
-		if (szAddress != recPerson.szAddress)
-		{
-			return FALSE;
-		}
-
-		if (szEGN != recPerson.szEGN)
+		if (_tcscmp(szEGN, recPerson.szEGN))
 		{
 			return FALSE;
 		}
@@ -183,8 +178,8 @@ struct PERSONS
 
 };
 
-///<summary> Псевдоним на CTableDataArray<PERSONS> с тип PERSONS</summary> 
-typedef CTableDataArray<PERSONS> CPersonsArray;
+///<summary> Псевдоним на CTypePtrDataArray<PERSONS> с тип PERSONS</summary> 
+typedef CTypedPtrDataArray<PERSONS> CPersonsArray;
 
 
 /// <summary> 
@@ -221,14 +216,14 @@ struct PHONE_NUMBERS
 		_tcscpy_s(szPhone, recPhoneNumbers.szPhone);
 	}
 
-	BOOL operator==(const PHONE_NUMBERS& recPhoneNumber) const
+	BOOL CompareAll(const PHONE_NUMBERS& recPhoneNumber) const
 	{
-		if (_tcscmp(szPhone, recPhoneNumber.szPhone) != 0)
+		if (_tcscmp(recPhoneNumber.szPhone, szPhone))
 		{
 			return FALSE;
 		}
 
-		if(lIdPhoneType != recPhoneNumber.lIdPhoneType)
+		if(recPhoneNumber.lIdPhoneType != lIdPhoneType)
 		{
 			return FALSE;
 		}
@@ -236,8 +231,25 @@ struct PHONE_NUMBERS
 	}
 };
 
-///<summary> Псевдоним на CTableDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
-typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
+///<summary> Псевдоним на CTypePtrDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
+typedef CTypedPtrDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
 
 /// <summary>Псевдоним на клас CTableDataMap с тип PHONE_NUMBERS</summary>
-typedef CTableDataMap<PHONE_NUMBERS> CPhoneNumbersMap;
+typedef CTableDataOperationsMap<PHONE_NUMBERS> CPhoneNumbersMap;
+
+
+template<typename Struct>
+BOOL CompareId(const Struct& recStruct1, const Struct& recStruct2)
+{
+	if (recStruct1.lId != recStruct2.lId)
+	{
+		return FALSE;
+	}
+	return TRUE;
+};
+
+template<typename Struct>
+BOOL CompareAll(const Struct& recStruct1, const Struct& recStruct2)
+{
+	return recStruct1.CompareAll(recStruct2);
+};

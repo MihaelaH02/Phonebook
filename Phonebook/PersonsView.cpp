@@ -86,6 +86,9 @@ void CPersonsView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 
 void CPersonsView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
+	///Член проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
@@ -110,7 +113,7 @@ void CPersonsView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	//Другите опрерации са възможни само ако има избран елемент
-	if (m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons) == -1)
+	if (oManagerListCtr.GetIndexSelectedItem(lscPersons) == -1)
 	{
 		return;
 	}
@@ -156,12 +159,14 @@ void CPersonsView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	{
 		return;
 	}
+	///Проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
 
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons);
+	int nSelectedIndex = oManagerListCtr.GetIndexSelectedItem(lscPersons);
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -190,13 +195,30 @@ void CPersonsView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
 	//Проверка, при първоначално извикване на метода
-	if (lHint == NULL)
+	if (lHint == NULL || lHint == OPERATIONS_WITH_DATA_FLAGS_READED)
 	{
 		return;
 	}
 
+	///Член проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
+
+	//Достъпваме индекса, на избрания елемент, в лист контролата
+	int nIndexItem = oManagerListCtr.GetIndexSelectedItem(lscPersons);
+
+	//Проверка за изпълнение на операция изтриване на елемент
+	if (lHint == OPERATIONS_WITH_DATA_FLAGS_DELETE)
+	{
+		//Изтриваме ред по поданен индекс
+		if (!oManagerListCtr.RemoveElement(lscPersons, nIndexItem))
+		{
+			AfxMessageBox(_T("Failed to delete element in list!\n Try to reload."));
+		}
+		return;
+	}
 
 	//Проверка за обект, който ще се обработва
 	if (pHint == nullptr)
@@ -205,42 +227,28 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 
 	//Достъп до обект, който се е модифицирал
-	PERSONS& oPerson = *(PERSONS*)pHint;
+	PERSONS& recPerson = *(PERSONS*)pHint;
 
-	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = m_oManagerListCtr.GetIndexSelectedItemListCtrl(lscPersons);
-
-	//Проверка за изпълнение на операция изтриване на елемент
-	if (lHint == OPERATIONS_WITH_DATA_FLAGS_DELETE)
+	//Превръщаме клиента в масив със стрингови данни, които ще се презентират в лист контролата
+	CRowDataListCtrl <PERSONS> oRowData;
+	oRowData.SetData(recPerson);
+	if (!SetColumnDisplayData(oRowData))
 	{
-		//Изтриваме ред по поданен индекс
-		if (!m_oManagerListCtr.DeleteElementListCtr(lscPersons, nIndexItem))
-		{
-			AfxMessageBox(_T("Failed to delete element in list!\n Try to reload."));
-			return;
-		}
+		AfxMessageBox(_T("Failed to process data of new element in list!\n Try to reload."));
+		return;
 	}
-	else
-	{
-		//Превръщаме клиента в масив със стрингови данни, които ще се презентират в лист контролата
-		CTableDataArray<CString> strPersonArrayToOperateInListCtrl;
-		if (!ConvertToDisplayDataInListCtrl(oPerson, strPersonArrayToOperateInListCtrl))
-		{
-			AfxMessageBox(_T("Failed to process data of new element in list!\n Try to reload."));
-			return;
-		}
 
-		//Добавяме или редактираме елемент в лист контролата, както и индекс ако има такъв
-		if (!m_oManagerListCtr.ManageAddOrEditElementListCtr(lscPersons, oPerson, strPersonArrayToOperateInListCtrl, nIndexItem))
-		{
-			AfxMessageBox(_T("Failed to renew data in list!\n Try to reload."));
-			return;
-		}
+	//Проверка за изпълнение на операция добавяне или редактиране на елемент
+	if (!oManagerListCtr.AddOrEditElement(lscPersons, oRowData, nIndexItem))
+	{
+		AfxMessageBox(_T("Failed to do operation in list!\n Try to reload."));
+		return;
 	}
 
 	//Сортировка на елементите в лист контролата след направен промени
 	if (!SortPersonsInListCtr())
 	{
+		AfxMessageBox(_T("Failed to sort data in list!\n Try to reload."));
 		return;
 	}
 }
@@ -259,11 +267,14 @@ void CPersonsView::ViewPersonInfo()
 		return;
 	}
 
+	///Проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Достъпваме селектирания клиент от лист контролата
-	PERSONS* pPerson = m_oManagerListCtr.GetSelectedItemListCtrl(lscPersons);
+	PERSONS* pPerson = oManagerListCtr.GetSelectedItem(lscPersons);
 
 	if (pPerson == nullptr)
 	{
@@ -272,15 +283,15 @@ void CPersonsView::ViewPersonInfo()
 	}
 
 	//Достъпваме вссички данни за селектирания клиент
-	CPersonInfo oPersonInfo;
-	if (!pPersonDoc->GetPersonInfoByPersonId(pPerson->lId, oPersonInfo))
+	CPersonDBModel oPersonDBModel;
+	if (!pPersonDoc->SelectPerson(pPerson->lId, oPersonDBModel))
 	{
 		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
 		return;
 	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CPersonsDialog oDialog(oPersonInfo, pPersonDoc->GetAdditionalPersonInfo(), ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
+	CPersonsDialog oDialog(oPersonDBModel, pPersonDoc->GetAdditionalPersonInfo(), ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -300,7 +311,7 @@ void CPersonsView::InsertPersonInfo()
 	CPersonsDialog oDialog(pPersonDoc->GetAdditionalPersonInfo());
 
 	//Нова структура, която ще съдържа данни за новия запис
-	CPersonInfo oPersonInfo;
+	CPersonDBModel oPersonDBModel;
 
 	//При натиснат бутон ОК в диалога
 	if (oDialog.DoModal() != IDOK)
@@ -309,14 +320,14 @@ void CPersonsView::InsertPersonInfo()
 	}
 
 	//Вземаме данните от контролите от диалога
-	if (!oDialog.GetControlsData(oPersonInfo))
+	if (!oDialog.GetControlsData(oPersonDBModel))
 	{
 		AfxMessageBox(_T("Failed to process data form dialog!\nTry again later."));
 		return;
 	}
 
 	//Добавяме данните в документа
-	if (!(GetDocument() && GetDocument()->ManagePersonInfo(oPersonInfo, OPERATIONS_WITH_DATA_FLAGS_INSERT)))
+	if (!(GetDocument() && GetDocument()->ProcessPerson(oPersonDBModel, OPERATIONS_WITH_DATA_FLAGS_INSERT)))
 	{
 		return;
 	}
@@ -324,8 +335,6 @@ void CPersonsView::InsertPersonInfo()
 
 void CPersonsView::UpdatePersonInfo()
 {
-	LPARAM lFlagOperationToPerson = OPERATIONS_WITH_DATA_FLAGS_UPDATE;
-
 	//Достъп до данни от документа
 	CPersonsDoc* pPersonDoc = GetDocument();
 	if (pPersonDoc == nullptr)
@@ -334,11 +343,14 @@ void CPersonsView::UpdatePersonInfo()
 		return;
 	}
 
+	///Проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Достъпваме селектирания клиент от лист контролата
-	PERSONS* pPerson = m_oManagerListCtr.GetSelectedItemListCtrl(lscPersons);
+	PERSONS* pPerson = oManagerListCtr.GetSelectedItem(lscPersons);
 
 	if (pPerson == nullptr)
 	{
@@ -347,46 +359,38 @@ void CPersonsView::UpdatePersonInfo()
 	}
 
 	//Достъпваме всички данни за селектирания клиент
-	CPersonInfo oPersonInfo;
-	if (!pPersonDoc->GetPersonInfoByPersonId(pPerson->lId, oPersonInfo))
+	CPersonDBModel oPersonDBModel;
+	if (!pPersonDoc->SelectPerson(pPerson->lId, oPersonDBModel))
 	{
 		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
 		return;
 	}
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CPersonsDialog oDialog(oPersonInfo, pPersonDoc->GetAdditionalPersonInfo());
+	CPersonsDialog oDialog(oPersonDBModel, pPersonDoc->GetAdditionalPersonInfo());
 
 	//Проверка за натиснат бутон OK в диалога
 	if (oDialog.DoModal() != IDOK)
 	{
 		return;
 	}
+
 	//Присвояваме ноивте данни от диалога
-	if (!oDialog.GetControlsData(oPersonInfo))
+	if (!oDialog.GetControlsData(oPersonDBModel))
 	{
 		AfxMessageBox(_T("Failed to process data form dialog!\nTry again later."));
 		return;
 	}
 
-	//Добавяме ИД на клиента към обновените му данни
-	oPersonInfo.SetIdPerson(pPerson->lId);
-
-	//Проверка за направен промяна по данните на клиента
-	if (oPersonInfo.GetPerson() == *pPerson)
-	{
-		lFlagOperationToPerson = OPERATIONS_WITH_DATA_FLAGS_READED;
-	}
-
 	//Проверка дали всички модификации направени по списъка с телефонни номера съдържат ИД на съответния клиент
-	if (!oPersonInfo.CheckAndConnectAllPhoneNumbersWithPersonId())
+	if (!oPersonDBModel.SetPhoneNumbersPersonId())
 	{
 		AfxMessageBox(_T("Failed to process data form dialog!\nTry again later."));
 		return;
 	}
 
 	//Редактираме данните в документа като подаваме стуртура с обновени данни
-	if (!(GetDocument() && GetDocument()->ManagePersonInfo(oPersonInfo, lFlagOperationToPerson)))
+	if (!(GetDocument() && GetDocument()->ProcessPerson(oPersonDBModel, OPERATIONS_WITH_DATA_FLAGS_UPDATE)))
 	{
 		return;
 	}
@@ -403,11 +407,14 @@ void CPersonsView::DeletePersonInfo()
 		return;
 	}
 
+	///Проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Достъпваме селектирания клиент от лист контролата
-	PERSONS* pPerson = m_oManagerListCtr.GetSelectedItemListCtrl(lscPersons);
+	PERSONS* pPerson = oManagerListCtr.GetSelectedItem(lscPersons);
 
 	if (pPerson == nullptr)
 	{
@@ -424,30 +431,30 @@ void CPersonsView::DeletePersonInfo()
 	}
 
 	//Достъпваме всички данни за селектирания клиент
-	CPersonInfo oPersonInfo;
+	CPersonDBModel oPersonDBModel;
 
-	if (!pPersonDoc->GetPersonInfoByPersonId(pPerson->lId, oPersonInfo))
+	if (!pPersonDoc->SelectPerson(pPerson->lId, oPersonDBModel))
 	{
 		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
 		return;
 	}
 
 	//Преместваме телефонните му номера в групата за изтрити
-	CPhoneNumbersMap* pPhoneNumbersMap = &oPersonInfo.GetPhoneNumbers();
-	if (pPhoneNumbersMap == nullptr)
+	CPhoneNumbersMap* pPhoneNumbersOperationsMap = &oPersonDBModel.GetPhoneNumbers();
+	if (pPhoneNumbersOperationsMap == nullptr)
 	{
 		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
 		return;
 	}
 
-	if (!pPhoneNumbersMap->MoveActiveValuesIntoKey(OPERATIONS_WITH_DATA_FLAGS_DELETE))
+	if (!pPhoneNumbersOperationsMap->ChangeValuesToOperation(OPERATIONS_WITH_DATA_FLAGS_DELETE))
 	{
 		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
 		return ;
 	}
 	
 	//Изтриваме данните в документа по намереното ИД
-	if (!(GetDocument() && GetDocument()->ManagePersonInfo(oPersonInfo, OPERATIONS_WITH_DATA_FLAGS_DELETE)))
+	if (!(GetDocument() && GetDocument()->ProcessPerson(oPersonDBModel, OPERATIONS_WITH_DATA_FLAGS_DELETE)))
 	{
 		return;
 	}
@@ -468,7 +475,10 @@ void CPersonsView::ReloadPersonsInfo()
 	}
 
 	//Сортировка на обновените данни в лист контролата
-	SortPersonsInListCtr();
+	if (!SortPersonsInListCtr())
+	{
+		return;
+	}
 }
 
 
@@ -477,6 +487,9 @@ void CPersonsView::ReloadPersonsInfo()
 
 BOOL CPersonsView::LoadPersonsInListCtrFromDoc()
 {
+	///Проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
@@ -490,21 +503,17 @@ BOOL CPersonsView::LoadPersonsInListCtrFromDoc()
 	}
 
 	//Инстанция на масив, който ще съдържа всички клиенти и техната информация
-	CPersonsArray oPersonsInfoArray;
-	if (!pPersonsDoc->GetAllPersons(oPersonsInfoArray))
-	{
-		return FALSE;
-	}
+	CPersonsArray oPersonsInfoArray = pPersonsDoc->GetPersons();
 
 	//Запълваме масив с всички презентационни данни на всички елементи
-	CTableDataArray<CTableDataArray<CString>> strPersonsArrayToOperateInListCtrl;
-	if (!ConvertAllElementsPersonsToArrayWithDisplayData(oPersonsInfoArray, strPersonsArrayToOperateInListCtrl))
+	CTypedPtrDataArray<CRowDataListCtrl<PERSONS>> oRowsData;
+	if (!SetColumnDisplayDataArray(oPersonsInfoArray, oRowsData))
 	{
 		return FALSE;
 	}
 
 	//Зареждаме данните от масива в лист контролата
-	if (!m_oManagerListCtr.LoadDataInListCtrFromResourse(lscPersons, oPersonsInfoArray, strPersonsArrayToOperateInListCtrl))
+	if (!oManagerListCtr.LoadDataFromResourse(lscPersons,oRowsData))
 	{
 		return FALSE;
 	}
@@ -514,6 +523,9 @@ BOOL CPersonsView::LoadPersonsInListCtrFromDoc()
 
 BOOL CPersonsView::IsAllPersonsLoadFromDoc()
 {
+	///Проминлива от тип клас, който ще управлява елемените в лист контролата
+	CListCtrlManager<PERSONS> oManagerListCtr;
+
 	//Инстанция на лист контролата
 	CListCtrl& lscPersons = GetListCtrl();
 
@@ -526,7 +538,7 @@ BOOL CPersonsView::IsAllPersonsLoadFromDoc()
 	}
 
 	//Проверка дали броя на елементите в лист контролата отгоравя на данните от документа
-	if(! m_oManagerListCtr.IsAllDataLoadFromResourse(lscPersons, pPersonsDoc->GetPersonsInfoArrayElementsCount()))
+	if(!oManagerListCtr.IsAllDataLoadFromResourse(lscPersons, pPersonsDoc->GetPersonsArrayCount()))
 	{
 		return FALSE;
 	}
@@ -540,7 +552,10 @@ BOOL CPersonsView::SortPersonsInListCtr()
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Изпълняваме метод за сортиране първо по регион и след това по имена на клиентите
-	lscPersons.SortItems(CompareFunc, 0);
+	if (!lscPersons.SortItems(CompareFunc, 0))
+	{
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -599,31 +614,33 @@ int CALLBACK CPersonsView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lP
 	return nResult;
 }
 
-BOOL CPersonsView::ConvertToDisplayDataInListCtrl(const PERSONS& recPerson, CTableDataArray<CString>& strPersonArray)
+BOOL CPersonsView::SetColumnDisplayData(CRowDataListCtrl<PERSONS>& oRowData)
 {
-	//Достъп до данни от документа
-	CPersonsDoc* pPersonDoc = GetDocument();
-	if (pPersonDoc == nullptr)
-	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
-		return FALSE;
-	}
+	const PERSONS& recPerson = oRowData.GetData();
 
 	//Добавяме първи елемент, който ще се презентира
-	if (strPersonArray.AddElement(recPerson.szFirstName) == -1)
+	if (oRowData.AddElementToDisplayData(recPerson.szFirstName) == -1)
 	{
 		return FALSE;
 	}
 
 	//Добавяме втори елемент, който ще се презентира
-	if (strPersonArray.AddElement(recPerson.szLastName) == -1)
+	if (oRowData.AddElementToDisplayData(recPerson.szLastName) == -1)
 	{
 		return FALSE;
 	}
 
 	//Добавяме трети елемент, който ще се презентира
-	if (strPersonArray.AddElement(recPerson.szEGN) == -1)
+	if (oRowData.AddElementToDisplayData(recPerson.szEGN) == -1)
 	{
+		return FALSE;
+	}
+
+	//Достъп до данни от документа
+	CPersonsDoc* pPersonDoc = GetDocument();
+	if (pPersonDoc == nullptr)
+	{
+		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
 		return FALSE;
 	}
 
@@ -637,7 +654,7 @@ BOOL CPersonsView::ConvertToDisplayDataInListCtrl(const PERSONS& recPerson, CTab
 	}
 
 	//Добавяме четвърти елемент, който ще се презентира
-	if (strPersonArray.AddElement(pCity->szRegion) == -1)
+	if (oRowData.AddElementToDisplayData(pCity->szRegion) == -1)
 	{
 		return FALSE;
 	}
@@ -645,27 +662,28 @@ BOOL CPersonsView::ConvertToDisplayDataInListCtrl(const PERSONS& recPerson, CTab
 	return TRUE;
 }
 
-BOOL CPersonsView::ConvertAllElementsPersonsToArrayWithDisplayData(const CPersonsArray& oPersonsInfoArray, CTableDataArray<CTableDataArray<CString>>& strPersonsArrayToDisplayInListCtrl)
+BOOL CPersonsView::SetColumnDisplayDataArray(const CPersonsArray& oPersonsInfoArray, CTypedPtrDataArray<CRowDataListCtrl<PERSONS>>& oRowsDataArray)
 {
 	//Преминаваме през висчки елементи на масива с данни 
 	for (INT_PTR nIndex = 0; nIndex < oPersonsInfoArray.GetCount(); nIndex++)
 	{
 		//Достъпваме информацията за един клиент от масива
-		PERSONS* recOnePersonArray = oPersonsInfoArray.GetAt(nIndex);
-		if (recOnePersonArray == nullptr)
+		PERSONS* recOnePerson = oPersonsInfoArray.GetAt(nIndex);
+		if (recOnePerson == nullptr)
 		{
 			return FALSE;
 		}
 
 		//Инициализираме  масив, който ще съдържа всички презентационни данни на елемента	//Добавяме първи елемент, който ще се презентира
-		CTableDataArray<CString> strArrayOneElement;
-		if (!ConvertToDisplayDataInListCtrl(*recOnePersonArray, strArrayOneElement))
+		CRowDataListCtrl<PERSONS> oRowData;
+		oRowData.SetData(*recOnePerson);
+		if (!SetColumnDisplayData(oRowData))
 		{
 			return FALSE;
 		}
 
 		//Добавяме масива с презентационни данни към масива с всички данни за всички елементи
-		if (strPersonsArrayToDisplayInListCtrl.AddElement(strArrayOneElement) == -1)
+		if (oRowsDataArray.AddElement(oRowData) == -1)
 		{
 			return FALSE;
 		}

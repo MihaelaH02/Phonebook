@@ -21,15 +21,19 @@ class CPersonsTable :public CBaseTable<CPersonsAccessor, PERSONS>
 // ----------------
 public:
 
+	CPersonsTable()
+	{
+
+	}
 	/// <param name="oDatabaseTransactionManager">Параметър указател към клас управляващ сесии</param>
 	CPersonsTable(CInitializeSession* pDatabaseSession)
 		:CBaseTable(pDatabaseSession)
 	{
-	};
+	}
 
 	virtual ~CPersonsTable() 
 	{
-	};
+	}
 
 
 // Methods

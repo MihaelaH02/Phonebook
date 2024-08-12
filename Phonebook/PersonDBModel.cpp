@@ -1,54 +1,54 @@
 #include "pch.h"
-#include "PersonInfo.h"
+#include "PersonDBMOdel.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CPersonInfo
+// CPersonDBModel
 
 // Constructor / Destructor
 // ----------------
 
-CPersonInfo::CPersonInfo()
+CPersonDBModel::CPersonDBModel()
 {
 };
 
-CPersonInfo::CPersonInfo(const PERSONS& recPerson,const CPhoneNumbersMap& oPhoneNumbersMap)
-	:m_oPhoneNumbers(oPhoneNumbersMap), m_recPerson(recPerson)
+CPersonDBModel::CPersonDBModel(const PERSONS& recPerson,const CPhoneNumbersMap& oPhoneNumbersOperationsMap)
+	:m_oPhoneNumbers(oPhoneNumbersOperationsMap), m_recPerson(recPerson)
 {
 }
 
-CPersonInfo::CPersonInfo(const CPersonInfo& oPersonInfo)
-	:m_oPhoneNumbers(oPersonInfo.GetPhoneNumbers()),
-	 m_recPerson(oPersonInfo.GetPerson()) 
+CPersonDBModel::CPersonDBModel(const CPersonDBModel& oPersonDBModel)
+	:m_oPhoneNumbers(oPersonDBModel.GetPhoneNumbers()),
+	 m_recPerson(oPersonDBModel.GetPerson()) 
 {
 }
 
 
-CPersonInfo::~CPersonInfo()
+CPersonDBModel::~CPersonDBModel()
 {
 }
 
 
 // Methods
 // ----------------
-const PERSONS& CPersonInfo::GetPerson() const
+const PERSONS& CPersonDBModel::GetPerson() const
 {
 	return m_recPerson;
 }
 
-CPhoneNumbersMap& CPersonInfo::GetPhoneNumbers() 
+CPhoneNumbersMap& CPersonDBModel::GetPhoneNumbers() 
 {
 	return m_oPhoneNumbers;
 }
 
-const CPhoneNumbersMap& CPersonInfo::GetPhoneNumbers() const 
+const CPhoneNumbersMap& CPersonDBModel::GetPhoneNumbers() const 
 {
 	return m_oPhoneNumbers;
 }
 
-BOOL CPersonInfo::AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersMap)
+BOOL CPersonDBModel::AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersOperationsMap)
 {
 	AddPerson(recPerson);
-	if (!AddAllPhoneNumbers(oPhoneNumbersMap))
+	if (!AddAllPhoneNumbers(oPhoneNumbersOperationsMap))
 	{
 		return FALSE;
 	}
@@ -56,32 +56,32 @@ BOOL CPersonInfo::AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap
 	return TRUE;
 }
 
-void CPersonInfo::AddPerson(const PERSONS& recNewPerson)
+void CPersonDBModel::AddPerson(const PERSONS& recNewPerson)
 {
 	m_recPerson = recNewPerson;
 }
 
-void CPersonInfo::SetIdPerson(long lId)
+void CPersonDBModel::SetIdPerson(long lId)
 {
 	m_recPerson.lId = lId;
 }
 
-BOOL CPersonInfo::AddPhoneNumber(const PHONE_NUMBERS& recPhoneNumber)
+BOOL CPersonDBModel::AddPhoneNumber(const PHONE_NUMBERS& recPhoneNumber)
 {
-	return m_oPhoneNumbers.AddOneElementToKey(recPhoneNumber);
+	return m_oPhoneNumbers.AddOneElementToDataOperation(recPhoneNumber);
 }
 
-BOOL CPersonInfo::AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersMap)
+BOOL CPersonDBModel::AddAllPhoneNumbers(const CPhoneNumbersMap& oPhoneNumbersOperationsMap)
 {
-	return m_oPhoneNumbers.AddAllNewElementsToMap(oPhoneNumbersMap);
+	return m_oPhoneNumbers.AddAllNewElementsToMap(oPhoneNumbersOperationsMap);
 }
 
-void CPersonInfo::RemoveAllPhoneNumbers()
+void CPersonDBModel::RemoveAllPhoneNumbers()
 {
-	m_oPhoneNumbers.RemoveAllElementsInAllKeys();
+	m_oPhoneNumbers.SetEmptyDataOperationsValues();
 }
 
-BOOL CPersonInfo::CheckAndConnectAllPhoneNumbersWithPersonId()
+BOOL CPersonDBModel::SetPhoneNumbersPersonId()
 {
 	POSITION oPos = m_oPhoneNumbers.GetStartPosition();
 	LPARAM lFlagOperation;
@@ -112,12 +112,17 @@ BOOL CPersonInfo::CheckAndConnectAllPhoneNumbersWithPersonId()
 			//Добавяме ид на клиент за настоящия номер
 			PHONE_NUMBERS* pPhoneNumber = pPhoneNumberArray->GetAt(nIndexElementArray);
 
+			if (pPhoneNumber == nullptr)
+			{
+				return FALSE;
+			}
+
 			if (pPhoneNumber->lIdPerson == m_recPerson.lId)
 			{
 				continue;
 			}
+
 			pPhoneNumber->lIdPerson = m_recPerson.lId;
-			pPhoneNumber;
 		}
 	}
 
