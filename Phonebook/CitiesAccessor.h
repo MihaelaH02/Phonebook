@@ -2,15 +2,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-
-#define	ACCESSOR_FOR_ID 0
-#define	ACCESSOR_FOR_DATA 1
-
-#define NUMBERS_OF_ACCESSORS 2
-#define ORDINAL_COLUMN_ID 1
-#define ORDINAL_COLUMN_UPDATE_COUNTED 2
-#define ORDINAL_COLUMN_CITY_NAME 3
-#define	ORDINAL_COLUMN_REGION 4
+#include "StructsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesAccessor
@@ -20,6 +12,24 @@
 /// </summary>
 class CCitiesAccessor
 {
+// Constants
+// ----------------
+ 
+	/// <summary>
+	/// Свързване на мембърите на структура Cities с колоните от таблица Cities в базата данни
+	/// </summary>
+	BEGIN_ACCESSOR_MAP(CCitiesAccessor, GLOBAL_ACCESSORS_INFO_NUMBERS_OF_ACCESSORS)
+		BEGIN_ACCESSOR(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_ID, true)
+		COLUMN_ENTRY(ACCESSORS_COLUMNS_INFO_ORDINAL_COLUMN_ID, m_recCities.lId)
+		END_ACCESSOR()
+
+		BEGIN_ACCESSOR(GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA, true)
+		COLUMN_ENTRY(ACCESSORS_COLUMNS_INFO_ORDINAL_COLUMN_UPDATE_COUNTED, m_recCities.lUpdateCounter)
+		COLUMN_ENTRY(STRUCT_CITIES_ORDER_COL_CITT_NAME, m_recCities.szCityName)
+		COLUMN_ENTRY(STRUCT_CITIES_ORDER_COL_REGION, m_recCities.szRegion)
+		END_ACCESSOR()
+	END_ACCESSOR_MAP()
+
 
 // Constructor / Destructor
 // ----------------
@@ -35,6 +45,7 @@ public:
 // Overrides
 // ----------------
 		
+
 // Members
 // ----------------
 protected:
@@ -43,18 +54,4 @@ protected:
 	/// </summary>
 	CITIES m_recCities;
 
-	/// <summary>
-	/// Свързване на мембърите на структура Cities с колоните от таблица Cities в базата данни
-	/// </summary>
-	BEGIN_ACCESSOR_MAP(CCitiesAccessor, NUMBERS_OF_ACCESSORS)
-		BEGIN_ACCESSOR(ACCESSOR_FOR_ID, true)
-			COLUMN_ENTRY(ORDINAL_COLUMN_ID, m_recCities.lId)
-		END_ACCESSOR()
-
-		BEGIN_ACCESSOR(ACCESSOR_FOR_DATA, true)
-			COLUMN_ENTRY(ORDINAL_COLUMN_UPDATE_COUNTED, m_recCities.lUpdateCounter)
-			COLUMN_ENTRY(ORDINAL_COLUMN_CITY_NAME, m_recCities.szCityName)
-			COLUMN_ENTRY(ORDINAL_COLUMN_REGION, m_recCities.szRegion)
-		END_ACCESSOR()
-	END_ACCESSOR_MAP()
 };

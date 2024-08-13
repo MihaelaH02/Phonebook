@@ -12,11 +12,11 @@
 #include "ChildFrm.h"
 #include "CitiesDoc.h"
 #include "CitiesView.h"
-
+#include "PersonsDoc.h"
+#include "PersonsView.h"
 #include "DatabaseConnection.h"
-#include "CitiesTable.h"
-#include "TableDataArray.h"
-
+#include "PhoneTypesDoc.h"
+#include "PhoneTypeView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -27,10 +27,15 @@
 
 BEGIN_MESSAGE_MAP(CPhonebookApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &CPhonebookApp::OnAppAbout)
+	ON_COMMAND(ID_FILE_NEW_CITIES, &CPhonebookApp::OnFileNewCities)
+	ON_COMMAND(ID_FILE_NEW_PHONETYPES, &CPhonebookApp::OnFileNewPhoneTypes)
+	ON_COMMAND(ID_FILE_NEW_CLIENTS, &CPhonebookApp::OnFileNewClients)
+
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
+
 
 
 // CPhonebookApp construction
@@ -53,6 +58,10 @@ CPhonebookApp::CPhonebookApp() noexcept
 // The one and only CPhonebookApp object
 
 CPhonebookApp theApp;
+CMultiDocTemplate* pCitiesDocTemplate = nullptr;
+CMultiDocTemplate* pPhoneTypesDocTemplate = nullptr;
+CMultiDocTemplate* pPersonsDocTemplate = nullptr;
+
 
 
 // CPhonebookApp initialization
@@ -119,15 +128,30 @@ BOOL CPhonebookApp::InitInstance()
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
-	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_PhonebookTYPE,
+
+	pCitiesDocTemplate = new CMultiDocTemplate(IDR_CITIES_DOC,
 		RUNTIME_CLASS(CCitiesDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CCitiesView));
-	if (!pDocTemplate)
+	if (!pCitiesDocTemplate)
 		return FALSE;
-	AddDocTemplate(pDocTemplate);
+	AddDocTemplate(pCitiesDocTemplate);
 
+	pPhoneTypesDocTemplate = new CMultiDocTemplate(IDR_PHONE_TYPES_DOC,
+		RUNTIME_CLASS(CPhoneTypesDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CPhoneTypeView));
+	if (!pPhoneTypesDocTemplate)
+		return FALSE;
+	AddDocTemplate(pPhoneTypesDocTemplate);
+
+	pPersonsDocTemplate = new CMultiDocTemplate(IDR_PhonebookTYPE,
+		RUNTIME_CLASS(CPersonsDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CPersonsView));
+	if (!pPersonsDocTemplate)
+		return FALSE;
+	AddDocTemplate(pPersonsDocTemplate);
 
 	// create main MDI Frame window
 	CMainFrame* pMainFrame = new CMainFrame;
@@ -172,7 +196,6 @@ int CPhonebookApp::ExitInstance()
 
 // CPhonebookApp message handlers
 //
-
 
 // CAboutDlg dialog used for App About
 
@@ -235,4 +258,26 @@ void CPhonebookApp::SaveCustomState()
 // CPhonebookApp message handlers
 
 
+void CPhonebookApp::OnFileNewCities()
+{
+	if (pCitiesDocTemplate) 
+	{
+		pCitiesDocTemplate->OpenDocumentFile(NULL);
+	}
+}
 
+
+void CPhonebookApp::OnFileNewPhoneTypes()
+{
+	if (pPhoneTypesDocTemplate)
+	{
+		pPhoneTypesDocTemplate->OpenDocumentFile(NULL);
+	}
+}
+void CPhonebookApp::OnFileNewClients()
+{
+	if (pPersonsDocTemplate)
+	{
+		pPersonsDocTemplate->OpenDocumentFile(NULL);
+	}
+}

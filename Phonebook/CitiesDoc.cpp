@@ -41,13 +41,15 @@ CCitiesDoc::~CCitiesDoc()
 
 BOOL CCitiesDoc::OnNewDocument()
 {
+	SetTitle(_T("Cities"));
+
 	if (!CDocument::OnNewDocument())
 	{
 		return FALSE;
 	}
 
 	//Зареждане на данните от базата данни в масив
-	if (!m_oCitiesData.SelectAll(m_oCitiesArray))
+	if(!SelectAllCities())
 	{
 		return FALSE;
 	}
@@ -73,7 +75,7 @@ void CCitiesDoc::Serialize(CArchive& ar)
 
 BOOL CCitiesDoc::SelectCity(const long lID, CITIES& recCity)
 {
-	if (!m_oCitiesData.SelectWhereID(lID, recCity))
+	if (!m_oCitiesData.SelectCityWhereID(lID, recCity))
 	{
 		return FALSE;
 	}
@@ -83,7 +85,7 @@ BOOL CCitiesDoc::SelectCity(const long lID, CITIES& recCity)
 BOOL CCitiesDoc::UpdateCity(const CITIES& recCity)
 {
 	//Редакция в базата данни
-	if (!m_oCitiesData.UpdateWhereID(recCity.lId, recCity))
+	if (!m_oCitiesData.UpdateCityWhereID(recCity.lId, recCity))
 	{
 		return FALSE;
 	}
@@ -92,25 +94,29 @@ BOOL CCitiesDoc::UpdateCity(const CITIES& recCity)
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
 	{
 		//Превъщаме указател от масива в променлива от тип структура с градове
-		CITIES& pCurrentCityFromArray = *m_oCitiesArray.GetAt(nIndex);
+		CITIES* pCurrentCityFromArray = m_oCitiesArray.GetAt(nIndex);
+		if (pCurrentCityFromArray == nullptr)
+		{
+			return FALSE;
+		}
 
 		//Търсим ИД на текущия елемент от масива дали отговаря на подадения, който трябва да се редактира
-		if (pCurrentCityFromArray.lId == recCity.lId)
+		if (pCurrentCityFromArray->lId == recCity.lId)
 		{
 			//Редактираме стойностите на елемента в масива, с тези на подадения като пакаметър структура
-			pCurrentCityFromArray = recCity;
+			*pCurrentCityFromArray = recCity;
 
 			//Редакция на вютата, подаване на параметър за редакция и обект, който е засегнат
-			UpdateAllViews(nullptr, LPARAM_UPDATE, (CObject*)&pCurrentCityFromArray);
+			UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_UPDATE, (CObject*) pCurrentCityFromArray);
 			return TRUE;
 		}
 	}
 	return FALSE;
 }
 
-BOOL CCitiesDoc::Insert(CITIES& recCity)
+BOOL CCitiesDoc::InsertCity(CITIES& recCity)
 {
-	if (!m_oCitiesData.Insert(recCity))
+	if (!m_oCitiesData.InsertCity(recCity))
 	{
 		return FALSE;
 	}
@@ -119,34 +125,46 @@ BOOL CCitiesDoc::Insert(CITIES& recCity)
 	m_oCitiesArray.AddElement(recCity);
 
 	//Редакция на вютата, подаване на параметър за добавяне и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_INSERT, (CObject*)&recCity);
+	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_INSERT, (CObject*)&recCity);
 	return TRUE;
 }
 
-BOOL CCitiesDoc::Delete(const long lId)
+BOOL CCitiesDoc::DeleteCity(const CITIES& recCity)
 {
-	if (!m_oCitiesData.DeleteWhereID(lId))
+
+	if (!m_oCitiesData.DeleteCityWhereID(recCity.lId))
 	{
 		return FALSE;
 	}
 
 	//Премахване на елемента от масива
-	m_oCitiesArray.RemoveElemetById(lId);
+	m_oCitiesArray.RemoveElement(recCity, CompareId);
 
 	//Редакция на вютата, подаване на параметър за изтриване и обект, който е засегнат
-	UpdateAllViews(nullptr, LPARAM_DELETE);
+	UpdateAllViews(nullptr, OPERATIONS_WITH_DATA_FLAGS_DELETE, (CObject*)&recCity);
 
 	return TRUE;
 }
 
-const CCitiesArray& CCitiesDoc::GetCitiesArray() const
+const CCitiesArray& CCitiesDoc::GetCitiesArray()
 {
 	return m_oCitiesArray;
 }
 
-int CCitiesDoc::GetCitiesArrayElementsCount()
+INT_PTR CCitiesDoc::GetCitiesArrayCount()
 {
 	return m_oCitiesArray.GetCount();
+}
+
+BOOL CCitiesDoc::SelectAllCities()
+{
+	//Зареждане на данните от базата данни в масив
+	if (!m_oCitiesData.SelectAllCities(m_oCitiesArray))
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 #ifdef SHARED_HANDLERS
@@ -216,5 +234,3 @@ void CCitiesDoc::Dump(CDumpContext& dc) const
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
-
-	// CCitiesDoc commands

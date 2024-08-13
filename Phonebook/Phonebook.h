@@ -34,9 +34,14 @@ public:
 	virtual void SaveCustomState();
 
 	afx_msg void OnAppAbout();
-	//afx_msg void OnFileNewCities();
 
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnFileNewCities();
+	afx_msg void OnFileNewPhoneTypes();
+	afx_msg void OnFileNewClients();
 };
 
 extern CPhonebookApp theApp;
+extern CMultiDocTemplate* pCitiesDocTemplate;
+extern CMultiDocTemplate* pPhoneTypesDocTemplate;
+extern CMultiDocTemplate* pPersonsDocTemplate;

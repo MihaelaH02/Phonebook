@@ -1,19 +1,19 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "ValidateStringData.h"
-#include "Enums.h"
+#include "ValidateDialogControlsData.h"
+#include "Flags.h"
+#include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesDialog dialog
 
-#define MAX_LENGTH_STRING 128
-
 /// <summary>
-/// Диалог за изпълнение на опирации свързани със структура Градове
+/// Диалог за изпълнение на опирации свързани с регистъра Градове
 /// </summary>
 class CCitiesDialog : public CDialog
 {
+
 // Macros
 // ----------------
 	DECLARE_DYNAMIC(CCitiesDialog)
@@ -30,42 +30,55 @@ class CCitiesDialog : public CDialog
 
 // Constructor / Destructor
 // ----------------
+
 public:
-	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CCitiesDialog(LPARAM oEnableControls = ENABLE_CONTROLS_FLAG_ALL, CWnd* pParent = nullptr);
+	/// <param name="oEnableControls">Параметър, който приема стойност флаг, за това кои от контролите да са активни за писане</param>
+	CCitiesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="recCity">Параметър структура с градове, чиито стойности ще се визуализират в контролите на диалога</param>
-	CCitiesDialog(const CITIES& recCity, LPARAM oEnableControls = ENABLE_CONTROLS_FLAG_ALL, CWnd* pParent = nullptr);
+	/// <param name="oEnableControls">Параметър, който приема стойност флаг, за това кои от контролите да са активни за писане</param>
+	CCitiesDialog(const CITIES& recCity, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+
 	virtual ~CCitiesDialog();
 
 
 // MFC Overrides
 // ----------------	
 private:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL OnInitDialog();
+	virtual void DoDataExchange(CDataExchange* pDX) override;
+	
+	virtual BOOL OnInitDialog() override;
 
 
 // MFC Message Handlers
 // ----------------
+
 private:
+	/// <summary>
+	/// Метод за събитие при натискане на бутон ОК в диалога
+	/// </summary>
 	afx_msg void OnBnClickedOk();
+
+	/// <summary>
+	/// Метод за събитие при натискане на бутон CANCEL в диалога
+	/// </summary>
 	afx_msg void OnBnClickedCancel();
 
 
 // Overrides
 // ----------------
-private:
 
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
-	/// Достъп до стойности за стринговите член променливи
+	/// Достъп до данните от контролите
 	/// </summary>
+	/// <param name="recCity">Параметър - структура, в която ще се запазят данните от контролите</param>
 	/// <returns>Връща структура от тип градове</returns>
-	CITIES& GetControlsData();
+	BOOL GetControlsData(CITIES& recCity);
 
 private:
 	/// <summary>
@@ -79,14 +92,14 @@ private:
 	void OnEnChangeRegion();
 
 	/// <summary>
-	/// Метод за забрана за писане по контролите
+	/// Метод за управление на активността за писане по контролите
 	/// </summary>
-	void EnableControls(LPARAM oEnableControls);
+	void EnableControls(LPARAM lEnableControls);
 
 	/// <summary>
-	/// Метод за извеждане на съобщение в контрола
+	/// Метод за извеждане на съобщение за грешка в статични текстови контроли за грешки
 	/// </summary>
-	/// <param name="strText">Контрола, чийто текст ще се валидира</param>
+	/// <param name="strText">Параметър за текст, който ще се валидира</param>
 	/// <param name="nControlaID">Контрола, в която ще се съдържа текста</param>
 	void PrintErrorMsg(const CString& strText, int nControlaID);
 
@@ -94,11 +107,11 @@ private:
 	/// Метод за проверка, дали контролата е на фокус
 	/// </summary>
 	/// <param name="oControla">Контрола, която ще се проверява</param>
-	/// <returns>Връща TRUE ако на фокус и FALSE ,ако не е</returns>
+	/// <returns>Връща TRUE ако на фокус и FALSE, ако не е</returns>
 	BOOL IsControlOnFocus(CWnd& oControla);
 
 	/// <summary>
-	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
+	/// Метод, който проверява дали е визуализирана грешка в статичните текстови контроли
 	/// </summary>
 	BOOL HasErrorMsg();
 
@@ -107,7 +120,7 @@ private:
 	/// </summary>
 	/// <param name="oControla">Параметър за контрола, в която е направена промяна</param>
 	/// <param name="strText">Параметър за текста, който се намира в контролата</param>
-	/// <param name="nControlaIDWithErroe">Параметър ИД на контрола, в която да се извезе со.ъобщение за грешка</param>
+	/// <param name="nControlaIDWithErroe">Параметър ИД на контрола, в която да се извезе съобщение за грешка</param>
 	void DoOnEnChangeEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithErroe);
 
 
@@ -125,22 +138,17 @@ private:
 	CEdit m_edbRegion;
 
 	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за име на град
+	/// Член променлива, която съдържа данните за града
 	/// </summary>
-	CString m_strName;
-
-	/// <summary>
-	/// Член променлива за обмяна на данни с контролата за област
-	/// </summary>
-	CString m_strRegion;
+	CITIES m_recCity;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
 	/// </summary>
-	LPARAM m_oEnableControlsParam;
+	LPARAM m_lEnableControlsParam;
 
 	/// <summary>
 	/// Инстанция на клас за верификация на данни
 	/// </summary>
-	CValidateStringData m_oValidateStringData;
+	CValidateDialogControlsData m_oValidateStringData;
 };

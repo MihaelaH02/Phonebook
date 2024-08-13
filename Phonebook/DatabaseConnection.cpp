@@ -6,20 +6,20 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDatabaseConnection
 
-/// <summary> Начална инициализация на инстанцията</summary>
-CDatabaseConnection* CDatabaseConnection::pInstancePtr = NULL;
-
+/// <summary> Начална инициализация на статична променлива</summary>
+CDatabaseConnection* CDatabaseConnection::m_pInstancePtr = NULL;
 
 // Constructor / Destructor
 // ----------------
 
-CDatabaseConnection::CDatabaseConnection() 
+CDatabaseConnection::CDatabaseConnection()
 {
 }
 
 CDatabaseConnection::~CDatabaseConnection()
 {
-	delete pInstancePtr;
+	delete m_pInstancePtr;
+	m_pInstancePtr = nullptr;
 }
 
 // Methods
@@ -53,11 +53,11 @@ BOOL CDatabaseConnection::CloseDatabaseSource()
 
 CDatabaseConnection* CDatabaseConnection::getInstance()
 {
-	if (pInstancePtr == NULL)
+	if (m_pInstancePtr == nullptr)
 	{
-		pInstancePtr = new CDatabaseConnection();
+		m_pInstancePtr = new CDatabaseConnection();
 	}
-	return pInstancePtr;
+	return m_pInstancePtr;
 }
 
 CDataSource& CDatabaseConnection::GetDataSource()

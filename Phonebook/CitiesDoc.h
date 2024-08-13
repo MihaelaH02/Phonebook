@@ -2,12 +2,17 @@
 
 #include "CitiesData.h"
 #include "Structures.h"
-#include "Enums.h"
+#include "Flags.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CitiesDoc.h : interface of the CCitiesDoc class
+
+/// <summary>
+/// Клас документ за регистър с градове, наследяващ базов клас
+/// </summary>
 class CCitiesDoc : public CDocument
 {
+
 // Macros
 // ----------------
 protected:
@@ -21,7 +26,8 @@ protected:
 
 // Constructor / Destructor
 // ----------------
-protected: // create from serialization only
+
+protected:
 	CCitiesDoc() noexcept;
 public:
 	virtual ~CCitiesDoc();
@@ -30,14 +36,17 @@ public:
 // Overrides
 // ----------------
 public:
-	virtual BOOL OnNewDocument();
-	virtual void Serialize(CArchive& ar);
+	/// <summary>
+	/// Метод, който се изпълнява при направата на нов документ от този тип
+	/// </summary>
+	virtual BOOL OnNewDocument() override;
+
+	virtual void Serialize(CArchive& ar) override;
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);
-#endif // SHARED_HANDLERS
+#endif 
 
-	// Implementation
 public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -47,59 +56,71 @@ public:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
-	/// Селектира един запис от таблицата с градове
+	/// Метод за селект на един запис от таблицата с градове
 	/// </summary>
-	/// <param name="lID">ИД, по което ще се търси запис</param>
-	/// <param name="recCity">Структура, която ще съдържа намерения запис</param>
+	/// <param name="lID">Параметър за ИД, по което ще се търси запис</param>
+	/// <param name="recCity">Параметър - структура, която ще съдържа намерения запис</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
 	BOOL SelectCity(const long lID, CITIES& recCity);
 
 	/// <summary>
-	/// Редакция на един запис от таблицата с градове
+	/// Метод за редакция на един запис от таблицата с градове
 	/// </summary>
-	/// <param name="lID">ИД, по което ще се търси запис за модификация</param>
-	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
-	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
+	/// <param name="lID">Параметъл за ИД, по което ще се търси запис за модификация</param>
+	/// <param name="recCity">Параметър - структура, която ще съдържа записа с промени</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
 	BOOL UpdateCity(const CITIES& recCity);
 
 	/// <summary>
-	/// Добавяне на нов запис в таблицата с градове
+	/// Метод за добавяне на нов запис в таблицата с градове
 	/// </summary>
-	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
-	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
+	/// <param name="recCity">Параметър - структура, която ще съдържа новия запис</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Insert(CITIES& recCity);
+	BOOL InsertCity(CITIES& recCity);
 
 	/// <summary>
-	/// Изтриване на запис от таблицата с градове
+	/// Метод заиИзтриване на запис от таблицата с градове
 	/// </summary>
-	/// <param name="lId">ИД, по което ще се търси запис за изтриване</param>
+	/// <param name="recCity">Параметър - структура, която ще съдържа записа за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL Delete(const long lId);
+	BOOL DeleteCity(const CITIES& recCity);
 
 	/// <summary>
-	/// Достъп до член променлива на класа
+	/// Метод за достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с данните от таблицата с градов</returns>
-	const CTableDataArray<CITIES>& GetCitiesArray() const;
+	const CCitiesArray& GetCitiesArray();
 
-	int GetCitiesArrayElementsCount();
+	/// <summary>
+	/// Метод, който връща размера на масива с градове
+	/// </summary>
+	/// <returns></returns>
+	INT_PTR GetCitiesArrayCount();
+
+private:
+	/// <summary>
+	/// Метод за зареждане на всички градове
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
+	BOOL CCitiesDoc::SelectAllCities();
+
 
 // Members
 // ----------------
 private:
 	/// <summary>
-	///Член променлива с за досъп до бизнес логиката
+	///Член променлива с за досъп до бизнес логиката на таблица градове
 	/// </summary>
 	CCitiesData m_oCitiesData;
 
 	/// <summary>
-	///Член променлива съдърщата масив с данните от таблицата с градове
+	///Член променлива, съдържаща масив с данните от таблицата с градове
 	/// </summary>
 	CCitiesArray m_oCitiesArray;
+
 
 #ifdef SHARED_HANDLERS
 	// Helper function that sets search content for a Search Handler

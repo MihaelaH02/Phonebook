@@ -1,13 +1,9 @@
 #pragma once
 
 #include <afxtempl.h>
-#include "TableDataArray.h"
-
-#define TCHAR_SIZE_FOR_STRUCT_MEMBERS 128
-#define TCHAR_SIZE_FOR_PERSON_EGN 16
-#define TCHAR_SIZE_FOR_PHONE_NUMBER_MEMBER 16
-#define INIT_VALUE_UPDATE_COUNTER 0
-
+#include "TypePtrDataArray.h"
+#include "TableDataOperationsMap.h"
+#include "StructsInfo.h"
 
 /// <summary>
 /// Дискова структура по таблица Градове 
@@ -19,9 +15,9 @@ struct CITIES
 	/// <summary> Брояч за модификация члeн променлива </summary>
 	long lUpdateCounter;
 	/// <summary> Име на град член променлива </summary>
-	TCHAR szCityName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szCityName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> Община член променлива </summary>
-	TCHAR szRegion[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szRegion[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
 
 	/// <summary> Конструктор </summary>
@@ -31,27 +27,33 @@ struct CITIES
 	}
 
 	/// <summary>
-	/// Параметризиран конструтор по избрани полета
-	/// </summary>
-	CITIES(const TCHAR szCityNameValue[TCHAR_SIZE_FOR_STRUCT_MEMBERS], const TCHAR szRegionValue[TCHAR_SIZE_FOR_STRUCT_MEMBERS])
-	{
-		lId = INIT_VALUE_UPDATE_COUNTER;
-		lUpdateCounter = INIT_VALUE_UPDATE_COUNTER;
-		_tcscpy_s(szCityName, szCityNameValue);
-		_tcscpy_s(szRegion, szRegionValue);
-	}
-
-	/// <summary>
 	/// Параметризиран констурктор по всички полета
 	/// </summary>
 	CITIES(const CITIES& recCity)
 	{
 		lId = recCity.lId;
 		lUpdateCounter = recCity.lUpdateCounter;
-		_tcsncpy_s(szCityName, recCity.szCityName, _TRUNCATE);
-		_tcsncpy_s(szRegion, recCity.szRegion, _TRUNCATE);
+		_tcscpy_s(szCityName, recCity.szCityName);
+		_tcscpy_s(szRegion, recCity.szRegion);
 	}
-}; typedef CTableDataArray<CITIES> CCitiesArray;
+
+	BOOL CompareAll(const CITIES& recCity) const 
+	{
+		if (_tcscmp(szCityName, recCity.szCityName) != 0)
+		{
+			return 1;
+		}
+
+		if(_tcscmp(szRegion, recCity.szRegion))
+		{
+			return 1;
+		}
+
+		return 0;
+	}
+};
+///<summary> Псевдоним на  CTypePtrDataArray<CITIES> с тип CITIES</summary> 
+typedef CTypedPtrDataArray<CITIES> CCitiesArray;
 
 
 /// <summary> 
@@ -64,17 +66,37 @@ struct PHONE_TYPES
 	/// <summary> Брояч за модификация член променлива </summary>
 	long lUpdateCounter;
 	/// <summary> Тип телефонен номер член променлива </summary>
-	TCHAR czPhoneType[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR czPhoneType[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
 	/// <summary> Конструктор </summary>
 	PHONE_TYPES()
 	{
 		SecureZeroMemory(this, sizeof(*this));
 	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PHONE_TYPES(const PHONE_TYPES& recPhoneType)
+	{
+		lId = recPhoneType.lId;
+		lUpdateCounter = recPhoneType.lUpdateCounter;
+		_tcscpy_s(czPhoneType, recPhoneType.czPhoneType);
+	}
+
+	BOOL CompareAll(const PHONE_TYPES& recPhoneType) const
+	{
+		if (_tcscmp(czPhoneType, recPhoneType.czPhoneType) != 0)
+		{
+			return 1;
+		}
+
+		return 0;
+	}
 };
 
-///<summary> Псевдоним на CTypedPtrArray с тип PHONE_TYPES</summary> 
-typedef CTableDataArray<PHONE_TYPES> CPhoneTypesArray;
+///<summary> Псевдоним на  CTypePtrDataArray<PHONE_TYPES> с тип PHONE_TYPES</summary> 
+typedef CTypedPtrDataArray<PHONE_TYPES> CPhoneTypesArray;
 
 /// <summary> 
 /// Дискова структура по таблица Клиенти 
@@ -86,27 +108,78 @@ struct PERSONS
 	/// <summary> Блояч за модификация член променлива </summary>
 	long lUpdateCounter;
 	/// <summary> Първо име член променлива </summary>
-	TCHAR szFirstName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szFirstName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> Второ име член променлива </summary>
-	TCHAR szSecondName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szSecondName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> Трето име член променлива </summary>
-	TCHAR szLastName[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szLastName[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 	/// <summary> ЕГН член променлива </summary>
-	TCHAR szEGN[TCHAR_SIZE_FOR_PERSON_EGN];
+	TCHAR szEGN[STRUCT_MEMBER_SIZE_TYPE_TCHAR_FOR_PERSON_EGN];
 	/// <summary> Град член променлива </summary>
-	long lIddCity;
+	long lIdCity;
 	/// <summary> Адрес член променлива </summary>
-	TCHAR szAddress[TCHAR_SIZE_FOR_STRUCT_MEMBERS];
+	TCHAR szAddress[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
 	/// <summary> Конструктор </summary>
 	PERSONS()
 	{
 		SecureZeroMemory(this, sizeof(*this));
 	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PERSONS(const PERSONS& recPersons)
+	{
+		lId = recPersons.lId;
+		lUpdateCounter = recPersons.lUpdateCounter;
+		_tcscpy_s(szFirstName, recPersons.szFirstName);
+		_tcscpy_s(szSecondName, recPersons.szSecondName);
+		_tcscpy_s(szLastName, recPersons.szLastName);
+		_tcscpy_s(szEGN, recPersons.szEGN);
+		lIdCity = recPersons.lIdCity;
+		_tcscpy_s(szAddress, recPersons.szAddress);
+	}
+
+	BOOL CompareAll(const PERSONS& recPerson) const
+	{
+		if (_tcscmp(szFirstName, recPerson.szFirstName) != 0)
+		{
+			return 1;
+		}
+
+		if (_tcscmp(szSecondName, recPerson.szSecondName) != 0)
+		{
+			return 1;
+		}
+
+		if (_tcscmp(szLastName, recPerson.szLastName) != 0)
+		{
+			return 1;
+		}
+
+		if (_tcscmp(szAddress, recPerson.szAddress) != 0)
+		{
+			return 1;
+		}
+
+		if (_tcscmp(szEGN, recPerson.szEGN) != 0)
+		{
+			return 1;
+		}
+
+		if (lIdCity != recPerson.lIdCity)
+		{
+			return 1;
+		}
+
+		return 0;
+	}
+
 };
 
-///<summary> Псевдоним на PERSONS с тип CITIES</summary> 
-typedef CTableDataArray<PERSONS> CPersonsArray;
+///<summary> Псевдоним на CTypePtrDataArray<PERSONS> с тип PERSONS</summary> 
+typedef CTypedPtrDataArray<PERSONS> CPersonsArray;
 
 
 /// <summary> 
@@ -123,14 +196,62 @@ struct PHONE_NUMBERS
 	/// <summary> Тип телефон член променлива </summary>
 	long lIdPhoneType;
 	/// <summary> Телефонен номер член променлива </summary>
-	TCHAR szPhone[TCHAR_SIZE_FOR_PHONE_NUMBER_MEMBER];
+	TCHAR szPhone[STRUCT_MEMBER_SIZE_TYPE_TCHAR_FOR_PHONE_NUMBER];
 
 	/// <summary> Конструктор </summary>
 	PHONE_NUMBERS()
 	{
 		SecureZeroMemory(this, sizeof(*this));
 	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PHONE_NUMBERS(const PHONE_NUMBERS& recPhoneNumbers)
+	{
+		lId = recPhoneNumbers.lId;
+		lUpdateCounter = recPhoneNumbers.lUpdateCounter;
+		lIdPerson = recPhoneNumbers.lIdPerson;
+		lIdPhoneType = recPhoneNumbers.lIdPhoneType;
+		_tcscpy_s(szPhone, recPhoneNumbers.szPhone);
+	}
+
+	int CompareAll(const PHONE_NUMBERS& recPhoneNumber) const
+	{
+		if (_tcscmp(recPhoneNumber.szPhone, szPhone) != 0)
+		{
+			return 1;
+		}
+
+		if(recPhoneNumber.lIdPhoneType != lIdPhoneType)
+		{
+			return 1;
+		}
+
+		return 0;
+	}
 };
 
-///<summary> Псевдоним на CTypedPtrArray с тип PHONE_NUMBERS</summary> 
-typedef CTableDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
+///<summary> Псевдоним на CTypePtrDataArray<PHONE_NUMBERS> с тип PHONE_NUMBERS</summary> 
+typedef CTypedPtrDataArray<PHONE_NUMBERS> CPhoneNumbersArray;
+
+/// <summary>Псевдоним на клас CTableDataMap с тип PHONE_NUMBERS</summary>
+typedef CTableDataOperationsMap<PHONE_NUMBERS> CPhoneNumbersMap;
+
+
+template<typename Struct>
+int CompareId(const Struct& recStruct1, const Struct& recStruct2)
+{
+	if (recStruct1.lId != recStruct2.lId)
+	{
+		return 1;
+	}
+
+	return 0;
+};
+
+template<typename Struct>
+int CompareAll(const Struct& recStruct1, const Struct& recStruct2)
+{
+	return recStruct1.CompareAll(recStruct2);
+};

@@ -2,27 +2,35 @@
 /////////////////////////////////////////////////////////////////////////////
 // CitiesView.h : interface of the CCitiesView class
 
-#define LIST_CONTROL_HEADER_WIDTH 200
-
-
 #pragma once
 #include "CitiesDialog.h"
-#include "Enums.h"
+#include "ListCtrlColumnsInfo.h"
+#include "ManageListCtr.h"
+#include "RowDataListCtrl.h"
+#include "Messages.h"
+#include "Flags.h"
 
+/// <summary>
+/// Клас за визуализация на регистъра с градове, наследяващ базов клас
+/// </summary>
 class CCitiesView : public CListView
 {
+
 // Constants
 // ----------------
  
 
 // Macros
 // ----------------
+
 protected:
 	DECLARE_DYNCREATE(CCitiesView)
+	DECLARE_MESSAGE_MAP()
 
 
 // Constructor / Destructor
 // ----------------
+
 protected:
 	CCitiesView() noexcept;
 public:
@@ -31,40 +39,25 @@ public:
 
 // Methods
 // ----------------
+
 public:
+	/// <summary>
+	/// Метод за достъп до документа
+	/// </summary>
+	/// <returns>Връща инстанция към документа</returns>
 	CCitiesDoc* GetDocument() const;
 
 private:
 	/// <summary>
-	/// Метод за добавяне на елемент към лист контролата
-	/// </summary>
-	/// <param name="pCity">Параметър от тип структура град, с данни които да се добавят</param>
-	/// <param name="nIndex">Параметър за индекс, по който ще се редактират данни в контролата</param>
-	void AddOrEditItemInListCtr(const CITIES& pCity, int nOldIndexExistingElement = -1);
-
-	/// <summary>
-	/// Метод за достъп до елемент в лист контролата
-	/// </summary>
-	/// <param name="nIndex">Параметър за индекс, по който ще се търси елемента</param>
-	/// <returns>Връща обект от тип структура за градове</returns>
-	CITIES GetItemFromListCtr(const int nIndex);
-
-	/// <summary>
-	/// Метод за достъп до индекс на селектиран елемент от лист контролата
-	/// </summary>
-	/// <returns>Връща индекс на елемент от лист контролата</returns>
-	int GetSelectedItemListCtrByIndex();
-
-	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
 	/// </summary>
-	void LoadDataInListCtrFromDoc();
+	BOOL LoadDataInListCtrFromDoc();
 
 	/// <summary>
-	/// Метод за търсене на всички елементи по даден критерий
+	/// Метод за търсене на елементи по даден критерий
 	/// </summary>
 	/// <param name="recCity">Структура, по която ще се търсият записи</param>
-	void FindItemsFromListCtr(const CITIES& recCity);
+	BOOL FilterItemsFromListCtr(const CITIES& recCity);
 
 	/// <summary>
 	/// Метод за проверка, дали броя на елементите в лист контролата отговаря на данните в документа
@@ -75,30 +68,54 @@ private:
 	/// <summary>
 	/// Метод за сортиране на елементите в контролата по област и наименование на град
 	/// </summary>
-	void SortItemsListCtr();
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL SortItemsListCtr();
 
 	/// <summary>
 	/// Метод, който сравнява елементи
 	/// </summary>
 	/// <param name="lParam1">Асоцира се с първия елемент, който ще се сравнява</param>
 	/// <param name="lParam2">Асоцира се с втори елемент, който ще се сравнява</param>
-	/// <param name="lParamSort">Параметър, който приложението си генерира </param>
+	/// <param name="lParamSort">Параметър обект</param>
 	/// <returns>Връща се резултат то сравнението</returns>
 	int static CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
+
+	/// <summary>
+	/// Метод, който записва всички презентационни данни от всички елементи град в нов масив
+	/// </summary>
+	/// <param name="oCitiesArray">Масив с градове</param>
+	/// <param name="strCitiesArrayToDisplayInListCtrl">Масив с презентационни данни на всички градове</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL SetColumnDisplayDataArray(const CCitiesArray& oCitiesArray, CTypedPtrDataArray<CRowDataListCtrl<CITIES>>& oRowsDataArray);
+
+	/// <summary>
+	/// Метод, който записва презентационните данни на един елемент град в нов масив
+	/// </summary>
+	/// <param name="strCitiesArray">Масив с презентационни данни за този елемент</param>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL SetColumnDisplayData(CRowDataListCtrl<CITIES>& oRowDataListCtrl);
 
 
 // Overrides
 // ----------------
 public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+	/// <summary>
+	// Метод, който задава особености на вюто преди съзаването му
+	/// </summary>
+	/// <param name="cs"></param>
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs) override;
 
 protected:
-	virtual void OnInitialUpdate();
+	/// <summary>
+	/// Метод, който задава особености на вюто след създаването му
+	/// </summary>
+	virtual void OnInitialUpdate() override;
 
 	/// <summary>
 	/// Метод, който модифицира лист контролата в зависимост от извършената опирация
 	/// </summary>
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
 
 public:
 #ifdef _DEBUG
@@ -106,10 +123,9 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+
 // Generated message map functions
 protected:
-	afx_msg void OnFilePrintPreview();
-
 	/// <summary>
 	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
 	/// </summary>
@@ -130,34 +146,30 @@ protected:
 	/// </summary>
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
-
-	DECLARE_MESSAGE_MAP()
-
 public:
 	/// <summary>
-	/// Метод за селект на елемент от лест контролата
+	/// Метод за преглед на елемент от лест контролата
 	/// </summary>
-	afx_msg void SelectCityListCtr();
+	afx_msg void ViewCityInfo();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void InsertCityListCtrl();
+	afx_msg void InsertCity();
 
 	/// <summary>
 	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void UpdateCityListCtr();
+	afx_msg void UpdateCity();
 
 	/// <summary>
 	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void DeleteCityListCtr();
+	afx_msg void DeleteCity();
 
 	/// <summary>
 	/// Метод, който филтрира градовете по подаден регион
 	/// </summary>
-	/// <param name="strRegion">Променлива стринг, по който ще се филтрират градовете</param>
 	afx_msg void FilterCitiesByRegion();
 
 	/// <summary>
@@ -169,6 +181,7 @@ public:
 	/// Метод за зареждане на всички градове
 	/// </summary>
 	afx_msg void ReloadCities();
+
 
 // Members
 // ----------------

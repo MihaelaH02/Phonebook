@@ -21,29 +21,26 @@ public:
 	/// Копи косткруктор
 	/// </summary>
 	CDatabaseConnection(const CDatabaseConnection&) = delete;
+
 private:
-	/// <summary>
-   /// Частен конструктор за класа
-   /// </summary>
 	CDatabaseConnection();
 
-	/// <summary>
-	/// Деструктор
-	/// </summary>
+
 	~CDatabaseConnection();
 
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
-	/// Функция за свързване с базата данни
+	/// Метод за свързване с базата данни
 	/// </summary>
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL ConnectToDatabaseSource();
 
 	/// <summary>
-	/// Затвяряне на връзката към базата данни
+	/// Метод за затвяряне на връзката към базата данни
 	/// </summary>
 	/// <returns>Функцията връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL CloseDatabaseSource();
@@ -54,7 +51,7 @@ public:
 	static CDatabaseConnection* getInstance();
 
 	/// <summary>
-	/// Функция за достъп до променлива m_oDataSource
+	/// Метод за достъп до член променливата
 	/// </summary>
 	/// <returns>Връща променлива,съдържаща връзка към базата</returns>
 	CDataSource& GetDataSource();
@@ -66,13 +63,14 @@ public:
 
 // Members
 // ----------------
+
 	/// <summary>
-	/// Променлива, съдържаща връзката към базата данни
+	/// Член променлива, съдържаща връзката към базата данни
 	/// </summary>
 	CDataSource m_oDataSource;
 
 	/// <summary>
-	/// Променива указател, сочещ единствената инстанция на класа
+	/// Член променива указател, сочещ единствената инстанция на класа
 	/// </summary>
-	static CDatabaseConnection* pInstancePtr;
+	static CDatabaseConnection* m_pInstancePtr;
 };
