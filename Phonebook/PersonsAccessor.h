@@ -4,7 +4,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-#include "EnumsStructsInfo.h"
+#include "StructsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsAccessor
@@ -17,6 +17,7 @@ class CPersonsAccessor
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CPersonsAccessor() {};
 	virtual ~CPersonsAccessor() {};
@@ -29,8 +30,10 @@ public:
 // Overrides
 // ----------------
 
+
 // Members
 // ----------------
+
 protected:
 	/// <summary>
 	/// Член променлива от тип структура PERSONS

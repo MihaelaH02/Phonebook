@@ -44,7 +44,7 @@ BEGIN_MESSAGE_MAP(CPhoneNumbersDialog, CDialog)
 	ON_BN_CLICKED(IDOK, &CPhoneNumbersDialog::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CPhoneNumbersDialog::OnBnClickedCancel)
 	ON_EN_CHANGE(IDC_EDB_PHONE_NUMBER_NUMBER, &CPhoneNumbersDialog::OnEnChangePhoneNumber)
-	ON_CBN_SELCHANGE(IDC_CMB_PHONE_NUMBER_TYPE, &CPhoneNumbersDialog::OnCbnSelchangePhoneType)
+	ON_CBN_SELCHANGE(IDC_CMB_PHONE_NUMBER_TYPE, &CPhoneNumbersDialog::OnChangeSelPhoneType)
 END_MESSAGE_MAP()
 
 
@@ -58,33 +58,16 @@ BOOL CPhoneNumbersDialog::OnInitDialog()
 	//Задаване на стойности за контролите
 	m_edbPhoneNumber.SetWindowTextW(m_recPhoneNumber.szPhone);
 
-	//Проверка дали са били поданени стойности
-	if (m_recPhoneNumber.szPhone != nullptr)
-	{
-		//Задаване на начална празна стойност на контролите за съобщения за грешки  
-		SetDlgItemText(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG, _T(""));
-	}
-
 	//Запълваме комбо бокса с градове
 	if (!AddItemsInCmbPhoneNumber())
 	{
 		return FALSE;
 	}
 
-	//Задаваме селектирания елемент да е подадения от структурата с клиента
-	for (int nIndex = 0; nIndex < m_cmbPhoneType.GetCount(); nIndex++)
-	{
-		if (m_cmbPhoneType.GetItemData(nIndex) != 0 && m_cmbPhoneType.GetItemData(nIndex) == m_recPhoneNumber.lIdPhoneType)
-		{
-			m_cmbPhoneType.SetCurSel(nIndex);
-
-			//Задаване на начална празна стойност на контролите за съобщения за грешки  
-			SetDlgItemText(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, _T(""));
-		}
-	}
-
 	//Промяна на активността на контролите, според подадения параметър
 	EnableControls(m_lEnableControlsParam);
+
+	ManageErrorMsgControlsInitValues();
 
 	return TRUE;
 }
@@ -105,6 +88,40 @@ void CPhoneNumbersDialog::OnBnClickedOk()
 void CPhoneNumbersDialog::OnBnClickedCancel()
 {
 	CDialog::OnCancel();
+}
+
+void CPhoneNumbersDialog::OnChangeSelPhoneType()
+{
+	//Проверка за фокус на контролата
+	if (!IsControlOnFocus(m_cmbPhoneType))
+	{
+		return;
+	}
+
+	int nSelectedIndex = m_cmbPhoneType.GetCurSel();
+	int nSelectedData = (long)m_cmbPhoneType.GetItemData(nSelectedIndex);
+	m_recPhoneNumber.lIdPhoneType = nSelectedData;
+
+	CString strSelectedItem;
+	strSelectedItem.Format(_T("%d"), nSelectedData);
+	PrintErrorMsg(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, strSelectedItem);
+}
+
+void CPhoneNumbersDialog::OnEnChangePhoneNumber()
+{
+	//Проверка за фокус на контролата
+	if (!IsControlOnFocus(m_edbPhoneNumber))
+	{
+		return;
+	}
+
+	//Времаме данните от котролата
+	CString strControlText;
+	m_edbPhoneNumber.GetWindowTextW(strControlText);
+	_tcscpy_s(m_recPhoneNumber.szPhone, strControlText);
+
+	//Извеждаме подходящо съобщение за грешка
+	PrintErrorMsg(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG, strControlText);
 }
 
 
@@ -163,6 +180,8 @@ BOOL CPhoneNumbersDialog::AddItemsInCmbPhoneNumber()
 	{
 		return FALSE;
 	}
+
+	//Задаване на дата да елемент и го селектира
 	m_cmbPhoneType.SetItemData(nIndexRow, nIndexRow);
 	m_cmbPhoneType.SetCurSel(nIndexRow);
 
@@ -188,7 +207,12 @@ BOOL CPhoneNumbersDialog::AddItemsInCmbPhoneNumber()
 			return FALSE;
 		}
 
+		//Задаване на дата за елементи и ако подадения тип телефон отговаря на текущия го селектира
 		m_cmbPhoneType.SetItemData(nIndexRow, pPhoneType->lId);
+		if (pPhoneType->lId == m_recPhoneNumber.lIdPhoneType)
+		{
+			m_cmbPhoneType.SetCurSel(nIndexRow);
+		}
 	}
 
 	/*if (!SortItemsInCmbCities())
@@ -199,39 +223,7 @@ BOOL CPhoneNumbersDialog::AddItemsInCmbPhoneNumber()
 	return TRUE;
 }
 
-void CPhoneNumbersDialog::OnCbnSelchangePhoneType()
-{
-	//Проверка за фокус на контролата
-	if (!IsControlOnFocus(m_cmbPhoneType))
-	{
-		return;
-	}
 
-	int nSelectedIndex = m_cmbPhoneType.GetCurSel();
-	int nSelectedData = (long)m_cmbPhoneType.GetItemData(nSelectedIndex);
-	m_recPhoneNumber.lIdPhoneType = nSelectedData;
-
-	CString strSelectedItem;
-	strSelectedItem.Format(_T("%d"), nSelectedData);
-	PrintErrorMsg(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, strSelectedItem);
-}
-
-void CPhoneNumbersDialog::OnEnChangePhoneNumber()
-{
-	//Проверка за фокус на контролата
-	if (!IsControlOnFocus(m_edbPhoneNumber))
-	{
-		return;
-	}
-
-	//Времаме данните от котролата
-	CString strControlText;
-	m_edbPhoneNumber.GetWindowTextW(strControlText);
-	_tcscpy_s(m_recPhoneNumber.szPhone, strControlText);
-
-	//Извеждаме подходящо съобщение за грешка
-	PrintErrorMsg(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG, strControlText);
-}
 
 BOOL CPhoneNumbersDialog::IsControlOnFocus(CWnd& oControla)
 {
@@ -265,13 +257,13 @@ BOOL CPhoneNumbersDialog::HasErrorMsg()
 	if (m_edbPhoneNumber.IsWindowEnabled())
 	{
 		GetDlgItem(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG)->ShowWindow(SW_SHOW);
-		GetDlgItemText(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG, strPhoneTypeError);
+		GetDlgItemText(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG, strPhoneNumberError);
 	}
 
 	if (m_cmbPhoneType.IsWindowEnabled())
 	{
 		GetDlgItem(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG)->ShowWindow(SW_SHOW);
-		GetDlgItemText(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, strPhoneNumberError);
+		GetDlgItemText(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, strPhoneTypeError);
 	}
 
 	//Проверка за празни контроли, съдържащи грешки
@@ -282,4 +274,22 @@ BOOL CPhoneNumbersDialog::HasErrorMsg()
 
 	return TRUE;
 
+}
+
+void CPhoneNumbersDialog::ManageErrorMsgControlsInitValues()
+{
+	//Проверка дали са били поданени стойности
+	if (_tcscmp(_T(""), m_recPhoneNumber.szPhone) != 0)
+	{
+		//Задаване на начална празна стойност на контролите за съобщения за грешки  
+		SetDlgItemText(IDC_STT_PHONE_NUMBERS_NUMBER_ERROR_MSG, _T(""));
+	}
+
+	//Проверка дали са били поданени стойности
+	int nIndexSelect = m_cmbPhoneType.GetCurSel();
+	if (m_cmbPhoneType.GetItemData(nIndexSelect) != 0)
+	{
+		//Задаване на начална празна стойност на контролите за съобщения за грешки  
+		SetDlgItemText(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, _T(""));
+	}
 }

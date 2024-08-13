@@ -10,21 +10,23 @@
 /// <summary>
 /// Клас изпълняващ CRUD операции към таблица с клиенти наследяващ базисния клас
 /// </summary>
-
 class CPersonsTable :public CBaseTable<CPersonsAccessor, PERSONS>
 {
+
 // Constants
 // ----------------
 
 
 // Constructor / Destructor
 // ----------------
+
 public:
 
 	CPersonsTable()
 	{
 
 	}
+
 	/// <param name="oDatabaseTransactionManager">Параметър указател към клас управляващ сесии</param>
 	CPersonsTable(CInitializeSession* pDatabaseSession)
 		:CBaseTable(pDatabaseSession)
@@ -70,15 +72,6 @@ private:
 	void SetNewDataToSelectedRow(const PERSONS& recPerson) override
 	{
 		m_recPersons = recPerson;
-	}
-
-	/// <summary>
-	/// Метод за достъп до ИД на записа
-	/// </summary>
-	/// <returns>Връща ИД на записа</returns>
-	long const GetSelectedRowId() override
-	{
-		return m_recPersons.lId;
 	}
 
 	/// <summary>

@@ -17,6 +17,7 @@ class CPhoneTypesData
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CPhoneTypesData();
 	virtual ~CPhoneTypesData();
@@ -61,6 +62,7 @@ public:
 	/// <param name="lID">Променлива указваща ИД на запис</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL DeletePhoneTypeWhereID(const long lID);
+
 
 // Overrides
 // ----------------

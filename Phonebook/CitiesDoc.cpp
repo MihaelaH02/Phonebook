@@ -148,10 +148,6 @@ BOOL CCitiesDoc::DeleteCity(const CITIES& recCity)
 
 const CCitiesArray& CCitiesDoc::GetCitiesArray()
 {
-	/*if (!SelectAllCities())
-	{
-		//return NULL;
-	}*/
 	return m_oCitiesArray;
 }
 
@@ -238,5 +234,3 @@ void CCitiesDoc::Dump(CDumpContext& dc) const
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
-
-	// CCitiesDoc commands

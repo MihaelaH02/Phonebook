@@ -9,35 +9,40 @@
 /// <summary>
 /// Клас изпълняващ CRUD операции към таблица с телефонни номера, наследяващ базисния клас
 /// </summary>
-
 class CPhoneNumbersTable :public CBaseTable<CPhoneNumbersAccessor, PHONE_NUMBERS>
 {
-	// Constants
-	// ----------------
+// Constants
+// ----------------
 
 
-	// Constructor / Destructor
-	// ----------------
+// Constructor / Destructor
+// ----------------
+
 public:
+	CPhoneNumbersTable()
+	{
 
-	/// <param name="oDatabaseTransactionManager">Параметър указател към клас управляващ сисии</param>
+	}
+
+	/// <param name="oDatabaseSession">Параметър указател към клас управляващ сисии</param>
 	CPhoneNumbersTable(CInitializeSession* oDatabaseSession)
 		:CBaseTable(oDatabaseSession)
 	{
-	};
+	}
 
 	virtual ~CPhoneNumbersTable() {};
 
 
-	// Methods
-	// ----------------
+// Methods
+// ----------------
+
 	CString ColIdPerson()
 	{
 		return _T("ID_PERSON");
 	}
 
-	// Overrides
-	// ----------------
+// Overrides
+// ----------------
 
 private:
 	/// <summary>
@@ -68,15 +73,6 @@ private:
 	}
 
 	/// <summary>
-	/// Метод за достъп до ИД на записа
-	/// </summary>
-	/// <returns>Връща ИД на записа</returns>
-	long const GetSelectedRowId() override
-	{
-		return m_recPhoneNumber.lId;
-	}
-
-	/// <summary>
 	/// Метод за промяна на стойност за lUpdateCounter на член променливата в клас CPhoneNumbersAccessor
 	/// </summary>
 	/// <param name="lUpdateCounterNew">Параметър, с който ще се замени стойноста в lUpdateCounter</param>
@@ -93,6 +89,7 @@ private:
 	{
 		return m_recPhoneNumber.lUpdateCounter;
 	}
+
 
 	// Members
 	// ----------------

@@ -36,7 +36,7 @@ BOOL CPhoneTypesData::SelectPhoneTypeWhereID(const long lID, PHONE_TYPES& recPho
 	//Инстанция на класа с табличните данни
 	CPhoneTypesTable oPhoneTypesTable;
 
-	if (!oPhoneTypesTable.SelectWhereID(lID, recPhoneTypes))
+	if (!oPhoneTypesTable.SelectWhere(lID, recPhoneTypes))
 	{
 		return FALSE;
 	}
@@ -79,6 +79,7 @@ BOOL CPhoneTypesData::DeletePhoneTypeWhereID(const long lID)
 	}
 	return TRUE;
 }
+
 
 // Overrides
 // ----------------

@@ -45,7 +45,7 @@ const CPhoneNumbersMap& CPersonDBModel::GetPhoneNumbers() const
 	return m_oPhoneNumbers;
 }
 
-BOOL CPersonDBModel::AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersOperationsMap)
+BOOL CPersonDBModel::AddPersonData(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersOperationsMap)
 {
 	AddPerson(recPerson);
 	if (!AddAllPhoneNumbers(oPhoneNumbersOperationsMap))

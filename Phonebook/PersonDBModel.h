@@ -1,39 +1,48 @@
 #pragma once
 
 #include "Structures.h"
-#include "EnumsWithFlags.h"
+#include "Flags.h"
 /////////////////////////////////////////////////////////////////////////////
 // CPersonDBModel
 
+/// <summary>
+/// Клас съдържащ всички данни за клиент
+/// </summary>
 class CPersonDBModel
 {
+
 // Constants
 // ----------------
 
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CPersonDBModel();
 
 	/// <summary>
-	/// Копи параметризиран конструктор
+	/// Параметризиран конструктор
 	/// </summary>
+	/// <param name="recPerson">Параметър за подаден клиент/param>
+	/// <param name="oPhoneNumbers">Параметър за подаден мап с телефонни номера</param>
 	CPersonDBModel(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbers);
 
 	/// <summary>
-	/// Копи параметризиран конструктор
+	/// Параметризиран конструктор
 	/// </summary>
 	/// <param name="oPersonDBModel">Параметър за подаден клас с данни</param>
 	CPersonDBModel(const CPersonDBModel& oPersonDBModel);
 
 	~CPersonDBModel();
 
-	bool operator==(const CPersonDBModel& oPersonDBModelToCmp)  {
+	bool operator==(const CPersonDBModel& oPersonDBModelToCmp) {
 		return GetPerson().lId == oPersonDBModelToCmp.GetPerson().lId;
 	}
+
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	/// Метод, който задава ИД на клиент
@@ -54,19 +63,18 @@ public:
 	CPhoneNumbersMap& GetPhoneNumbers();
 
 	/// <summary>
-	/// 
+	/// Метод за достъп до член променлива масив с телефонни номера без да се променят върнатите данни
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>Връща мап с групи телефонни номера</returns>
 	const CPhoneNumbersMap& GetPhoneNumbers() const;
 
-
 	/// <summary>
-	/// 
+	/// Метод за добавяне на данни към член променливите
 	/// </summary>
-	/// <param name="recPerson"></param>
-	/// <param name="oPhoneNumbersOperationsMap"></param>
-	/// <returns></returns>
-	BOOL AddPersonInfo(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersOperationsMap);
+	/// <param name="recPerson">Параметър за подаден клиент/param>
+	/// <param name="oPhoneNumbers">Параметър за подаден мап с телефонни номера</param>
+	/// <returns>Връща TRUE при успех и FALSE при открита грешка</returns>
+	BOOL AddPersonData(const PERSONS& recPerson, const CPhoneNumbersMap& oPhoneNumbersOperationsMap);
 
 	/// <summary>
 	/// Метод за добавяне на клиент
@@ -77,7 +85,7 @@ public:
 	/// <summary>
 	/// Метод за добавяне на нов телефонен номер
 	/// </summary>
-	/// <param name="recPhoneNumber">Параметър за тип телефон, който ще се добавя</param>
+	/// <param name="recPhoneNumber">Параметър за телефон, който ще се добавя</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL AddPhoneNumber(const PHONE_NUMBERS& recPhoneNumbers);
 
@@ -106,6 +114,7 @@ public:
 
 // Members
 // ----------------
+
 private:
 	/// <summary>
 	//Член променлива от тип структура с клиенти

@@ -2,15 +2,20 @@
 
 #include "PhoneTypesData.h"
 #include "Structures.h"
-#include "EnumsWithFlags.h"
+#include "Flags.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPhoneTypesDoc.h : interface of the CCitiesDoc class
 
+/// <summary>
+/// Клас документ за регистър с типове телефони, наследяващ базов клас
+/// </summary>
 class CPhoneTypesDoc : public CDocument
 {
+
 // Macros
 // ----------------
+
 protected:
 	DECLARE_DYNCREATE(CPhoneTypesDoc)
 	DECLARE_MESSAGE_MAP()
@@ -22,10 +27,10 @@ protected:
 
 // Constructor / Destructor
 // ----------------
-protected:
-	CPhoneTypesDoc();
 
 public:
+	CPhoneTypesDoc();
+
 	virtual ~CPhoneTypesDoc();
 
 
@@ -35,6 +40,7 @@ public:
 
 // Methods
 // ----------------
+
 public:
 
 	/// <summary>
@@ -53,7 +59,7 @@ public:
 	BOOL UpdatePhoneType(const PHONE_TYPES& recPhoneType);
 
 	/// <summary>
-	/// Добавяне на нов запис в таблицата с градове
+	/// Добавяне на нов запис в таблицата с типове телфони
 	/// </summary>
 	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
 	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
@@ -61,7 +67,7 @@ public:
 	BOOL InsertPhoneType(PHONE_TYPES& recPhoneType);
 
 	/// <summary>
-	/// Изтриване на запис от таблицата с градове
+	/// Изтриване на запис от таблицата с типове телфони
 	/// </summary>
 	/// <param name="recPhoneType"> запис за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>

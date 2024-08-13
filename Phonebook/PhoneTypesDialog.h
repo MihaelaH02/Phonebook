@@ -1,8 +1,8 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "CValidateDialogControlsData.h"
-#include "EnumsWithFlags.h"
+#include "ValidateDialogControlsData.h"
+#include "Flags.h"
 #include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -12,12 +12,14 @@ class CPhoneTypesDialog : public CDialog
 {
 // Macros
 // ----------------
+
 	DECLARE_DYNAMIC(CPhoneTypesDialog)
 	DECLARE_MESSAGE_MAP()
 
 
 // Constants
 // ----------------
+
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_PHONE_TYPES_DIALOG };
 #endif
@@ -25,9 +27,13 @@ class CPhoneTypesDialog : public CDialog
 
 // Constructor / Destructor
 // ----------------
+
 public:
+	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
 	CPhoneTypesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
+	/// <param name="recPhoneType">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
+	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
 	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPhoneTypesDialog();
@@ -43,8 +49,19 @@ private:
 // MFC Message Handlers
 // ----------------
 private:
+	/// <summary>
+	/// Метод, който упрвлява натискането на бутон ОК
+	/// </summary>
 	afx_msg void OnBnClickedOk();
+
+	/// <summary>
+	/// Метод, който управлява натискането на бутон Cancel
+	/// </summary>
 	afx_msg void OnBnClickedCancel();
+
+	/// <summary>
+	/// Метод за следене на промени по контрола за типове телефони
+	/// </summary>
 	afx_msg void OnEnChangeEdbPhoneTypes();
 
 
@@ -54,6 +71,7 @@ private:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	/// Достъп до стойности за стринговите член променливи
@@ -87,6 +105,7 @@ public:
 
 // Members
 // ----------------
+
 private:
 	/// <summary>
 	/// Член променлива за текстова контрола с име на град
@@ -94,7 +113,7 @@ private:
 	CEdit m_edbPhoneType;
 
 	/// <summary>
-	/// 
+	/// Член променлива тип телефон
 	/// </summary>
 	PHONE_TYPES m_recPhoneType;
 

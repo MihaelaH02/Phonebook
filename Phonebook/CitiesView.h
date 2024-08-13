@@ -4,24 +4,33 @@
 
 #pragma once
 #include "CitiesDialog.h"
-#include "EnumsListCtrColumsInfo.h"
+#include "ListCtrlColumnsInfo.h"
 #include "ManageListCtr.h"
 #include "RowDataListCtrl.h"
+#include "Messages.h"
+#include "Flags.h"
 
+/// <summary>
+/// Клас за визуализация на регистъра с градове, наследяващ базов клас
+/// </summary>
 class CCitiesView : public CListView
 {
+
 // Constants
 // ----------------
  
 
 // Macros
 // ----------------
+
 protected:
 	DECLARE_DYNCREATE(CCitiesView)
+	DECLARE_MESSAGE_MAP()
 
 
 // Constructor / Destructor
 // ----------------
+
 protected:
 	CCitiesView() noexcept;
 public:
@@ -30,18 +39,22 @@ public:
 
 // Methods
 // ----------------
+
 public:
+	/// <summary>
+	/// Метод за достъп до документа
+	/// </summary>
+	/// <returns>Връща инстанция към документа</returns>
 	CCitiesDoc* GetDocument() const;
 
 private:
-
 	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
 	/// </summary>
 	BOOL LoadDataInListCtrFromDoc();
 
 	/// <summary>
-	/// Метод за търсене на всички елементи по даден критерий
+	/// Метод за търсене на елементи по даден критерий
 	/// </summary>
 	/// <param name="recCity">Структура, по която ще се търсият записи</param>
 	BOOL FilterItemsFromListCtr(const CITIES& recCity);
@@ -63,7 +76,7 @@ private:
 	/// </summary>
 	/// <param name="lParam1">Асоцира се с първия елемент, който ще се сравнява</param>
 	/// <param name="lParam2">Асоцира се с втори елемент, който ще се сравнява</param>
-	/// <param name="lParamSort">Параметър, който приложението си генерира </param>
+	/// <param name="lParamSort">Параметър обект</param>
 	/// <returns>Връща се резултат то сравнението</returns>
 	int static CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
@@ -82,18 +95,27 @@ private:
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL SetColumnDisplayData(CRowDataListCtrl<CITIES>& oRowDataListCtrl);
 
+
 // Overrides
 // ----------------
 public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+	/// <summary>
+	// Метод, който задава особености на вюто преди съзаването му
+	/// </summary>
+	/// <param name="cs"></param>
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs) override;
 
 protected:
-	virtual void OnInitialUpdate();
+	/// <summary>
+	/// Метод, който задава особености на вюто след създаването му
+	/// </summary>
+	virtual void OnInitialUpdate() override;
 
 	/// <summary>
 	/// Метод, който модифицира лист контролата в зависимост от извършената опирация
 	/// </summary>
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
 
 public:
 #ifdef _DEBUG
@@ -101,10 +123,9 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+
 // Generated message map functions
 protected:
-	afx_msg void OnFilePrintPreview();
-
 	/// <summary>
 	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
 	/// </summary>
@@ -125,12 +146,9 @@ protected:
 	/// </summary>
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
-
-	DECLARE_MESSAGE_MAP()
-
 public:
 	/// <summary>
-	/// Метод за селект на елемент от лест контролата
+	/// Метод за преглед на елемент от лест контролата
 	/// </summary>
 	afx_msg void ViewCityInfo();
 
@@ -152,7 +170,6 @@ public:
 	/// <summary>
 	/// Метод, който филтрира градовете по подаден регион
 	/// </summary>
-	/// <param name="strRegion">Променлива стринг, по който ще се филтрират градовете</param>
 	afx_msg void FilterCitiesByRegion();
 
 	/// <summary>
@@ -164,6 +181,7 @@ public:
 	/// Метод за зареждане на всички градове
 	/// </summary>
 	afx_msg void ReloadCities();
+
 
 // Members
 // ----------------

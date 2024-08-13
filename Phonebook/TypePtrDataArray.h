@@ -35,6 +35,7 @@ public:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	/// Метод за добавяне на елемент динамично
@@ -82,7 +83,7 @@ public:
 	/// </summary>
 	/// <param name="recStructData"></param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL RemoveElement(const Type& oElement, BOOL(*Compare)(const Type&, const Type&))
+	BOOL RemoveElement(const Type& oElement, int(*Compare)(const Type&, const Type&))
 	{
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); nIndex++)
 		{
@@ -92,7 +93,7 @@ public:
 				return FALSE;
 			}
 
-			if (Compare(*pElement, oElement))
+			if (Compare(*pElement, oElement) == 0)
 			{
 				delete pElement;
 				RemoveAt(nIndex);
@@ -124,7 +125,7 @@ public:
 	/// </summary>
 	/// <param name="recElement">Параметър за елемент, който ще се търси</param>
 	/// <returns>Връща се индека на елемента в масва или -1 при неотрит запис</returns>
-	INT_PTR FindIndexByElement(const Type& oElement, BOOL(*Compare)(const Type&, const Type&))
+	INT_PTR FindIndexByElement(const Type& oElement, int(*Compare)(const Type&, const Type&))
 	{
 		//Цисъл, който преминава през всеки елемент
 		for (INT_PTR nIndex = 0; nIndex < GetCount(); ++nIndex)
@@ -136,7 +137,7 @@ public:
 				return -1;
 			}
 
-			if (Compare(*pCurrentElement, oElement))
+			if (Compare(*pCurrentElement, oElement) == 0)
 			{
 				return nIndex;
 			}

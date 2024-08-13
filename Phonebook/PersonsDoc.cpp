@@ -46,7 +46,7 @@ BOOL CPersonsDoc::OnNewDocument()
 	}
 
 	//Зареждане на допълнителнита данните от базата данни в масив
-	if (!oPersonsData.LoadAllAdditionalPersonInfo(m_oAdditionalInfo))
+	if (!oPersonsData.LoadAdditionalModels(m_oAdditionalModels))
 	{
 		return FALSE;
 	}
@@ -64,9 +64,9 @@ INT_PTR CPersonsDoc::GetPersonsArrayCount()
 	return m_oPersonsArray.GetCount();
 }
 
-CAdditionPersonInfo& CPersonsDoc::GetAdditionalPersonInfo()
+CAdditionalDBModelsPersons& CPersonsDoc::GetAdditionalModels()
 {
-	return m_oAdditionalInfo;
+	return m_oAdditionalModels;
 }
 
 BOOL CPersonsDoc::SelectPerson(const long& lID, CPersonDBModel& oPersonDBModel)
@@ -75,21 +75,15 @@ BOOL CPersonsDoc::SelectPerson(const long& lID, CPersonDBModel& oPersonDBModel)
 	CPersonsData oPersonsData;
 
 	//Селект на клиент и информацията за него по ид
-	if (!oPersonsData.SelectPersonInfoWithPersonId(lID, oPersonDBModel))
+	if (!oPersonsData.SelectPersonDataByPersonId(lID, oPersonDBModel))
 	{
 		return FALSE;
 	}
 	return TRUE;
 }
 
-BOOL CPersonsDoc::ProcessPerson(CPersonDBModel& oPersonDBModel, const LPARAM& lOperationFlag)
+BOOL CPersonsDoc::ProcessPerson(CPersonDBModel& oPersonDBModel, const LPARAM lOperationFlag)
 {
-	//Копие на клиента, преди дабъде променен
-	PERSONS recPeroson = oPersonDBModel.GetPerson();
-
-	//Достъпваме индекса на елемента в масива
-	INT_PTR lIndex = m_oPersonsArray.FindIndexByElement(recPeroson, CompareId);
-
 	///Променлива за досъп до бизнес логиката
 	CPersonsData oPersonsData;
 
@@ -98,6 +92,12 @@ BOOL CPersonsDoc::ProcessPerson(CPersonDBModel& oPersonDBModel, const LPARAM& lO
 	{
 		return FALSE;
 	}
+
+	//Копие на клиента, преди дабъде променен
+	PERSONS recPeroson = oPersonDBModel.GetPerson();
+
+	//Достъпваме индекса на елемента в масива
+	INT_PTR lIndex = m_oPersonsArray.FindIndexByElement(recPeroson, CompareId);
 
 	//Обновяване на засегнатия елемент в масива с данни за клиенти
 	if(!ProccesPersonInArray(recPeroson, lOperationFlag, lIndex))
@@ -111,7 +111,7 @@ BOOL CPersonsDoc::ProcessPerson(CPersonDBModel& oPersonDBModel, const LPARAM& lO
 	return TRUE;
 }
 
-BOOL CPersonsDoc::ProccesPersonInArray(PERSONS& recPerson, const LPARAM& lOperationFlag, INT_PTR& lIndex)
+BOOL CPersonsDoc::ProccesPersonInArray(PERSONS& recPerson, const LPARAM lOperationFlag, INT_PTR& lIndex)
 {
 	switch (lOperationFlag)
 	{

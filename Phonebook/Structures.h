@@ -3,7 +3,7 @@
 #include <afxtempl.h>
 #include "TypePtrDataArray.h"
 #include "TableDataOperationsMap.h"
-#include "EnumsStructsInfo.h"
+#include "StructsInfo.h"
 
 /// <summary>
 /// Дискова структура по таблица Градове 
@@ -39,17 +39,17 @@ struct CITIES
 
 	BOOL CompareAll(const CITIES& recCity) const 
 	{
-		if (_tcscmp(szCityName, recCity.szCityName))
+		if (_tcscmp(szCityName, recCity.szCityName) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
 		if(_tcscmp(szRegion, recCity.szRegion))
 		{
-			return FALSE;
+			return 1;
 		}
 
-		return TRUE;
+		return 0;
 	}
 };
 ///<summary> Псевдоним на  CTypePtrDataArray<CITIES> с тип CITIES</summary> 
@@ -86,12 +86,12 @@ struct PHONE_TYPES
 
 	BOOL CompareAll(const PHONE_TYPES& recPhoneType) const
 	{
-		if (_tcscmp(czPhoneType, recPhoneType.czPhoneType))
+		if (_tcscmp(czPhoneType, recPhoneType.czPhoneType) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
-		return TRUE;
+		return 0;
 	}
 };
 
@@ -143,37 +143,37 @@ struct PERSONS
 
 	BOOL CompareAll(const PERSONS& recPerson) const
 	{
-		if (_tcscmp(szFirstName, recPerson.szFirstName))
+		if (_tcscmp(szFirstName, recPerson.szFirstName) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
-		if (_tcscmp(szSecondName, recPerson.szSecondName))
+		if (_tcscmp(szSecondName, recPerson.szSecondName) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
-		if (_tcscmp(szLastName, recPerson.szLastName))
+		if (_tcscmp(szLastName, recPerson.szLastName) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
-		if (_tcscmp(szAddress, recPerson.szAddress))
+		if (_tcscmp(szAddress, recPerson.szAddress) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
-		if (_tcscmp(szEGN, recPerson.szEGN))
+		if (_tcscmp(szEGN, recPerson.szEGN) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
 		if (lIdCity != recPerson.lIdCity)
 		{
-			return FALSE;
+			return 1;
 		}
 
-		return TRUE;
+		return 0;
 	}
 
 };
@@ -216,18 +216,19 @@ struct PHONE_NUMBERS
 		_tcscpy_s(szPhone, recPhoneNumbers.szPhone);
 	}
 
-	BOOL CompareAll(const PHONE_NUMBERS& recPhoneNumber) const
+	int CompareAll(const PHONE_NUMBERS& recPhoneNumber) const
 	{
-		if (_tcscmp(recPhoneNumber.szPhone, szPhone))
+		if (_tcscmp(recPhoneNumber.szPhone, szPhone) != 0)
 		{
-			return FALSE;
+			return 1;
 		}
 
 		if(recPhoneNumber.lIdPhoneType != lIdPhoneType)
 		{
-			return FALSE;
+			return 1;
 		}
-		return TRUE;
+
+		return 0;
 	}
 };
 
@@ -239,17 +240,18 @@ typedef CTableDataOperationsMap<PHONE_NUMBERS> CPhoneNumbersMap;
 
 
 template<typename Struct>
-BOOL CompareId(const Struct& recStruct1, const Struct& recStruct2)
+int CompareId(const Struct& recStruct1, const Struct& recStruct2)
 {
 	if (recStruct1.lId != recStruct2.lId)
 	{
-		return FALSE;
+		return 1;
 	}
-	return TRUE;
+
+	return 0;
 };
 
 template<typename Struct>
-BOOL CompareAll(const Struct& recStruct1, const Struct& recStruct2)
+int CompareAll(const Struct& recStruct1, const Struct& recStruct2)
 {
 	return recStruct1.CompareAll(recStruct2);
 };

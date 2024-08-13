@@ -57,7 +57,7 @@ void CPhoneTypeView::OnInitialUpdate()
 	lscPhonetypes.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
 
 	//Добавяме колони в лист контролата с ляво подравяване и размер на полето
-	lscPhonetypes.InsertColumn(PHONE_TYPES_LIST_STR_COLUMN_PHONE_TYPE, _T("Phone type"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
+	lscPhonetypes.InsertColumn(PHONE_TYPES_LIST_STR_COLUMN_PHONE_TYPE, PHONE_TYPES_LIST_CTRL_COLUMN_PHONE_TYPE_TITLE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
 
 	//Зареждане на данните от документа
 	if (!LoadDataInListCtrFromDoc())
@@ -235,7 +235,7 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		//Изтриваме ред по поданен индекс
 		if (!oListCtrManager.RemoveElement(lscPhoneTypes, nIndexItem))
 		{
-			AfxMessageBox(_T("Failed to delete phone type in list!\n Try to reload."));
+			AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		}
 		return;
 	}
@@ -245,20 +245,23 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	oRowData.SetData(oPhoneType);
 	if (!SetColumnDisplayData(oRowData))
 	{
-		AfxMessageBox(_T("Failed to load phone type information in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Редактираме, по открития индекс, данните или добавяме елемент при липса на индекс
 	if (!oListCtrManager.AddOrEditElement(lscPhoneTypes, oRowData, nIndexItem))
 	{
-		AfxMessageBox(_T("Failed to update phone type in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
+
+	AfxMessageBox(OK_MSG_SUCCESSFUL_OPERATION);
 
 	//Сортировка на обновените елементи
 	if (!SortItemsListCtr())
 	{
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
 		return;
 	}
 }
@@ -281,7 +284,7 @@ void CPhoneTypeView::ViewPhoneType()
 	//Проверка за открит елемент
 	if (pPhoneTypes == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select phone type from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -307,12 +310,16 @@ void CPhoneTypeView::InsertPhoneType()
 	}
 
 	//Вземаме данните от контролите от диалога
-	oDialog.GetControlsData(oPhoneTypes);
+	if (!oDialog.GetControlsData(oPhoneTypes))
+	{
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
+		return;
+	}
 
 	//Добавяме данните в документа
 	if (!GetDocument() || !GetDocument()->InsertPhoneType(oPhoneTypes))
 	{
-		AfxMessageBox(_T("Failed to insert phone type from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
@@ -331,7 +338,7 @@ void CPhoneTypeView::UpdatePhoneType()
 	//Проверка за открит елемент
 	if (pPhoneType == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select phone type from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -348,13 +355,18 @@ void CPhoneTypeView::UpdatePhoneType()
 	}
 
 	//Присвояваме ноивте данни от контролите в диалога със старото ид
-	oDialog.GetControlsData(*pPhoneType);
+	if (!oDialog.GetControlsData(*pPhoneType))
+	{
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
+		return;
+	}
+
 	pPhoneType->lId = lId;
 
 	//Редактираме данните в документа като подаваме стуртура с обновени данни
 	if (!GetDocument() || !GetDocument()->UpdatePhoneType(*pPhoneType))
 	{
-		AfxMessageBox(_T("Failed to update phone type from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
@@ -362,7 +374,7 @@ void CPhoneTypeView::UpdatePhoneType()
 void CPhoneTypeView::DeletePhoneType()
 {
 	//Допълнително потвърждение за изтриване
-	int nResult = AfxMessageBox(_T("Are you sure you want to delete data?"), MB_YESNO | MB_ICONQUESTION);
+	int nResult = AfxMessageBox(WARNING_MSG_DELETE_DATA, MB_YESNO | MB_ICONQUESTION);
 
 	//При натискане на бутон за отказ излизаме от метода и пректратяваме операцията
 	if (nResult == IDNO)
@@ -382,14 +394,14 @@ void CPhoneTypeView::DeletePhoneType()
 	//Проверка за открит елемент
 	if (pPhoneType == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select phone type from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Изтриваме данните в документа по намереното ИД
 	if (!GetDocument() || !GetDocument()->DeletePhoneType(*pPhoneType))
 	{
-		AfxMessageBox(_T("Failed to delete phone type from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
@@ -405,16 +417,24 @@ void CPhoneTypeView::FindPhoneType()
 			return;
 		}
 	}
-	PHONE_TYPES recPhoneType;
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
 	CPhoneTypesDialog oDialog;
 
 	//Проверка за натиснат бутон OK в диалога
-	if (oDialog.DoModal() == IDOK)
+	if (oDialog.DoModal() != IDOK)
 	{
-		//Присвояваме ноивте данни от контролите в диалога със старото ид
-		oDialog.GetControlsData(recPhoneType);
+		return;
+	}
+
+	PHONE_TYPES recPhoneType;
+
+	//Присвояваме ноивте данни от контролите в диалога със старото ид
+	if (!oDialog.GetControlsData(recPhoneType))
+	{
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
+
+		return;
 	}
 
 	//Инстанция на лист контролата
@@ -427,10 +447,11 @@ void CPhoneTypeView::FindPhoneType()
 	{
 		CString strCurrentPhoneType = lscPhoneTypes.GetItemText(nIndex, PHONE_TYPES_LIST_STR_COLUMN_PHONE_TYPE);
 
-		if (recPhoneType.czPhoneType != strCurrentPhoneType)
+		if (_tcscmp(recPhoneType.czPhoneType, strCurrentPhoneType) != 0)
 		{
 			if (!lscPhoneTypes.DeleteItem(nIndex))
 			{
+				AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 				return;
 			}
 			continue;
@@ -443,12 +464,18 @@ void CPhoneTypeView::ReloadPhoneTypes()
 	//Зареждане на всички данни
 	if (!LoadDataInListCtrFromDoc())
 	{
+		AfxMessageBox(ERROR_MSG_FAIL_RELOAD_LIST_CTRL);
 		return;
 	}
 
 	//Сортировка на зареденото
-	SortItemsListCtr();
+	if (!SortItemsListCtr())
+	{
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
+		return;
+	}
 }
+
 
 // Methods
 // ---------------
@@ -479,7 +506,7 @@ BOOL CPhoneTypeView::LoadDataInListCtrFromDoc()
 	}
 
 	//Зареждаме данните от масива в лист контролата
-	if (!oListCtrManager.LoadDataFromResourse(lscPhoneTypes, oRowsDataListCtrlArray))
+	if (!oListCtrManager.LoadDataFromResource(lscPhoneTypes, oRowsDataListCtrlArray))
 	{
 		return FALSE;
 	}

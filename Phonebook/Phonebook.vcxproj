@@ -183,7 +183,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AdditionPersonInfo.h" />
+    <ClInclude Include="AdditionalDBModelsPersons.h" />
     <ClInclude Include="CitiesData.h" />
     <ClInclude Include="CitiesDialog.h" />
     <ClInclude Include="ChildFrm.h" />
@@ -191,9 +191,10 @@
     <ClInclude Include="DatabaseQueryBuilder.h" />
     <ClInclude Include="DatabaseTransactionManager.h" />
     <ClInclude Include="DefinesDialogCtrInfo.h" />
-    <ClInclude Include="EnumsListCtrColumsInfo.h" />
-    <ClInclude Include="EnumsWithFlags.h" />
-    <ClInclude Include="EnumsStructsInfo.h" />
+    <ClInclude Include="Messages.h" />
+    <ClInclude Include="ListCtrlColumnsInfo.h" />
+    <ClInclude Include="Flags.h" />
+    <ClInclude Include="StructsInfo.h" />
     <ClInclude Include="ManageListCtr.h" />
     <ClInclude Include="RowDataListCtrl.h" />
     <ClInclude Include="PersonDBModel.h" />
@@ -227,7 +228,7 @@
     <ClInclude Include="InitializeSession.h" />
     <ClInclude Include="TableDataOperationsMap.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="CValidateDialogControlsData.h" />
+    <ClInclude Include="ValidateDialogControlsData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdditionPersonInfo.cpp" />
@@ -258,7 +259,7 @@
     <ClCompile Include="PhoneTypesDoc.cpp" />
     <ClCompile Include="PhoneTypeView.cpp" />
     <ClCompile Include="InitializeSession.cpp" />
-    <ClCompile Include="CValidateDialogControlsData.cpp" />
+    <ClCompile Include="ValidateDialogControlsData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Phonebook.rc" />

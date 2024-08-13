@@ -9,30 +9,31 @@
 /// <summary>
 /// Клас изпълняващ CRUD операции към таблица с градове наследяващ базисния клас
 /// </summary>
-
 class CCitiesTable :public CBaseTable<CCitiesAccessor, CITIES>
 {
-	// Constants
-	// ----------------
+
+// Constants
+// ----------------
 
 
-	// Constructor / Destructor
-	// ----------------
+// Constructor / Destructor
+// ----------------
+
 public:
 	CCitiesTable() {};
 	virtual ~CCitiesTable() {};
 
 
-	// Methods
-	// ----------------
+// Methods
+// ----------------
 
 
-	// Overrides
-	// ----------------
+// Overrides
+// ----------------
 
 private:
 	/// <summary>
-	/// Достъп до името на таблицата с градове
+	/// Метод за достъп до името на таблицата с градове
 	/// </summary>
 	/// <returns>Връщаш името на таблицата като CString тип</returns>
 	CString GetTableName() override
@@ -59,16 +60,7 @@ private:
 	}
 
 	/// <summary>
-	/// Метод за достъп до ИД на записа
-	/// </summary>
-	/// <returns>Връща ИД на записа</returns>
-	long const GetSelectedRowId() override
-	{
-		return m_recCities.lId;
-	}
-
-	/// <summary>
-	/// Метод за промяна на стойност за lUpdateCounter на член променливата в клас CCitiesAccessor
+	/// Метод за увеличаване на стойност за lUpdateCounter на член променливата в клас CCitiesAccessor
 	/// </summary>
 	/// <param name="lUpdateCounterNew">Параметър, с който ще се замени стойноста в lUpdateCounter</param>
 	void IncrementUpdateCounterOfSelectedRow() override
@@ -85,6 +77,6 @@ private:
 		return m_recCities.lUpdateCounter;
 	}
 
-	// Members
-	// ----------------
+// Members
+// ----------------
 };

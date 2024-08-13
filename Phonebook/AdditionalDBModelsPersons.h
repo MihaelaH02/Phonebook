@@ -5,9 +5,12 @@
 #include "PhoneTypesData.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CAdditionInfo
+// CAdditionalDBModelsPersons
 
-class CAdditionPersonInfo
+/// <summary>
+/// Клас съдържащ допълнителни модели, необходими за модел клиенти
+/// </summary>
+class CAdditionalDBModelsPersons
 {
 // Constants
 // ----------------
@@ -16,9 +19,9 @@ class CAdditionPersonInfo
 // Constructor / Destructor
 // ----------------
 public:
-	CAdditionPersonInfo();
+	CAdditionalDBModelsPersons();
 
-	~CAdditionPersonInfo();
+	~CAdditionalDBModelsPersons();
 
 // Methods
 // ----------------
@@ -28,37 +31,37 @@ public:
 	/// Запълване на член променливата масив с градове
 	/// </summary>
 	/// <param name="oCitiesArray">Масив съдържащ данните с градове</param>
-	void SetCitiesData(const CCitiesArray& oCitiesArray);
+	void SetCities(const CCitiesArray& oCitiesArray);
 
 	/// <summary>
 	/// Запълване на член променливата масив с типове телефони
 	/// </summary>
 	/// <param name="oPhoneTypesArray">Масив съдържащ данните с типове телефони</param>
-	void SetPhoneTypesData(const CPhoneTypesArray& oPhoneTypesArray);
+	void SetPhoneTypes(const CPhoneTypesArray& oPhoneTypesArray);
 
 	/// <summary>
 	/// Метод за достъп до член променлива масив с градове
 	/// </summary>
-	const CCitiesArray& GetAllCities();
+	const CCitiesArray& GetCities();
 
 	/// <summary>
-	/// Метод за достъп до член променлива масив с телефонни номера
+	/// Метод за достъп до член променлива масив с типове телефонни номера
 	/// </summary>
-	const CPhoneTypesArray& GetAllPhoneTypes();
+	const CPhoneTypesArray& GetPhoneTypes();
 
 	/// <summary>
-	/// Метод за търсене на област в масива с градове по ИД
+	/// Метод за търсене на град в масива с градове по ИД
 	/// </summary>
-	/// <param name="lId">Параметър за ИД на запис, който ще се търси</param>
+	/// <param name="lId">Параметър за ИД на запис, по който ще се търси</param>
 	/// <returns>Връща указател към открит обект или nullptr при неуспех</returns>
-	CITIES* CAdditionPersonInfo::FindCityInArrayById(const int lId);
+	CITIES* CAdditionalDBModelsPersons::GetCityById(const int lId);
 
 	/// <summary>
-	/// Метод за търсене на телефонен номер в масива с номера по ИД
+	/// Метод за търсене на тип телефонен номер в масива с типове номера по ИД
 	/// </summary>
-	/// <param name="lId">Параметър за ИД на зипс, който ще се търси</param>
+	/// <param name="lId">Параметър за ИД на зипс, по който ще се търси</param>
 	/// <returns>Връща указател към открит обект или nullptr при неуспех</returns>
-	PHONE_TYPES* CAdditionPersonInfo::FindPhoneTypesInArrayById(const int lId);
+	PHONE_TYPES* CAdditionalDBModelsPersons::GetPhoneTypeById(const int lId);
 
 
 // Overrides

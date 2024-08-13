@@ -5,6 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesData
 
+
 // Constructor / Destructor
 // ----------------
 
@@ -19,6 +20,7 @@ CCitiesData::~CCitiesData()
 
 // Methods
 // ----------------
+
 BOOL CCitiesData::SelectAllCities(CCitiesArray& oCitiesArray)
 {
 	//Инстанция на класа с табличните данни
@@ -31,19 +33,19 @@ BOOL CCitiesData::SelectAllCities(CCitiesArray& oCitiesArray)
 	return TRUE;
 }
 
-BOOL CCitiesData::SelectCityWhereID(const long lID, CITIES& recCity)
+BOOL CCitiesData::SelectCityWhereID(const long& lID, CITIES& recCity)
 {
 	//Инстанция на класа с табличните данни
 	CCitiesTable oCitiesTable;
 
-	if (!oCitiesTable.SelectWhereID(lID, recCity))
+	if (!oCitiesTable.SelectWhere(lID, recCity))
 	{
 		return FALSE;
 	}
 	return TRUE;
 }
 
-BOOL CCitiesData::UpdateCityWhereID(const long lID, const CITIES& recCity)
+BOOL CCitiesData::UpdateCityWhereID(const long& lID, const CITIES& recCity)
 {
 	//Инстанция на класа с табличните данни
 	CCitiesTable oCitiesTable;
@@ -68,7 +70,7 @@ BOOL CCitiesData::InsertCity(CITIES& recCity)
 }
 
 
-BOOL CCitiesData::DeleteCityWhereID(const long lID) 
+BOOL CCitiesData::DeleteCityWhereID(const long& lID) 
 {
 	//Инстанция на класа с табличните данни
 	CCitiesTable oCitiesTable;

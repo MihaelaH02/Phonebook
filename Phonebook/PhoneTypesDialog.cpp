@@ -41,7 +41,7 @@ BOOL CPhoneTypesDialog::OnInitDialog()
 	m_edbPhoneType.SetWindowTextW(m_recPhoneType.czPhoneType);
 
 	//Проверка дали са били поданени стойности
-	if (m_recPhoneType.czPhoneType != nullptr)
+	if (_tcscmp(_T(""), m_recPhoneType.czPhoneType) != 0)
 	{
 		//Задаване на начална празна стойност на контролите за съобщения за грешки  
 		SetDlgItemText(IDC_STT_PHONE_TYPES_ERROR_MSG, _T(""));
@@ -153,7 +153,7 @@ BOOL CPhoneTypesDialog::IsControlOnFocus(CWnd& oControla)
 void CPhoneTypesDialog::PrintErrorMsg(const CString& strText, int nControlaID)
 {
 	//Визуализираме съобщение за грешка, ако е намерена такава с класа валидатор
-	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidFormat(strText);
+	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidFormat(strText, FALSE);
 
 	//Задаване на съобщението, като текст в подадената контрола
 	SetDlgItemText(nControlaID, strResivedMgs);

@@ -1,23 +1,29 @@
 #pragma once
 #include "afxdialogex.h"
 #include "Structures.h"
-#include "CValidateDialogControlsData.h"
-#include "EnumsWithFlags.h"
+#include "ValidateDialogControlsData.h"
+#include "Flags.h"
 #include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPhoneNumbersDialog dialog
 
+/// <summary>
+/// Диалог за изпълнение на опирации свързани с регистъра Телефонни номера
+/// </summary>
 class CPhoneNumbersDialog : public CDialog
 {
+
 // Macros
 // ----------------
+
 	DECLARE_DYNAMIC(CPhoneNumbersDialog)
 	DECLARE_MESSAGE_MAP()
 
 
 // Constants
 // ----------------
+
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_PHONE_NUMBERS };
 #endif
@@ -25,8 +31,16 @@ class CPhoneNumbersDialog : public CDialog
 
 // Constructor / Destructor
 // ----------------
+
 public:
-	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, LPARAM lEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr); 
+	/// <param name="oPhoneTypesArray">Параметър масив с всчики типове телефони</param>
+	/// <param name="oEnableControls">Параметър, който приема стойност флаг, за това кои от контролите да са активни за писане</param>
+	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, LPARAM lEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+
+
+	/// <param name="oPhoneTypesArray">Параметър масив с всчики типове телефони</param>
+	/// <param name="recCity">Параметър структура с телефонен номер, чиито стойности ще се визуализират в контролите на диалога</param>
+	/// <param name="oEnableControls">Параметър, който приема стойност флаг, за това кои от контролите да са активни за писане</param>
 	CPhoneNumbersDialog(const CPhoneTypesArray& oPhoneTypesArray, const PHONE_NUMBERS& recPhoneNumber, LPARAM lEnableControls = ENABLE_DIALOG_PHONE_NUMBERS_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 	virtual ~CPhoneNumbersDialog();
 
@@ -34,18 +48,32 @@ public:
 // MFC Overrides
 // ----------------	
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
-
+	virtual void DoDataExchange(CDataExchange* pDX) override;
 	virtual BOOL OnInitDialog() override;
 
 
 // MFC Message Handlers
 // ----------------
 private:
+	/// <summary>
+	/// Метод за събитие при натискане на бутон ОК в диалога
+	/// </summary>
 	afx_msg void OnBnClickedOk();
+
+	/// <summary>
+	/// Метод за събитие при натискане на бутон CANCEL в диалога
+	/// </summary>
 	afx_msg void OnBnClickedCancel();
+
+	/// <summary>
+	/// Метод, който управлява промените в контролата за телефонен номер
+	/// </summary>
 	afx_msg void OnEnChangePhoneNumber();
-	afx_msg void OnCbnSelchangePhoneType();
+
+	/// <summary>
+	/// Метод, който управлява промените в контролата за тип телефон
+	/// </summary>
+	afx_msg void OnChangeSelPhoneType();
 
 
 // Overrides
@@ -54,11 +82,11 @@ private:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	/// Достъп до стойности за стринговите член променливи
 	/// </summary>
-	/// <returns>Връща структура от тип градове</returns>
 	/// <returns>Връща TRUE при успех и FALSE при открита грешка</returns>
 	 BOOL GetControlsData(PHONE_NUMBERS& recPhoneNumber);
 
@@ -91,6 +119,11 @@ public:
 	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
 	/// </summary>
 	BOOL HasErrorMsg();
+
+	/// <summary>
+	/// Метод, който управлява началния текст в контролите за грешки при първоначална инициализация на другите контроли в диалога
+	/// </summary>
+	void ManageErrorMsgControlsInitValues();
 
 
 // Members

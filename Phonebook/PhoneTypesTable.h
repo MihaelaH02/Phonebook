@@ -11,26 +11,26 @@
 /// <summary>
 /// Клас изпълняващ CRUD операции към таблица с типове телефони, наследяващ базисния клас
 /// </summary>
-
 class CPhoneTypesTable :public CBaseTable<CPhoneTypesAccessor, PHONE_TYPES>
 {
-	// Constants
-	// ----------------
+// Constants
+// ----------------
 
 
-	// Constructor / Destructor
-	// ----------------
+// Constructor / Destructor
+// ----------------
+
 public:
 	CPhoneTypesTable() {};
 	virtual ~CPhoneTypesTable() {};
 
 
-	// Methods
-	// ----------------
+// Methods
+// ----------------
 
 
-	// Overrides
-	// ----------------
+// Overrides
+// ----------------
 
 private:
 	/// <summary>
@@ -58,15 +58,6 @@ private:
 	void SetNewDataToSelectedRow(const PHONE_TYPES& recPhoneTypes) override
 	{
 		m_recPhoneTypes = recPhoneTypes;
-	}
-
-	/// <summary>
-	/// Метод за достъп до ИД на записа
-	/// </summary>
-	/// <returns>Връща ИД на записа</returns>
-	long const GetSelectedRowId() override
-	{
-		return m_recPhoneTypes.lId;
 	}
 
 	/// <summary>

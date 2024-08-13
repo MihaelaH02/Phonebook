@@ -20,15 +20,23 @@ CDatabaseQueryBuilder::~CDatabaseQueryBuilder()
 
 // Methods
 // ----------------
-CDatabaseQueryBuilder& CDatabaseQueryBuilder::SelectFromTable(const CString strTableName)
+CDatabaseQueryBuilder& CDatabaseQueryBuilder::Select(const CString& strToSelect)
 {
     CString strQuery;
-    strQuery.Format(DATABASE_QUERY_SELECT_ALL_FROM_TABLE, strTableName);
+    strQuery.Format(DATABASE_QUERY_SELECT, strToSelect);
     m_strQuery += strQuery;
     return *this;
 }
 
-CDatabaseQueryBuilder& CDatabaseQueryBuilder::WhereEqualLong(const CString strColumnName, const long lValue)
+CDatabaseQueryBuilder& CDatabaseQueryBuilder::FromTable(const CString& strTableName)
+{
+    CString strQuery;
+    strQuery.Format(DATABASE_QUERY_FROM, strTableName);
+    m_strQuery += strQuery;
+    return *this;
+}
+
+CDatabaseQueryBuilder& CDatabaseQueryBuilder::WhereEqualLong(const CString& strColumnName, const long& lValue)
 {
     CString strQuery;
     strQuery.Format(DATABASE_QUERY_WHERE_COL_EQUAL_LONG, strColumnName, lValue);
@@ -48,9 +56,11 @@ CDatabaseQueryBuilder& CDatabaseQueryBuilder::UpdLock()
     return *this;
 }
 
-CDatabaseQueryBuilder& CDatabaseQueryBuilder::WhereNothing()
+CDatabaseQueryBuilder& CDatabaseQueryBuilder::TopRows(const int& nNumberOfRowsToSelect)
 {
-    m_strQuery += DATABASE_QUERY_WHERE_NOTHING;
+    CString strQuery;
+    strQuery.Format(DATABASE_QUERY_TOP_ROWS, nNumberOfRowsToSelect);
+    m_strQuery += strQuery;
     return *this;
 }
 

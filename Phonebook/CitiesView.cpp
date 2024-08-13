@@ -11,7 +11,6 @@
 #include "Resource.h"
 
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -70,8 +69,8 @@ void CCitiesView::OnInitialUpdate()
 	lscCities.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
 
 	//Добавяме колони в лист контролата с ляво подравяване и размер на полето
-	lscCities.InsertColumn(CITIES_LIST_CTR_COLUMN_REGION + 1, _T("Region"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
-	lscCities.InsertColumn(CITIES_LIST_CTR_COLUMN_CITY_NAME + 1, _T("City name"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
+	lscCities.InsertColumn(CITIES_LIST_CTR_COLUMN_REGION + 1, CITIES_LIST_CTRL_COLUMN_REGION_TITLE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
+	lscCities.InsertColumn(CITIES_LIST_CTR_COLUMN_CITY_NAME + 1, CITIES_LIST_CTRL_COLUMN_CITY_TITLE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
 
 	//Зареждане на данните от документа
 	if (!LoadDataInListCtrFromDoc())
@@ -82,6 +81,7 @@ void CCitiesView::OnInitialUpdate()
 	//Сортировка
 	if (!SortItemsListCtr())
 	{
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
 		return;
 	}
 
@@ -238,7 +238,7 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	{
 		if (!oListCtrManager.RemoveElement(lscCities, nIndexItem))
 		{
-			AfxMessageBox(_T("Failed to do operation in list!\n Try to reload."));
+			AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		}
 		return;
 	}
@@ -262,14 +262,15 @@ void CCitiesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	//Проверка за изпълнение на операция добавяне или редакция на елемент
 	if (!oListCtrManager.AddOrEditElement(lscCities, oCitiesRowsDataListCtrl, nIndexItem))
 	{
-		AfxMessageBox(_T("Failed to do operation in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 
-	//Сортировка на елементите в лист контролата след направен промени
+	AfxMessageBox(OK_MSG_SUCCESSFUL_OPERATION);
+
 	if (!SortItemsListCtr())
 	{
-		AfxMessageBox(_T("Failed to sort data in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
 		return;
 	}
 }
@@ -319,7 +320,7 @@ void CCitiesView::InsertCity()
 	//Вземаме данните от контролите от диалога
 	if (!oDialog.GetControlsData(recCity))
 	{
-		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
@@ -344,7 +345,7 @@ void CCitiesView::UpdateCity()
 	//Проверка за открит елемент
 	if (pCity == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select city from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -363,7 +364,7 @@ void CCitiesView::UpdateCity()
 	//Присвояваме ноивте данни от контролите в диалога със старото ид
 	if (!oDialog.GetControlsData(*pCity))
 	{
-		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 	pCity->lId = lId;
@@ -378,7 +379,7 @@ void CCitiesView::UpdateCity()
 void CCitiesView::DeleteCity()
 {
 	//Допълнително потвърждение за изтриване
-	int nResult = AfxMessageBox(_T("Are you sure you want to delete data?"), MB_YESNO | MB_ICONQUESTION);
+	int nResult = AfxMessageBox(WARNING_MSG_DELETE_DATA, MB_YESNO | MB_ICONQUESTION);
 
 	//При натискане на бутон за отказ излизаме от метода и пректратяваме операцията
 	if (nResult == IDNO) 
@@ -398,7 +399,7 @@ void CCitiesView::DeleteCity()
 	//Проверка за открит елемент
 	if (pCity == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select city from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -426,19 +427,16 @@ void CCitiesView::FilterCitiesByRegion()
 	//Вземаме данните от контролите от диалога
 	if (!oDialog.GetControlsData(recCity))
 	{
-		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
 	//Филтрираме елементите от лист контролата
 	if (!FilterItemsFromListCtr(recCity))
 	{
-		AfxMessageBox(_T("Failed to filter data in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_FILTER_LIST_CTRL);
 		return;
 	}
-
-	//Филтрираме зареденото
-	SortItemsListCtr();
 }
 
 void CCitiesView::FindOneCity()
@@ -458,14 +456,14 @@ void CCitiesView::FindOneCity()
 	//Вземаме данните от контролите от диалога
 	if (!oDialog.GetControlsData(recCity))
 	{
-		AfxMessageBox(_T("Failed to presess data from dialog!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
 	//Филтрираме елементите от лист контролата
 	if (!FilterItemsFromListCtr(recCity))
 	{
-		AfxMessageBox(_T("Failed to find data from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_FIND_LIST_CTRL);
 		return;
 	}
 }
@@ -475,11 +473,16 @@ void CCitiesView::ReloadCities()
 	//Зареждане на всички данни
 	if (!LoadDataInListCtrFromDoc())
 	{
+		AfxMessageBox(ERROR_MSG_FAIL_RELOAD_LIST_CTRL);
 		return;
 	}
 
 	//Сортировка на зареденото
-	SortItemsListCtr();
+	if (!SortItemsListCtr())
+	{
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
+		return;
+	}
 }
 
 
@@ -514,7 +517,7 @@ BOOL CCitiesView::LoadDataInListCtrFromDoc()
 	}
 
 	//Зареждаме данните от масива в лист контролата
-	if (!oListCtrManager.LoadDataFromResourse(lscCities, oRowsDisplayDataListCtrl))
+	if (!oListCtrManager.LoadDataFromResource(lscCities, oRowsDisplayDataListCtrl))
 	{
 		return FALSE;
 	}
@@ -546,12 +549,7 @@ BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
 	{
 		CString strCurrentRegion = lscCities.GetItemText(nIndex, CITIES_LIST_CTR_COLUMN_REGION);
 
-		if (strCityNameToFind.IsEmpty())
-		{
-			continue;
-		}
-
-		if (strRegionToFind != strCurrentRegion)
+		if (_tcscmp(strRegionToFind, strCurrentRegion) != 0)
 		{
 			if (!lscCities.DeleteItem(nIndex))
 			{
@@ -561,8 +559,13 @@ BOOL CCitiesView::FilterItemsFromListCtr(const CITIES& recCity)
 			continue;
 		}
 
+		if (strCityNameToFind.IsEmpty())
+		{
+			continue;
+		}
+
 		CString strCurrentName = lscCities.GetItemText(nIndex, CITIES_LIST_CTR_COLUMN_CITY_NAME);
-		if (strCityNameToFind != strCurrentName)
+		if (_tcscmp(strCityNameToFind, strCurrentName) != 0)
 		{
 			if (!lscCities.DeleteItem(nIndex))
 			{

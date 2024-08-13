@@ -2,13 +2,13 @@
 
 #include "Structures.h"
 #include "TypePtrDataArray.h"
-#include "EnumsWithFlags.h"
+#include "Flags.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CTableDataMap
 
 /// <summary>
-///Темплейт клас отгоравящ за обработката на CTypedPtrArrays
+///Темплейт клас, киото ще бъде елемент на CTypedPtrDataArray масив
 /// </summary>
 template<class Type>
 class CTableDataOperationsMap : public CMap<LPARAM, LPARAM, CTypedPtrDataArray<Type>*, CTypedPtrDataArray<Type>*>
@@ -24,19 +24,17 @@ class CTableDataOperationsMap : public CMap<LPARAM, LPARAM, CTypedPtrDataArray<T
 public:
 	CTableDataOperationsMap()
 	{
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_READED, new CTypedPtrDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_INSERT, new CTypedPtrDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_UPDATE, new CTypedPtrDataArray<Type>());
-		SetAt(OPERATIONS_WITH_DATA_FLAGS_DELETE, new CTypedPtrDataArray<Type>());
+		InitializeMap();
 	};
 	
+	/// <param name="oTableDataMap">Параметър за мап чиито елементи ще се добавят към настоящия мап</param>
 	CTableDataOperationsMap(const CTableDataOperationsMap& oTableDataMap)
 	{
 		InitializeMap();
 		AddAllNewElementsToMap(oTableDataMap);
 	}
 
-
+	/// <param name="oTableDataArray">Параметър за масив, чиито променливи ще се добавят към ключ - прочетено на мапа</param>
 	CTableDataOperationsMap(const CTypedPtrDataArray<Type>& oTableDataArray)
 	{
 		InitializeMap();
@@ -68,7 +66,7 @@ public:
 		}
 
 		//Добавяне на елемент към подаден флаг
-		CTypedPtrDataArray<Type>* pDataArray;
+		CTypedPtrDataArray<Type>* pDataArray = nullptr;
 		if (!Lookup(lFlag, pDataArray))
 		{
 			return FALSE;
@@ -126,8 +124,8 @@ public:
 
 		//Обход на мапа
 		POSITION oPos = oCTableDataMap.GetStartPosition();
-		LPARAM lKey;
-		CTypedPtrDataArray<Type>* pValue;
+		LPARAM lKey = 0;
+		CTypedPtrDataArray<Type>* pValue = nullptr;
 		if (oPos == NULL)
 		{
 			return FALSE;
@@ -160,8 +158,8 @@ public:
 	{
 		//Обход на мапа
 		POSITION oPos = GetStartPosition();
-		LPARAM oKey;
-		CTypedPtrDataArray<Type>* pValue;
+		LPARAM oKey = 0;
+		CTypedPtrDataArray<Type>* pValue = nullptr;
 		if (oPos == NULL)
 		{
 			return -1;
@@ -204,7 +202,7 @@ public:
 		}
 
 		//Достъпваме масива по поданен флаг-ключ
-		CTypedPtrDataArray<Type>* pDataArray;
+		CTypedPtrDataArray<Type>* pDataArray = nullptr;
 		if (!Lookup(lFlag, pDataArray))
 		{
 			return FALSE;
@@ -231,7 +229,7 @@ public:
 		}
 
 		//Достъпваме масива по поданен флаг-ключ
-		CTypedPtrDataArray<Type>* pDataArray;
+		CTypedPtrDataArray<Type>* pDataArray = nullptr;
 		if (!Lookup(oFlag, pDataArray))
 		{
 			return FALSE;
@@ -262,8 +260,8 @@ public:
 	{
 		//Обход на мапа
 		POSITION oPos = GetStartPosition();
-		LPARAM lKey;
-		CTypedPtrDataArray<Type>* pValue;
+		LPARAM lKey = 0;
+		CTypedPtrDataArray<Type>* pValue = nullptr;
 		if (oPos == NULL)
 		{
 			return FALSE;
@@ -312,8 +310,8 @@ public:
 
 		//Обход на мапа
 		POSITION oPos = GetStartPosition();
-		LPARAM lKey;
-		CTypedPtrDataArray<Type>* pValue;
+		LPARAM lKey = 0;
+		CTypedPtrDataArray<Type>* pValue = nullptr;
 
 		if (oPos == NULL)
 		{

@@ -13,6 +13,7 @@ enum GLOBAL_ACCESSORS_INFO
 	GLOBAL_ACCESSORS_INFO_ACCESSOR_FOR_DATA = 1,
 };
 
+//Енумерация за опредеяне глобана информация свързана с колони на аксесори
 enum ACCESSORS_COLUMNS_INFO
 {
 	ACCESSORS_COLUMNS_INFO_ORDINAL_COLUMN_ID = 1,

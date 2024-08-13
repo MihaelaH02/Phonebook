@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EnumsListCtrColumsInfo.h"
+#include "ListCtrlColumnsInfo.h"
 #include "PhonetypesDialog.h"
 #include "ManageListCtr.h"
 #include "PhoneTypesDoc.h"
@@ -10,19 +10,21 @@
 
 class CPhoneTypeView : public CListView
 {
+
 // Constants
 // ----------------
 
 
 // Macros
 // ----------------
-	DECLARE_DYNCREATE(CPhoneTypeView)
 protected:
+	DECLARE_DYNCREATE(CPhoneTypeView)
 	DECLARE_MESSAGE_MAP()
 
 
 // Constructor / Destructor
 // ----------------
+
 protected:
 	CPhoneTypeView();         
 	virtual ~CPhoneTypeView();
@@ -30,10 +32,15 @@ protected:
 
 // Methods
 // ----------------
-public:
-	CPhoneTypesDoc* GetDocument() const;
-private:
 
+public:
+	/// <summary>
+	/// Метод за достъп до документа
+	/// </summary>
+	/// <returns>Връща указател към документа</returns>
+	CPhoneTypesDoc* GetDocument() const;
+
+private:
 	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
 	/// </summary>
@@ -56,7 +63,7 @@ private:
 	/// </summary>
 	/// <param name="lParam1">Асоцира се с първия елемент, който ще се сравнява</param>
 	/// <param name="lParam2">Асоцира се с втори елемент, който ще се сравнява</param>
-	/// <param name="lParamSort">Параметър, който приложението си генерира </param>
+	/// <param name="lParamSort">Параметър обект</param>
 	/// <returns>Връща се резултат то сравнението</returns>
 	int static CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
@@ -77,22 +84,30 @@ private:
 
 
 
-	// Overrides
-	// ----------------
+// Overrides
+// ----------------
+
 public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	/// <summary>
+	// Метод, който задава особености на вюто преди съзаването му
+	/// </summary>
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs) override;
 
 protected:
-	virtual void OnInitialUpdate();
+	/// <summary>
+	/// Метод, който задава особености на вюто след създаването му
+	/// </summary>
+	virtual void OnInitialUpdate() override;
 
 	/// <summary>
 	/// Метод, който модифицира лист контролата в зависимост от извършената опирация
 	/// </summary>
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
 
 
 	// Generated message map functions
 	// ----------------
+
 public:
 	/// <summary>
 	/// Метод, който управлява действия свързани с дясно натискане на бутона на мишката
@@ -145,6 +160,7 @@ public:
 	/// Метод за зареждане на всички градове
 	/// </summary>
 	afx_msg void ReloadPhoneTypes();
+
 
 // Members
 // ----------------

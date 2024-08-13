@@ -48,10 +48,10 @@ void CPersonsView::OnInitialUpdate()
 	lscPersons.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
 
 	//Добавяме колони в лист контролата с ляво подравяване и размер на полето
-	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_FIRSTNAME, _T("First name"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
-	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_LASTNAME, _T("Last name"), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
-	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_EGN, _T("EGN "), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
-	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_REGION, _T("Region: "), LVCFMT_LEFT, LIST_CTR_HEADER_WIDTH);
+	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_FIRSTNAME, PERSONS_LIST_CTRL_COLUMN_FIRSTNAME_TITILE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
+	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_LASTNAME, PERSONS_LIST_CTRL_COLUMN_LASTNAME_TITILE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
+	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_EGN, PERSONS_LIST_CTRL_COLUMN_EGN_TITILE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
+	lscPersons.InsertColumn(PERSONS_LIST_CTR_COLUMN_REGION, PERSONS_LIST_CTRL_COLUMN_REGION_TITILE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
 
 	//Зареждане на данните от документа в лист контролата
 	if (!LoadPersonsInListCtrFromDoc())
@@ -215,7 +215,7 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 		//Изтриваме ред по поданен индекс
 		if (!oManagerListCtr.RemoveElement(lscPersons, nIndexItem))
 		{
-			AfxMessageBox(_T("Failed to delete element in list!\n Try to reload."));
+			AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		}
 		return;
 	}
@@ -234,21 +234,23 @@ void CPersonsView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	oRowData.SetData(recPerson);
 	if (!SetColumnDisplayData(oRowData))
 	{
-		AfxMessageBox(_T("Failed to process data of new element in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 
 	//Проверка за изпълнение на операция добавяне или редактиране на елемент
 	if (!oManagerListCtr.AddOrEditElement(lscPersons, oRowData, nIndexItem))
 	{
-		AfxMessageBox(_T("Failed to do operation in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
+
+	AfxMessageBox(OK_MSG_SUCCESSFUL_OPERATION);
 
 	//Сортировка на елементите в лист контролата след направен промени
 	if (!SortPersonsInListCtr())
 	{
-		AfxMessageBox(_T("Failed to sort data in list!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
 		return;
 	}
 }
@@ -263,7 +265,7 @@ void CPersonsView::ViewPersonInfo()
 	CPersonsDoc* pPersonDoc = GetDocument();
 	if (pPersonDoc == nullptr)
 	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return;
 	}
 
@@ -278,7 +280,7 @@ void CPersonsView::ViewPersonInfo()
 
 	if (pPerson == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select client from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -286,12 +288,12 @@ void CPersonsView::ViewPersonInfo()
 	CPersonDBModel oPersonDBModel;
 	if (!pPersonDoc->SelectPerson(pPerson->lId, oPersonDBModel))
 	{
-		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CPersonsDialog oDialog(oPersonDBModel, pPersonDoc->GetAdditionalPersonInfo(), ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
+	CPersonsDialog oDialog(oPersonDBModel, pPersonDoc->GetAdditionalModels(), ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
@@ -303,12 +305,12 @@ void CPersonsView::InsertPersonInfo()
 	CPersonsDoc* pPersonDoc = GetDocument();
 	if (pPersonDoc == nullptr)
 	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return;
 	}
 
 	//Достъпваме диалога
-	CPersonsDialog oDialog(pPersonDoc->GetAdditionalPersonInfo());
+	CPersonsDialog oDialog(pPersonDoc->GetAdditionalModels());
 
 	//Нова структура, която ще съдържа данни за новия запис
 	CPersonDBModel oPersonDBModel;
@@ -322,13 +324,14 @@ void CPersonsView::InsertPersonInfo()
 	//Вземаме данните от контролите от диалога
 	if (!oDialog.GetControlsData(oPersonDBModel))
 	{
-		AfxMessageBox(_T("Failed to process data form dialog!\nTry again later."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
 	//Добавяме данните в документа
 	if (!(GetDocument() && GetDocument()->ProcessPerson(oPersonDBModel, OPERATIONS_WITH_DATA_FLAGS_INSERT)))
 	{
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
@@ -339,7 +342,7 @@ void CPersonsView::UpdatePersonInfo()
 	CPersonsDoc* pPersonDoc = GetDocument();
 	if (pPersonDoc == nullptr)
 	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return;
 	}
 
@@ -354,7 +357,7 @@ void CPersonsView::UpdatePersonInfo()
 
 	if (pPerson == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select client from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -362,12 +365,12 @@ void CPersonsView::UpdatePersonInfo()
 	CPersonDBModel oPersonDBModel;
 	if (!pPersonDoc->SelectPerson(pPerson->lId, oPersonDBModel))
 	{
-		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CPersonsDialog oDialog(oPersonDBModel, pPersonDoc->GetAdditionalPersonInfo());
+	CPersonsDialog oDialog(oPersonDBModel, pPersonDoc->GetAdditionalModels());
 
 	//Проверка за натиснат бутон OK в диалога
 	if (oDialog.DoModal() != IDOK)
@@ -378,20 +381,21 @@ void CPersonsView::UpdatePersonInfo()
 	//Присвояваме ноивте данни от диалога
 	if (!oDialog.GetControlsData(oPersonDBModel))
 	{
-		AfxMessageBox(_T("Failed to process data form dialog!\nTry again later."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
 	//Проверка дали всички модификации направени по списъка с телефонни номера съдържат ИД на съответния клиент
 	if (!oPersonDBModel.SetPhoneNumbersPersonId())
 	{
-		AfxMessageBox(_T("Failed to process data form dialog!\nTry again later."));
+		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
 	//Редактираме данните в документа като подаваме стуртура с обновени данни
 	if (!(GetDocument() && GetDocument()->ProcessPerson(oPersonDBModel, OPERATIONS_WITH_DATA_FLAGS_UPDATE)))
 	{
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
@@ -399,7 +403,7 @@ void CPersonsView::UpdatePersonInfo()
 void CPersonsView::DeletePersonInfo()
 {
 	//Допълнително потвърждение за изтриване
-	int nResult = AfxMessageBox(_T("Are you sure you want to delete data?"), MB_YESNO | MB_ICONQUESTION);
+	int nResult = AfxMessageBox(WARNING_MSG_DELETE_DATA, MB_YESNO | MB_ICONQUESTION);
 
 	//При натискане на бутон за отказ излизаме от метода и пректратяваме операцията
 	if (nResult == IDNO)
@@ -418,7 +422,7 @@ void CPersonsView::DeletePersonInfo()
 
 	if (pPerson == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select client from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -426,7 +430,7 @@ void CPersonsView::DeletePersonInfo()
 	CPersonsDoc* pPersonDoc = GetDocument();
 	if (pPersonDoc == nullptr)
 	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return;
 	}
 
@@ -435,7 +439,7 @@ void CPersonsView::DeletePersonInfo()
 
 	if (!pPersonDoc->SelectPerson(pPerson->lId, oPersonDBModel))
 	{
-		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
@@ -443,19 +447,20 @@ void CPersonsView::DeletePersonInfo()
 	CPhoneNumbersMap* pPhoneNumbersOperationsMap = &oPersonDBModel.GetPhoneNumbers();
 	if (pPhoneNumbersOperationsMap == nullptr)
 	{
-		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	if (!pPhoneNumbersOperationsMap->ChangeValuesToOperation(OPERATIONS_WITH_DATA_FLAGS_DELETE))
 	{
-		AfxMessageBox(_T("Failed to select data from list!\n Try to reload."));
+		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return ;
 	}
 	
 	//Изтриваме данните в документа по намереното ИД
 	if (!(GetDocument() && GetDocument()->ProcessPerson(oPersonDBModel, OPERATIONS_WITH_DATA_FLAGS_DELETE)))
 	{
+		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
@@ -471,12 +476,14 @@ void CPersonsView::ReloadPersonsInfo()
 	//Зареждане на всички данни
 	if (!LoadPersonsInListCtrFromDoc())
 	{
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return;
 	}
 
 	//Сортировка на обновените данни в лист контролата
 	if (!SortPersonsInListCtr())
 	{
+		AfxMessageBox(ERROR_MGS_FAIL_SORT_LIST_CTRL);
 		return;
 	}
 }
@@ -513,7 +520,7 @@ BOOL CPersonsView::LoadPersonsInListCtrFromDoc()
 	}
 
 	//Зареждаме данните от масива в лист контролата
-	if (!oManagerListCtr.LoadDataFromResourse(lscPersons,oRowsData))
+	if (!oManagerListCtr.LoadDataFromResource(lscPersons,oRowsData))
 	{
 		return FALSE;
 	}
@@ -552,7 +559,7 @@ BOOL CPersonsView::SortPersonsInListCtr()
 	CListCtrl& lscPersons = GetListCtrl();
 
 	//Изпълняваме метод за сортиране първо по регион и след това по имена на клиентите
-	if (!lscPersons.SortItems(CompareFunc, 0))
+	if (!lscPersons.SortItems(CompareFunc, (LPARAM)this))
 	{
 		return FALSE;
 	}
@@ -572,7 +579,7 @@ int CALLBACK CPersonsView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lP
 	CPersonsDoc* pPersonDoc = pPersonsView->GetDocument();
 	if (pPersonDoc == nullptr)
 	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return 0;
 	}
 
@@ -587,8 +594,8 @@ int CALLBACK CPersonsView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lP
 	}
 
 	//Провенливи, които съдържат градовете на клиентите
-	CITIES* pCity1 = pPersonDoc->GetAdditionalPersonInfo().FindCityInArrayById(pPerson1->lIdCity);
-	CITIES* pCity2 = pPersonDoc->GetAdditionalPersonInfo().FindCityInArrayById(pPerson2->lIdCity);
+	CITIES* pCity1 = pPersonDoc->GetAdditionalModels().GetCityById(pPerson1->lIdCity);
+	CITIES* pCity2 = pPersonDoc->GetAdditionalModels().GetCityById(pPerson2->lIdCity);
 
 	if (pCity1 == nullptr || pCity2 == nullptr)
 	{
@@ -640,12 +647,12 @@ BOOL CPersonsView::SetColumnDisplayData(CRowDataListCtrl<PERSONS>& oRowData)
 	CPersonsDoc* pPersonDoc = GetDocument();
 	if (pPersonDoc == nullptr)
 	{
-		AfxMessageBox(_T("Failed to load data!\n Try to reload."));
+		AfxMessageBox(ERROR_MGS_FAIL_LOAD_DATA);
 		return FALSE;
 	}
 
 	//Достъпваме града на клиента по подадено ид
-	CITIES* pCity = pPersonDoc->GetAdditionalPersonInfo().FindCityInArrayById(recPerson.lIdCity);
+	CITIES* pCity = pPersonDoc->GetAdditionalModels().GetCityById(recPerson.lIdCity);
 
 	//Проверка за открит обект
 	if (pCity == nullptr)

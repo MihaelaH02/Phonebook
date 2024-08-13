@@ -4,7 +4,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-#include "EnumsStructsInfo.h"
+#include "StructsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesAccessor
@@ -15,22 +15,24 @@
 class CPhoneTypesAccessor
 {
 
-	// Constructor / Destructor
-	// ----------------
+// Constructor / Destructor
+// ----------------
+
 public:
 	CPhoneTypesAccessor() {};
 	virtual ~CPhoneTypesAccessor() {};
 
 
-	// Methods
-	// ----------------
+// Methods
+// ----------------
 
 
-	// Overrides
-	// ----------------
+// Overrides
+// ----------------
 
-	// Members
-	// ----------------
+// Members
+// ----------------
+
 protected:
 	/// <summary>
 	/// Член променлива от тип структура PHONE_TYPES

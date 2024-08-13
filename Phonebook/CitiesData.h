@@ -7,14 +7,19 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCitiesData
 
+/// <summary>
+/// Клас, който отговаря за бизнес логиката за таблица с градове
+/// </summary>
 class CCitiesData
 {
+
 // Constants
 // ----------------
 
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CCitiesData();
 	virtual ~CCitiesData();
@@ -22,11 +27,12 @@ public:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
-	///Метод за селект на всички данни от таблица CITIES от базата данни
+	///Метод за селект на всички данни от таблица CITIES в базата данни
 	/// </summary>
-	/// <param name="oCitiesArray">Масив, в който ще се съхраняват прочетените данни</param>
+	/// <param name="oCitiesArray">Параметър за масив, в който ще се съхраняват прочетените данни</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL SelectAllCities(CCitiesArray& oCitiesArray);
 	
@@ -36,7 +42,7 @@ public:
 	/// <param name="lID">Променлива указваща ИД на запис</param>
 	/// <param name="recCity">Променлива, в която ще се запише прочетената стойност</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectCityWhereID(const long lID, CITIES& recCity);
+	BOOL SelectCityWhereID(const long& lID, CITIES& recCity);
 	
 	/// <summary>
 	/// Метод за редакция на запис
@@ -44,7 +50,7 @@ public:
 	/// <param name="lID">Променлива указваща ИД на запис</param>
 	/// <param name="recCity">Променлива, която съдържа структура, с която ще се замени записа</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL UpdateCityWhereID(const long lID, const CITIES& recCity);
+	BOOL UpdateCityWhereID(const long& lID, const CITIES& recCity);
 
 	/// <summary>
 	/// Метод за добавяне на запис
@@ -58,7 +64,7 @@ public:
 	/// </summary>
 	/// <param name="lID">Променлива указваща ИД на запис</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL DeleteCityWhereID(const long lID);
+	BOOL DeleteCityWhereID(const long& lID);
 		
 // Overrides
 // ----------------

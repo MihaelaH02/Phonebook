@@ -9,9 +9,7 @@
 // ----------------
 CDatabaseTransactionManager::CDatabaseTransactionManager()
 {
-	
 	m_pSession = new CInitializeSession();
-
 }
 
 CDatabaseTransactionManager::~CDatabaseTransactionManager()
@@ -34,18 +32,25 @@ CInitializeSession* CDatabaseTransactionManager::GetSession()
 
 BOOL CDatabaseTransactionManager::OpenSafeTransaction()
 {
+	if (m_pSession == nullptr)
+	{
+		m_pSession = new CInitializeSession();
+	}
+
 	if (!m_pSession->StartTransacion())
 	{
 		delete m_pSession;
 		m_pSession = nullptr;
 		return FALSE;
 	}
+
 	return TRUE;
 }
 
 BOOL CDatabaseTransactionManager::CloseSafeTransactoin(BOOL bFlagForError)
 {
-	//Затвяряне на транзакцията пир подаден флаг за грешка с неуспух
+	//Затвяряне на транзакцията при подаден флаг за грешка с неуспух
+
 	if (bFlagForError)
 	{
 		if (!m_pSession->RollbackTransaction())
@@ -61,9 +66,9 @@ BOOL CDatabaseTransactionManager::CloseSafeTransactoin(BOOL bFlagForError)
 	{
 		if (!m_pSession->CommitTransaction())
 		{
-			return FALSE;
 			delete m_pSession;
 			m_pSession = nullptr;
+			return FALSE;
 		}
 	}
 

@@ -1,19 +1,22 @@
 #pragma once
 #include "afxdialogex.h"
 #include "PersonDBModel.h"
-#include "EnumsWithFlags.h"
-#include "AdditionPersonInfo.h"
+#include "Flags.h"
+#include "AdditionalDBModelsPersons.h"
 #include "ManageListCtr.h"
-#include "EnumsListCtrColumsInfo.h"
+#include "ListCtrlColumnsInfo.h"
 #include "DefinesDialogCtrInfo.h"
-#include "EnumsWithFlags.h"
 #include "PhoneNumbersDialog.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsDialog dialog
 
+/// <summary>
+/// Клас диалог за регистър с клиенти, който налседява базов клас
+/// </summary>
 class CPersonsDialog : public CDialog
 {
+
 // Macros
 // ----------------
 	DECLARE_DYNAMIC(CPersonsDialog)
@@ -22,6 +25,7 @@ class CPersonsDialog : public CDialog
 
 // Constants
 // ----------------
+
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_PERSONS_DIALOG };
 #endif
@@ -29,15 +33,16 @@ class CPersonsDialog : public CDialog
 
 // Constructor / Destructor
 // ----------------
+
 public:
-	/// <param name="oAdditionInfo">Параметър клас с допълнителни данни</param>
-	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPersonsDialog(const CAdditionPersonInfo& oAdditionInfo, LPARAM oEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	/// <param name="oAdditionModels">Параметър клас с допълнителни данни</param>
+	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
+	CPersonsDialog(const CAdditionalDBModelsPersons& oAdditionModels, LPARAM lEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="oPerson">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
 	/// <param name="oAdditionInfo">Параметър клас с допълнителни данни</param>
-	/// <param name="oEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPersonsDialog(CPersonDBModel& oPerson, const CAdditionPersonInfo& oAdditionInfo, LPARAM lEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
+	CPersonsDialog(CPersonDBModel& oPerson, const CAdditionalDBModelsPersons& oAdditionModels, LPARAM lEnableControls = ENABLE_DIALOG_PERSON_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	virtual ~CPersonsDialog();
 
@@ -53,9 +58,14 @@ protected:
 // MFC Message Handlers
 // ----------------
 public:
-
+	/// <summary>
+	/// Метод, който упрвлява натискането на бутон ОК
+	/// </summary>
 	afx_msg void OnBnClickedOk();
-
+	
+	/// <summary>
+	/// Метод, който управлява натискането на бутон Cancel
+	/// </summary>
 	afx_msg void OnBnClickedCancel();
 
 	/// <summary>
@@ -69,12 +79,17 @@ public:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 
 	/// <summary>
-	/// Метод, който управлява действия свързани с натискане на бутон от клавиатурата
+	/// Метод, който управлява действия свързани с двойно дясно натискане на бутон на мишката
 	/// </summary>
-	afx_msg void OnNMDblclkLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDblRButtonListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
 
 	/// <summary>
-	/// Метод за селект на елемент от лест контролата
+	/// Метод, който управлява действия свързани с натискане на бутон от клавиатурата
+	/// </summary>
+	afx_msg void OnKeyDownListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
+
+	/// <summary>
+	/// Метод за преглед на елемент от лист контролата
 	/// </summary>
 	afx_msg void ViewPhoneNumberInfo();
 
@@ -108,15 +123,45 @@ public:
 	/// </summary>
 	afx_msg void ReloadPhoneNumbers();
 
-	afx_msg void OnEnChangeEdbPersonsLastname();
+	/// <summary>
+	/// Метод за следене на промени по контрола за име
+	/// </summary>
+	afx_msg void OnEnChangeFirtsname();
 
+	/// <summary>
+	/// Метод за следене на промени по контрола за презиме
+	/// </summary>
+	afx_msg void OnEnChangeSecondname();
 
-	afx_msg void OnEnChangeEdbPersonsFirtsname();
-	afx_msg void OnEnChangeEdbPersonsSecondname();
-	afx_msg void OnEnChangeEdbPersonsEgn();
-	afx_msg void OnCbnSelchangeCmbPersonsCities();
-	afx_msg void OnEnChangeEdbPersonsAddress();
-	afx_msg void OnLvnDeleteitemLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
+	/// <summary>
+	/// Метод за следене на промени по контрола за фамилия
+	/// </summary>
+	afx_msg void OnEnChangeLastname();
+
+	/// <summary>
+	/// Метод за следене на промени по контрола за егн
+	/// </summary>
+	afx_msg void OnEnChangeEgn();
+
+	/// <summary>
+	/// Метод за следене на промени по контрола за градове
+	/// </summary>
+	afx_msg void OnCbnSelchangeCities();
+
+	/// <summary>
+	/// Метод за следене на промени по контрола за адрес
+	/// </summary>
+	afx_msg void OnEnChangeAddress();
+
+	/// <summary>
+	/// Метод за следене на изтриване на елемент по лист контрола за телефонин номера
+	/// </summary>
+	afx_msg void OnDeleteItemListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
+
+	/// <summary>
+	/// Метод за следене на промени по елементи в лист контрола за телефонин номера
+	/// </summary>
+	afx_msg void OnChangeItemListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
 
 
 // Overrides
@@ -125,6 +170,7 @@ public:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	/// Метод за достъп до данните в контролите в диалога
@@ -137,7 +183,7 @@ private:
 	/// <summary>
 	/// Метод, който управлява активността на контролите в диалога
 	/// </summary>
-	/// <param name="oEnableControls">Флаг, който определя активонстта на контролите</param>
+	/// <param name="lEnableControls">Флаг, който определя активонстта на контролите</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL EnableControls(LPARAM lEnableControls);
 
@@ -201,6 +247,12 @@ private:
 	/// </summary>
 	void ManageErrorMsgControlsInitValues();
 
+	/// <summary>
+	/// Метод, който управлява валидацията на текста в контроли със стрингови данни
+	/// </summary>
+	/// <param name="oControla">Параметър за контрола, чиито текст ще се валидира</param>
+	/// <param name="strText">Параметър за текст, койото ще се валидира</param>
+	/// <param name="nControlaIDWithError">Параметър за контрола, в която ще се визуализира грешката</param>
 	void DoOnEnChangeStringEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithError);
 
 	/// <summary>
@@ -213,16 +265,28 @@ private:
 	/// <summary>
 	/// Метод за извеждане на съобщение в контрола
 	/// </summary>
-	/// <param name="strText">Контрола, чийто текст ще се валидира</param>
-	/// <param name="nControlaID">Контрола, в която ще се съдържа текста</param>
-	void PrintErrorMsg(int nControlaID, const CString& strErrorMsg = _T("NULL"), const int& nMaxValidLenght = DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING, BOOL bValidateString = TRUE);
+	/// <param name="nControlaIDWithError">Параметър за контрола, в която ще се визуализира грешката</param>
+	/// <param name="strText">Параметър за текст, койото ще се валидира</param>
+	/// <param name="nMaxValidLenght">Параметър за максимална дължина на текста, ако е добавен</param>
+	/// <param name="bValidateString">Параметър флаг за валидация на стренг</param>
+	void PrintErrorMsg(int nControlaID, const CString& strControlaTextToCheck, BOOL bValidateString = TRUE, const int& nMaxValidLenght = DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
 
 	/// <summary>
 	/// Метод, който проверява дали е намерена грешка по въведеното в контролите
 	/// </summary>
 	BOOL HasErrorMsg();
 
-	BOOL HasErrorInOneControla(CWnd& oControla,const int& nControlaErrorMsgID);
+	/// <summary>
+	/// Метод, който следи дали има грешка в една контрола
+	/// </summary>
+	/// <param name="nControlaIDWithError">Параметър за контрола, в която ще се визуализира грешката</param>
+	/// <returns>Връща TRUE ако е открита грешка и FALSE, ако не е</returns>
+	BOOL HasErrorInOneControla(const int& nControlaErrorMsgID);
+
+	/// <summary>
+	/// Метод, който преоблазува текста то всички тектови контрили във валиден
+	/// </summary>
+	void ValidateEdbControlsText();
 
 
 // Members
@@ -281,7 +345,7 @@ private:
 	/// <summary>
 	/// Член променлива от тип клас, която съдържа допълнителна информация
 	/// </summary>
-	CAdditionPersonInfo m_oAdditionalInfo;
+	CAdditionalDBModelsPersons m_oAdditionalModels;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите
@@ -292,8 +356,5 @@ private:
 	/// Инстанция на клас за верификация на данни
 	/// </summary>
 	CValidateDialogControlsData m_oValidateStringData;
-
-public:
-	afx_msg void OnLvnKeydownLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnLvnItemchangedLscPhoneNumbers(NMHDR* pNMHDR, LRESULT* pResult);
+	
 };

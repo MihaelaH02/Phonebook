@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "AdditionPersonInfo.h"
+#include "AdditionalDBModelsPersons.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CAdditionInfo
@@ -7,11 +7,11 @@
 
 // Constructor / Destructor
 // ----------------
-CAdditionPersonInfo::CAdditionPersonInfo()
+CAdditionalDBModelsPersons::CAdditionalDBModelsPersons()
 {
 }
 
-CAdditionPersonInfo::~CAdditionPersonInfo()
+CAdditionalDBModelsPersons::~CAdditionalDBModelsPersons()
 {
 
 }
@@ -20,27 +20,27 @@ CAdditionPersonInfo::~CAdditionPersonInfo()
 // Methods
 // ----------------
 
-void CAdditionPersonInfo::SetCitiesData(const CCitiesArray& oCitiesArray)
+void CAdditionalDBModelsPersons::SetCities(const CCitiesArray& oCitiesArray)
 {
 	m_oCitiesArray.AddAllElements(oCitiesArray);
 }
 
-void CAdditionPersonInfo::SetPhoneTypesData(const CPhoneTypesArray& oPhoneTypesArray)
+void CAdditionalDBModelsPersons::SetPhoneTypes(const CPhoneTypesArray& oPhoneTypesArray)
 {
 	m_oPhoneTypesArray.AddAllElements(oPhoneTypesArray);
 }
 
-const CCitiesArray& CAdditionPersonInfo::GetAllCities()
+const CCitiesArray& CAdditionalDBModelsPersons::GetCities()
 {
 	return m_oCitiesArray;
 }
 
-const CPhoneTypesArray& CAdditionPersonInfo::GetAllPhoneTypes()
+const CPhoneTypesArray& CAdditionalDBModelsPersons::GetPhoneTypes()
 {
 	return m_oPhoneTypesArray;
 }
 
-CITIES* CAdditionPersonInfo::FindCityInArrayById(const int lId)
+CITIES* CAdditionalDBModelsPersons::GetCityById(const int lId)
 {
 	//Обхождаме всчки градове
 	for (INT_PTR nIndex = 0; nIndex < m_oCitiesArray.GetCount(); nIndex++)
@@ -58,7 +58,7 @@ CITIES* CAdditionPersonInfo::FindCityInArrayById(const int lId)
 	return nullptr;
 }
 
-PHONE_TYPES* CAdditionPersonInfo::FindPhoneTypesInArrayById(const int lId)
+PHONE_TYPES* CAdditionalDBModelsPersons::GetPhoneTypeById(const int lId)
 {
 	//Обхождаме всчки телефонни типове
 	for (INT_PTR nIndex = 0; nIndex < m_oPhoneTypesArray.GetCount(); nIndex++)

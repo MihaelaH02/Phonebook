@@ -48,10 +48,16 @@ BOOL CCitiesDialog::OnInitDialog()
 	m_edbRegion.SetWindowTextW(m_recCity.szRegion);
 
 	//Проверка дали са поданени стойности за текстовите променливи
-	if (m_recCity.szCityName != nullptr && m_recCity.szRegion != nullptr)
+	if (_tcscmp(_T(""), m_recCity.szCityName) != 0)
 	{
 		//Задаване на начална празна стойност на контролите за съобщения за грешки  
 		SetDlgItemText(IDC_STT_CITIES_NAME_ERROR_MSG, _T(""));
+	}
+
+	//Проверка дали са поданени стойности за текстовите променливи
+	if (_tcscmp(_T(""), m_recCity.szRegion) != 0)
+	{
+		//Задаване на начална празна стойност на контролите за съобщения за грешки  
 		SetDlgItemText(IDC_STT_CITIES_REGION_ERROR_MSG, _T(""));
 	}
 

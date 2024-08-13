@@ -6,7 +6,7 @@
 
 #include <atldbcli.h>
 #include "Structures.h"
-#include "EnumsStructsInfo.h"
+#include "StructsInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsAccessor
@@ -17,22 +17,24 @@
 class CPhoneNumbersAccessor
 {
 
-	// Constructor / Destructor
-	// ----------------
+// Constructor / Destructor
+// ----------------
 public:
 	CPhoneNumbersAccessor() {};
 	virtual ~CPhoneNumbersAccessor() {};
 
 
-	// Methods
-	// ----------------
+// Methods
+// ----------------
 
 
-	// Overrides
-	// ----------------
+// Overrides
+// ----------------
 
-	// Members
-	// ----------------
+
+// Members
+// ----------------
+
 protected:
 	/// <summary>
 	/// Член променлива от тип структура PHONE_NUMBERS

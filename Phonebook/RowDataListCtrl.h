@@ -2,7 +2,7 @@
 #include "TypePtrDataArray.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CMergeDisplayDataListCtrl
+// CRowDataListCtrl
 
 /// <summary>
 /// Клас който обединява данните на обект структура и съответно презентационните данни за лист контрола
@@ -14,12 +14,16 @@ class CRowDataListCtrl
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CRowDataListCtrl()
 	{
 
 	}
 
+	/// <summary>
+	/// Параметризиран конструктор
+	/// </summary>
 	CRowDataListCtrl(const Type& oType, const CTypedPtrDataArray<CString>& oArrayWithDataToDisplay)
 		: m_oTypeData(oType),
 	{
@@ -37,6 +41,7 @@ public:
 
 // Overrides
 // ----------------
+
 public:
 	/// <summary>
 	/// Метод, който добавя данни към член променилва обект
@@ -80,13 +85,19 @@ public:
 	}
 
 private:
+	/// <summary>
+	/// Метод, който запълва член променливата масив с презентационни данни
+	/// </summary>
+	/// <param name="oArrayWithDataToDisplay"Параметър с данни></param>
 	void SetDisplayData(const CTypedPtrDataArray<CString>& oArrayWithDataToDisplay)
 	{
 		m_oArrayWithDataToDisplay.AddAllElements(oArrayWithDataToDisplay);
 	}
 
+
 // Members
 // ----------------
+
 private:
 	/// <summary>
 	/// Член променлива, която съдържа всички данните за обекта

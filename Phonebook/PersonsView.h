@@ -1,27 +1,34 @@
 #pragma once
 
-#include "EnumsListCtrColumsInfo.h"
+#include "ListCtrlColumnsInfo.h"
 #include "PersonsDialog.h"
 #include "ManageListCtr.h"
 #include "PersonsDoc.h"
 
+/////////////////////////////////////////////////////////////////////////////
 // CPersonsView view
 
+/// <summary>
+/// Клас за визуализация на регистъра с клиенти, наследяващ базов клас
+/// </summary>
 class CPersonsView : public CListView
 {
+
 // Constants
 // ----------------
 
 
 // Macros
 // ----------------
-	DECLARE_DYNCREATE(CPersonsView)
 protected:
+	DECLARE_DYNCREATE(CPersonsView)
+
 	DECLARE_MESSAGE_MAP()
 
 
 // Constructor / Destructor
 // ----------------
+
 protected:
 	CPersonsView(); 
 	virtual ~CPersonsView();
@@ -29,15 +36,15 @@ protected:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	/// Метод за достъп до документа
 	/// </summary>
-	/// <returns>Връща указател към елемента</returns>
+	/// <returns>Връща указател към документа</returns>
 	CPersonsDoc* GetDocument() const;
 
 private:
-
 	/// <summary>
 	/// Метод за зареждане на всички данни от документа в лист контролата
 	/// </summary>
@@ -82,16 +89,24 @@ private:
 
 // Overrides
 // ----------------
+
 public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
+	/// <summary>
+	// Метод, който задава особености на вюто преди съзаването му
+	/// </summary>
+	virtual BOOL PreCreateWindow(CREATESTRUCT & cs) override;
 
 protected:
-	virtual void OnInitialUpdate();
+	/// <summary>
+	/// Метод, който задава особености на вюто след създаването му
+	/// </summary>
+	virtual void OnInitialUpdate() override;
 
 	/// <summary>
 	/// Метод, който модифицира лист контролата в зависимост от извършената опирация
 	/// </summary>
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
+	
 
 // Generated message map functions
 // ----------------
@@ -142,6 +157,7 @@ public:
 	/// Метод за зареждане на всички клиенти
 	/// </summary>
 	afx_msg void ReloadPersonsInfo();
+
 
 // Members
 // ----------------

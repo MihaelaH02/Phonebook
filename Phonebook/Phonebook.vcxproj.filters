@@ -69,10 +69,10 @@
     <ClInclude Include="CitiesData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CValidateDialogControlsData.h">
+    <ClInclude Include="ValidateDialogControlsData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnumsWithFlags.h">
+    <ClInclude Include="Flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PhoneTypesTable.h">
@@ -81,7 +81,7 @@
     <ClInclude Include="PhoneTypesAccessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnumsStructsInfo.h">
+    <ClInclude Include="StructsInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PhoneTypesData.h">
@@ -108,7 +108,7 @@
     <ClInclude Include="PersonsDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AdditionPersonInfo.h">
+    <ClInclude Include="AdditionalDBModelsPersons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TableDataOperationsMap.h">
@@ -144,10 +144,13 @@
     <ClInclude Include="DatabaseQueryBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnumsListCtrColumsInfo.h">
+    <ClInclude Include="ListCtrlColumnsInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RowDataListCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Messages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -182,7 +185,7 @@
     <ClCompile Include="CitiesData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CValidateDialogControlsData.cpp">
+    <ClCompile Include="ValidateDialogControlsData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhoneTypesData.cpp">

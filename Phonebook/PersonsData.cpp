@@ -32,33 +32,19 @@ BOOL CPersonsData::SelectAllPersons(CPersonsArray& oPersonsArray)
 	return TRUE;
 }
 
-BOOL CPersonsData::SelectPersonInfoWithPersonId(const long& lID, CPersonDBModel& oPersonDBModel)
+BOOL CPersonsData::SelectPersonDataByPersonId(const long& lID, CPersonDBModel& oPersonDBModel)
 {
-	//Инстанция на клас, който управлява сесиите и транзакциите
-	CDatabaseTransactionManager oDatabaseTransactionManager;
-	if(!oDatabaseTransactionManager.OpenSafeTransaction())
-	{
-		return FALSE;
-	}
-	CInitializeSession* pSession = oDatabaseTransactionManager.GetSession();
-	if (pSession == nullptr)
-	{
-		oDatabaseTransactionManager.CloseSafeTransactoin(FALSE);
-		return FALSE;
-	}
-
 	//Инстанция на дватата класа с табличните данни
-	CPersonsTable oPersonsTable(pSession);
-	CPhoneNumbersTable oPhoneNumbersTable(pSession);
+	CPersonsTable oPersonsTable;
+	CPhoneNumbersTable oPhoneNumbersTable;
 
 
 	//Временна променлива на клиента, който ще се селектира
 	PERSONS recPersonToFind;
 
 	//Прочитаме клиента, който се търси в базата данни и се записва във временната променлива
-	if (!oPersonsTable.SelectWhereID(lID, recPersonToFind))
+	if (!oPersonsTable.SelectWhere(lID, recPersonToFind))
 	{
-		oDatabaseTransactionManager.CloseSafeTransactoin(FALSE);
 		return FALSE;
 	}
 
@@ -66,19 +52,14 @@ BOOL CPersonsData::SelectPersonInfoWithPersonId(const long& lID, CPersonDBModel&
 	CPhoneNumbersArray oPhoneNumbersForPerson;
 
 	//Достъпваме всички телефонни номера за съответния клиент
-	if (!oPhoneNumbersTable.SelectWhereID(recPersonToFind.lId, oPhoneNumbersForPerson, oPhoneNumbersTable.ColIdPerson()))
-	{
-		oDatabaseTransactionManager.CloseSafeTransactoin(FALSE);
-		return FALSE;
-	}
-
-	if(!oDatabaseTransactionManager.CloseSafeTransactoin())
+	if (!oPhoneNumbersTable.SelectWhere(recPersonToFind.lId, oPhoneNumbersForPerson, oPhoneNumbersTable.ColIdPerson()))
 	{
 		return FALSE;
 	}
 
 	//Добавяме данните за клиент и масив с телефонните му номера към променвилата с всички данни за клиент
 	oPersonDBModel.AddPerson(recPersonToFind);
+
 	if (!oPersonDBModel.AddAllPhoneNumbers(CPhoneNumbersMap(oPhoneNumbersForPerson)))
 	{
 		return FALSE;
@@ -108,8 +89,6 @@ BOOL CPersonsData::DoOperationWithPerson(CPersonDBModel& oPersonDBModel, LPARAM 
 	{
 		return FALSE;
 	}
-
-	AfxMessageBox(_T("Successful operation!"));
 
 	return TRUE;
 }
@@ -287,7 +266,7 @@ BOOL CPersonsData::ChoosePhoneNumbersOperation(CPhoneNumbersTable& oPhoneNumbers
 	return TRUE;
 }
 
-BOOL CPersonsData::LoadAllAdditionalPersonInfo(CAdditionPersonInfo& oAdditionalPersonInfo)
+BOOL CPersonsData::LoadAdditionalModels(CAdditionalDBModelsPersons& oAdditionalModels)
 {
 	CCitiesData oCitiesData;
 	CCitiesArray oCitiesArray;
@@ -305,8 +284,8 @@ BOOL CPersonsData::LoadAllAdditionalPersonInfo(CAdditionPersonInfo& oAdditionalP
 		AfxMessageBox(_T("Failed to select all cities from doc!\n Try to reload."));
 		return FALSE;
 	}
-	oAdditionalPersonInfo.SetCitiesData(oCitiesArray);
-	oAdditionalPersonInfo.SetPhoneTypesData(oPhoneTypesArray);
+	oAdditionalModels.SetCities(oCitiesArray);
+	oAdditionalModels.SetPhoneTypes(oPhoneTypesArray);
 	return TRUE;
 }
 

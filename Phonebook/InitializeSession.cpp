@@ -4,6 +4,8 @@
 #include "InitializeSession.h"
 #include "DatabaseConnection.h"
 
+#define ERROR_FAIL_OPEN_SESSION _T("Unable to open session. Error: %d")
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CInitializeSession
@@ -15,6 +17,7 @@
 CInitializeSession::CInitializeSession() 
 {
 	OpenSession();
+	m_bIsTransactionOpen = false;
 }
 
 CInitializeSession::~CInitializeSession() 
@@ -49,22 +52,25 @@ BOOL CInitializeSession::OpenSession()
 	if (FAILED(hResult))
 	{
 		CString strMessage;
-		strMessage.Format(_T("Unable to open session. Error: %d"), hResult);
+		strMessage.Format(ERROR_FAIL_OPEN_SESSION, hResult);
 		AfxMessageBox(strMessage);
 		CloseSession();
 		return FALSE;
 	}
 
+	m_bIsSessionOpen = TRUE;
 	return TRUE;
 }
 
 BOOL CInitializeSession::CloseSession()
 {
-	if (IsSessionOpen())
+	if (!IsSessionOpen())
 	{
-		m_oSession.Close();
+		return FALSE;
 	}
 
+	m_oSession.Close();
+	m_bIsSessionOpen = FALSE;
 	return TRUE;
 }
 
@@ -75,11 +81,7 @@ CSession& CInitializeSession::GetSession()
 
 BOOL CInitializeSession::IsSessionOpen()
 {
-	if (m_oSession.m_spOpenRowset == nullptr)
-	{
-		return FALSE;
-	}
-	return TRUE;
+	return m_bIsSessionOpen;
 }
 
 BOOL CInitializeSession::StartTransacion()
@@ -93,6 +95,11 @@ BOOL CInitializeSession::StartTransacion()
 		}
 	}
 
+	if (m_bIsTransactionOpen)
+	{
+		return TRUE;
+	}
+
 	//Започване на пранзакция
 	HRESULT hResult = GetSession().StartTransaction();
 	if (FAILED(hResult))
@@ -100,6 +107,7 @@ BOOL CInitializeSession::StartTransacion()
 		return FALSE;
 	}
 
+	m_bIsTransactionOpen = true;
 	return TRUE;
 }
 
@@ -123,6 +131,7 @@ BOOL CInitializeSession::CommitTransaction()
 		return FALSE;
 	}
 
+	m_bIsTransactionOpen = false;
 	return TRUE;
 }
 
@@ -146,6 +155,7 @@ BOOL CInitializeSession::RollbackTransaction()
 		return FALSE;
 	}
 
+	m_bIsTransactionOpen = false;
 	return TRUE;
 }
 

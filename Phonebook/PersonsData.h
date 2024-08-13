@@ -3,20 +3,25 @@
 #include "PersonsTable.h"
 #include "PhoneNumbersTable.h"
 #include "PersonDBModel.h"
-#include "EnumsWithFlags.h"
-#include "AdditionPersonInfo.h"
+#include "Flags.h"
+#include "AdditionalDBModelsPersons.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPersonsData
 
+/// <summary>
+/// Клас описващ бизнес логиката на таблица клиенти
+/// </summary>
 class CPersonsData
 {
+
 // Constants
 // ----------------
 
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CPersonsData();
 	virtual ~CPersonsData();
@@ -24,6 +29,7 @@ public:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
 	///Метод за селект на всички данни от таблици PERSONS от базата данни
@@ -38,7 +44,7 @@ public:
 	/// <param name="lID">Променлива указваща ИД на запис</param>
 	/// <param name="recPhoneTypes">Променлива, в която ще се запише прочетената стойност</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
-	BOOL SelectPersonInfoWithPersonId(const long& lID, CPersonDBModel& oPersonDBModel);
+	BOOL SelectPersonDataByPersonId(const long& lID, CPersonDBModel& oPersonDBModel);
 
 	/// <summary>
 	/// Меттод, който управлява операциите с данните на клиент и телефонните му номера към базата данни 
@@ -53,7 +59,7 @@ public:
 	/// </summary>
 	/// <param name="oAdditionalPersonInfo">Обект, който ще съхранямва заредените данни от други таблици</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL LoadAllAdditionalPersonInfo(CAdditionPersonInfo& oAdditionalPersonInfo);
+	BOOL LoadAdditionalModels(CAdditionalDBModelsPersons& oAdditionalModels);
 
 private:
 	/// <summary>
@@ -61,7 +67,7 @@ private:
 	/// </summary>
 	/// <param name="pInitializeSession">Параметър указател към сесия</param>
 	/// <param name="oPersonDBModel">Клас, оти тип данни за клиент в всички негови данни за обработка</param>
-	/// <param name="oFlagOperation">Парамътър за флаг на опирация</param>
+	/// <param name="lFlagOperation">Парамътър за флаг на опирация</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL ProcessPersonOperations(CInitializeSession* pInitializeSession, CPersonDBModel& oPersonDBModel, LPARAM& lFlagOperation);
 
@@ -77,7 +83,7 @@ private:
 	/// Метод за изпълнение на операция на група телефонин номера по подаден флаг
 	/// </summary>
 	/// <param name="oPhoneNumbersTable">Параметър за табличен клас</param>
-	/// <param name="oFlagOperation">Параметър за флаг на опирация</param>
+	/// <param name="lFlagOperation">Параметър за флаг на опирация</param>
 	/// <param name="pPhoneNumberArray">Параметър за група телефонни номера</param>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL ChoosePhoneNumbersOperation(CPhoneNumbersTable& oPhoneNumbersTable, LPARAM& lFlagOperation, const CPhoneNumbersArray& pPhoneNumberArray);

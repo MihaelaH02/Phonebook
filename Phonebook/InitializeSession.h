@@ -9,12 +9,14 @@
 /// </summary>
 class CInitializeSession
 {
+
 // Constants
 // ----------------
 
 
 // Constructor / Destructor
 // ----------------
+
 public:
 	CInitializeSession();
 	virtual ~CInitializeSession();
@@ -22,21 +24,22 @@ public:
 
 // Methods
 // ----------------
+
 public:
 	/// <summary>
-	/// Функция за отваряне на нова сесия
+	/// Метод за отваряне на нова сесия
 	/// </summary>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL OpenSession();
 
 	/// <summary>
-	/// Затвяряне на сесията
+	/// Метод за затвяряне на сесията
 	/// </summary>
 	/// <returns>Метода връща TRUE при успех и FALSE при възникнала грешка</returns>
 	BOOL CloseSession();
 
 	/// <summary>
-	/// Функция за достъп до променлива m_oSession
+	/// Метод за достъп до член променливата
 	/// </summary>
 	/// <returns>Връща променлива,съдържаща сесията</returns>
 	CSession& GetSession();
@@ -74,7 +77,17 @@ public:
 // ----------------
 private:
 	/// <summary>
-	/// Променлива съдържаща връзката към сесията
+	/// Член променлива съдържаща връзката към сесията
 	/// </summary>
 	CSession m_oSession;
+
+	/// <summary>
+	/// Член променлива съдържаща състояние на сесията
+	/// </summary>
+	bool m_bIsSessionOpen;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	bool m_bIsTransactionOpen;
 };
