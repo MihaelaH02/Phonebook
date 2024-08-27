@@ -1,23 +1,23 @@
 #pragma once
 
-#include "PhoneTypesData.h"
+#include "PersonTypesData.h"
 #include "Structures.h"
 #include "Flags.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CPhoneTypesDoc.h : interface of the CCitiesDoc class
+// CPersonTypesDoc.h
 
 /// <summary>
 /// Клас документ за регистър с типове телефони, наследяващ базов клас
 /// </summary>
-class CPhoneTypesDoc : public CDocument
+class CPersonTypesDoc : public CDocument
 {
 
 // Macros
 // ----------------
 
 protected:
-	DECLARE_DYNCREATE(CPhoneTypesDoc)
+	DECLARE_DYNCREATE(CPersonTypesDoc)
 	DECLARE_MESSAGE_MAP()
 
 
@@ -29,9 +29,9 @@ protected:
 // ----------------
 
 public:
-	CPhoneTypesDoc();
+	CPersonTypesDoc();
 
-	virtual ~CPhoneTypesDoc();
+	virtual ~CPersonTypesDoc();
 
 
 // Overrides
@@ -42,79 +42,75 @@ public:
 // ----------------
 
 public:
-
 	/// <summary>
 	/// Селектира един запис от таблицата с типове телефони
 	/// </summary>
 	/// <param name="lID">ИД, по което ще се търси запис</param>
-	/// <param name="recPhoneType">Структура, която ще съдържа намерения запис</param>
+	/// <param name="recPersonType">Структура, която ще съдържа намерения запис</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL SelectPhoneType(const long lID, PHONE_TYPES& recPhoneType);
+	BOOL SelectPersonType(const long lID, PERSON_TYPES& recPersonType);
 
 	/// <summary>
 	/// Редакция на един запис от таблицата с типове телефони
 	/// </summary>
-	/// <param name="recPhoneType">запис за модификация</param>
+	/// <param name="recPersonType">Параметър за запис за модификация</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL UpdatePhoneType(const PHONE_TYPES& recPhoneType);
+	BOOL UpdatePersonType(const PERSON_TYPES& recPersonType);
 
 	/// <summary>
 	/// Добавяне на нов запис в таблицата с типове телфони
 	/// </summary>
-	/// <param name="strCityName">Стренгов параметър с данни да името на града</param>
-	/// <param name="strCityRegion">Струнгов параметър с данни за областта на града</param>
+	/// <param name="recPersonType">Параметър за запис за добавяне</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL InsertPhoneType(PHONE_TYPES& recPhoneType);
+	BOOL InsertPersonType(PERSON_TYPES& recPersonType);
 
 	/// <summary>
 	/// Изтриване на запис от таблицата с типове телфони
 	/// </summary>
-	/// <param name="recPhoneType"> запис за изтриване</param>
+	/// <param name="recPersonType">Параметър запис за изтриване</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL DeletePhoneType(const PHONE_TYPES& recPhoneType);
+	BOOL DeletePersonType(const PERSON_TYPES& recPersonType);
 
 	/// <summary>
 	/// Достъп до член променлива на класа
 	/// </summary>
 	/// <returns>Връща масива с данните от таблицата с тиове телефони</returns>
-	const CPhoneTypesArray& GetPhoneTypesArray();
+	const CPersonTypesArray& GetPersonTypesArray();
 
 	/// <summary>
-	/// Метод, за достъп до размера на масива с типове телефони
+	/// Метод, за достъп до размера на масива
 	/// </summary>
-	/// <returns></returns>
-	INT_PTR GetPhoneTypesArrayCount();
+	/// <returns>Връща броя на елементите в масива</returns>
+	INT_PTR GetPersonTypesArrayCount();
 
 private:
 	/// <summary>
-	/// Метод за селект на всички типове телефонни номера 
+	/// Метод за селект на всички елементи
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспух</returns>
-	BOOL SelectAllPhoneTypesFromData();
+	BOOL SelectAllPersonTypesFromData();
 
 
-	// Members
-	// ----------------
+// Members
+// ----------------
+
 private:
 	/// <summary>
 	///Член променлива с за досъп до бизнес логиката
 	/// </summary>
-	CPhoneTypesData m_oPhoneTypesData;
+	CPersonTypesData m_oPersonTypesData;
 
 	/// <summary>
 	///Член променлива съдърщата масив с данните от таблицата с типове телефони
 	/// </summary>
-	CPhoneTypesArray m_oPhoneTypesArray;
-
-private:
-	static int docCounter;
+	CPersonTypesArray m_oPersonTypesArray;
 
 
-
-public:
+protected:
 	virtual BOOL OnNewDocument();
+public:
 #ifndef _WIN32_WCE
-	virtual void Serialize(CArchive& ar);   // overridden for document i/o
+	virtual void Serialize(CArchive& ar);
 #endif
 #ifdef _DEBUG
 	virtual void AssertValid() const;

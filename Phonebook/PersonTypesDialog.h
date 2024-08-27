@@ -6,48 +6,50 @@
 #include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CPhoneTypesDialog dialog
+// CPersonTypesDialog dialog
 
-class CPhoneTypesDialog : public CDialog
+class CPersonTypesDialog : public CDialog
 {
-// Macros
-// ----------------
+	// Macros
+	// ----------------
 
-	DECLARE_DYNAMIC(CPhoneTypesDialog)
+	DECLARE_DYNAMIC(CPersonTypesDialog)
 	DECLARE_MESSAGE_MAP()
 
 
-// Constants
-// ----------------
+	// Constants
+	// ----------------
 
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_PHONE_TYPES_DIALOG };
 #endif
 
 
-// Constructor / Destructor
-// ----------------
+	// Constructor / Destructor
+	// ----------------
 
 public:
 	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPhoneTypesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPersonTypesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
-	/// <param name="recPhoneType">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
+	/// <param name="recPersonType">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
 	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPersonTypesDialog(const PERSON_TYPES& recPersonType, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
-	virtual ~CPhoneTypesDialog();
+	virtual ~CPersonTypesDialog();
 
 
 // MFC Overrides
 // ----------------	
+
 private:
-	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;
 	virtual BOOL OnInitDialog() override;
 
 
 // MFC Message Handlers
 // ----------------
+
 private:
 	/// <summary>
 	/// Метод, който упрвлява натискането на бутон ОК
@@ -62,7 +64,7 @@ private:
 	/// <summary>
 	/// Метод за следене на промени по контрола за типове телефони
 	/// </summary>
-	afx_msg void OnEnChangeEdbPhoneTypes();
+	afx_msg void OnEnChangeEdbPersonTypes();
 
 
 // Overrides
@@ -77,7 +79,7 @@ public:
 	/// Достъп до стойности за стринговите член променливи
 	/// </summary>
 	/// <returns>Връща структура от тип градове</returns>
-	BOOL GetControlsData(PHONE_TYPES& recPhoneType);
+	BOOL GetControlsData(PERSON_TYPES& recPersonType);
 
 	/// <summary>
 	/// Метод за забрана за писане по контролите
@@ -103,19 +105,19 @@ public:
 	/// </summary>
 	BOOL HasErrorMsg();
 
-// Members
-// ----------------
+	// Members
+	// ----------------
 
 private:
 	/// <summary>
-	/// Член променлива за текстова контрола с тип телефонен номер
+	/// Член променлива за текстова контрола с тип на клиент
 	/// </summary>
-	CEdit m_edbPhoneType;
+	CEdit m_edbPersonType;
 
 	/// <summary>
-	/// Член променлива тип телефон
+	/// Член променлива тип клиент
 	/// </summary>
-	PHONE_TYPES m_recPhoneType;
+	PERSON_TYPES m_recPersonType;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите

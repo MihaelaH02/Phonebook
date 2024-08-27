@@ -29,7 +29,9 @@ CPersonsDoc::~CPersonsDoc()
 // ----------------
 BOOL CPersonsDoc::OnNewDocument()
 {
-	SetTitle(_T("Persons"));
+	CString strDocName;
+	strDocName.Format(_T("Person %d"), ++nPersonsDocCounter);
+	SetTitle(strDocName);
 
 	if (!CDocument::OnNewDocument())
 	{
@@ -52,6 +54,12 @@ BOOL CPersonsDoc::OnNewDocument()
 	}
 
 	return TRUE;
+}
+
+void CPersonsDoc::OnCloseDocument()
+{
+	nPersonsDocCounter--;
+	CDocument::OnCloseDocument();
 }
 
 CPersonsArray& CPersonsDoc::GetPersons()

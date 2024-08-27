@@ -15,13 +15,15 @@
 #define IDS_TOOLBAR_STANDARD            124
 #define IDS_TOOLBAR_CUSTOMIZE           125
 #define ID_VIEW_CUSTOMIZE               126
+#define IDR_CitiesTYPE                  126
+#define IDR_PhoneTypesTYPE              127
 #define IDR_MAINFRAME                   128
 #define IDR_MAINFRAME_256               129
+#define IDR_PhoneISOCodesTYPE           129
 #define IDR_PhonebookTYPE               130
 #define ID_WINDOW_MANAGER               131
-#define IDR_CITIES_DOC                  132
-#define IDR_PHONE_TYPES_DOC             133
-#define IDR_PERSONS_DOC                 134
+#define IDR_PersonTypesTYPE             132
+#define IDR_PersonsTYPE                 133
 #define IDR_THEME_MENU                  200
 #define ID_SET_STYLE                    201
 #define ID_VIEW_APPLOOK_WIN_2000        205
@@ -42,6 +44,9 @@
 #define IDD_PHONE_TYPES_DIALOG          318
 #define IDD_DIALOG1                     320
 #define IDD_DIALOG_PHONE_NUMBERS        320
+#define IDD_ISO_CODES                   322
+#define IDD_DIALOG2                     324
+#define IDD_PERSON_TYPES                324
 #define IDC_EDB_CITIES_NAME             1000
 #define IDC_STT_CITIES_NAME             1001
 #define IDC_STT_CITIES_REGION           1002
@@ -67,20 +72,37 @@
 #define IDC_STT_PERSONS_EGN             1020
 #define IDC_STT_PERSONS_CITY            1021
 #define IDC_REC_PERSONS_ADDRESS         1022
+#define IDC_CMB_PERSONS_TYPES           1022
 #define IDC_STT_PERSONS_ADDRESS         1023
 #define IDC_STT_PHONE_TYPE              1024
 #define IDC_EDB_PHONE_TYPES             1025
+#define IDC_STT_PERSONS_TYPES           1025
 #define IDC_CMB_PHONE_NUMBER_TYPE       1026
 #define IDC_STT_PHONE_NUMBER_TYPE       1027
 #define IDC_EDB_PHONE_NUMBER_NUMBER     1028
 #define IDC_STT_PHONE_TYPES_ERROR_MSG   1029
+<<<<<<< Updated upstream
 #define IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG 1030
 #define IDC_STT_PERSONS_PHONE_NUMBERS_ERROR_MSG 1031
+=======
+#define IDC_STT_PHONE_NUMBER_ISO_CODE   1029
+#define IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG 1030
+#define IDC_STT_PERSONS_PHONE_NUMBERS_ERROR_MSG 1031
+#define IDC_CMB_PHONE_NUMBER_ISO_CODE   1031
+#define IDC_STT_PHONE_NUMBERS_ISO_CODE_ERROR_MSG 1032
+#define IDC_STT_PHONE_ISO_CODES_ERROR_MSG 1032
+>>>>>>> Stashed changes
 #define IDC_STT_PERSONS_FIRSTNAME_ERROR_MSG 1033
+#define IDC_STT_PHONE_ISO_CODE          1033
+#define IDC_EDB_PHONE_ISO_CODE          1034
 #define IDC_STT_PERSONS_SECONDNAME_ERROR_MSG 1035
+#define IDC_STT_PERSON_TYPES            1035
 #define IDC_STT_PERSONS_LASTNAME_ERROR_MSG 1036
+#define IDC_STT_PERSON_TYPES_ERROR_MSG  1036
+#define IDC_EDB_PERSON_TYPES            1037
 #define IDC_STT_PERSONS_EGN_ERROR_MSG   1038
 #define IDC_STT_PERSONS_CITY_ERROR_MSG  1039
+#define IDC_STT_PERSONS_TYPES_ERROR_MSG 1040
 #define IDC_STT_PERSONS_ADDRESS_ERROR_MSG 1041
 #define ID_EDIT_DATA_UPDATE             32775
 #define ID_EDIT_DATA_DELETE             32776
@@ -98,14 +120,19 @@
 #define ID_CONTEXT_MENU_DATA_FILTER     32810
 #define ID_NEW_PHONETYPES               32811
 #define ID_NEW_PERSONS                  32812
+#define ID_NEW_ISOCODE                  32813
+#define ID_FILE_NEW_PHONEISOCODES       32814
+#define ID_NEW_PERSONTYPES              32815
+#define ID_FILE_NEW_PERSONTYPES         32816
+#define ID_Menu                         32817
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        322
-#define _APS_NEXT_COMMAND_VALUE         32813
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_RESOURCE_VALUE        326
+#define _APS_NEXT_COMMAND_VALUE         32818
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

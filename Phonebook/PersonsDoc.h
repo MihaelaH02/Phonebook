@@ -108,4 +108,6 @@ private:
 	/// Член променилва от тип клас с дъполнителни данни
 	/// </summary>
 	CAdditionalDBModelsPersons m_oAdditionalModels;
+public:
+	virtual void OnCloseDocument();
 };

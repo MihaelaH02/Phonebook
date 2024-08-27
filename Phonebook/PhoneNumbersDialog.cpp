@@ -58,8 +58,19 @@ BOOL CPhoneNumbersDialog::OnInitDialog()
 	//Задаване на стойности за контролите
 	m_edbPhoneNumber.SetWindowTextW(m_recPhoneNumber.szPhone);
 
+<<<<<<< Updated upstream
 	//Запълваме комбо бокса с градове
 	if (!AddItemsInCmbPhoneNumber())
+=======
+	//Запълваме комбо бокса с типове телефони
+	if (!AddItemsInCmbPhoneNumber())
+	{
+		return FALSE;
+	}
+
+	//Запълваме комбо бокса с кодове на държави
+	if (!AddItemsInCmbPhoneISOCodes())
+>>>>>>> Stashed changes
 	{
 		return FALSE;
 	}
@@ -107,6 +118,27 @@ void CPhoneNumbersDialog::OnChangeSelPhoneType()
 	PrintErrorMsg(IDC_STT_PHONE_NUMBERS_TYPE_ERROR_MSG, strSelectedItem);
 }
 
+<<<<<<< Updated upstream
+=======
+
+void CPhoneNumbersDialog::OnChangeSelISOCode()
+{
+	//Проверка за фокус на контролата
+	if (!IsControlOnFocus(m_cmbPhoneISOCodes))
+	{
+		return;
+	}
+
+	int nSelectedIndex = m_cmbPhoneISOCodes.GetCurSel();
+	int nSelectedData = (long)m_cmbPhoneISOCodes.GetItemData(nSelectedIndex);
+	m_recPhoneNumber.lIdPhoneISOCode = nSelectedData;
+
+	CString strSelectedItem;
+	strSelectedItem.Format(_T("%d"), nSelectedData);
+	PrintErrorMsg(IDC_STT_PHONE_NUMBERS_ISO_CODE_ERROR_MSG, strSelectedItem);
+}
+
+>>>>>>> Stashed changes
 void CPhoneNumbersDialog::OnEnChangePhoneNumber()
 {
 	//Проверка за фокус на контролата

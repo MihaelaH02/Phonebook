@@ -23,6 +23,7 @@ enum ENABLE_DIALOG_PHONE_TYPES_CTR_FLAG
 	ENABLE_DIALOG_PERSON_CTR_FLAG_NONE
 };
 
+
 //Енумерация за указване на извършена опреция
 enum OPERATIONS_WITH_DATA_FLAGS
 {

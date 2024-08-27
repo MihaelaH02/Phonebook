@@ -38,10 +38,20 @@ public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnFileNewCities();
 	afx_msg void OnFileNewPhoneTypes();
+	afx_msg void OnFileNewPhoneISOCodes();
+	afx_msg void OnFileNewPersonTypes();
 	afx_msg void OnFileNewClients();
 };
 
 extern CPhonebookApp theApp;
 extern CMultiDocTemplate* pCitiesDocTemplate;
 extern CMultiDocTemplate* pPhoneTypesDocTemplate;
+extern CMultiDocTemplate* pPhoneISOCodesDocTemplate;
+extern CMultiDocTemplate* pPersonTypesDocTemplate;
 extern CMultiDocTemplate* pPersonsDocTemplate;
+
+static int nCitiesDocCounter = 0;
+static int nPhoneTypeDocCounter = 0;
+static int nPersonsDocCounter = 0;
+static int nPersonTypeDocCounter = 0;
+static int nPhoneISOCodesDocCounter = 0;

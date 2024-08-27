@@ -154,6 +154,11 @@ public:
 	afx_msg void OnEnChangeAddress();
 
 	/// <summary>
+	/// Метод за следене на промени по контрола за тепове клиенти
+	/// </summary>
+	afx_msg void OnCbnSelchangePersonsTypes();
+
+	/// <summary>
 	/// Метод за следене на изтриване на елемент по лист контрола за телефонин номера
 	/// </summary>
 	afx_msg void OnDeleteItemListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
@@ -192,6 +197,12 @@ private:
 	/// </summary>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
 	BOOL AddItemsInCmbCities();
+
+	/// <summary>
+	/// Метод за добавяне на елементи в комбо бокс контрола с типове
+	/// </summary>
+	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
+	BOOL AddItemsInCmbTypes();
 
 	/// <summary>
 	/// Метод за зареждане на всички данни от списък с телефонни номера в лист контролата
@@ -323,6 +334,11 @@ private:
 	CEdit m_edbAddress;
 
 	/// <summary>
+	/// Член променлива за комбо бокс с типове
+	/// </summary>
+	CComboBox m_cmbTypes;
+
+	/// <summary>
 	/// Член променлива за лест контрола с телефонни номера на клиент
 	/// </summary>
 	CListCtrl m_lscPhoneNumbers;
@@ -356,5 +372,4 @@ private:
 	/// Инстанция на клас за верификация на данни
 	/// </summary>
 	CValidateDialogControlsData m_oValidateStringData;
-	
 };

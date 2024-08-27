@@ -1,46 +1,46 @@
 #include "pch.h"
 #include "Phonebook.h"
-#include "PhoneTypeView.h"
+#include "PersonTypesView.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CPhoneTypeView
+// CPersonTypeView
 
-IMPLEMENT_DYNCREATE(CPhoneTypeView, CListView)
+IMPLEMENT_DYNCREATE(CPersonTypesView, CListView)
 
-BEGIN_MESSAGE_MAP(CPhoneTypeView, CListView)
+BEGIN_MESSAGE_MAP(CPersonTypesView, CListView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_KEYDOWN()
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CPhoneTypeView::InsertPhoneType)
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CPhoneTypeView::UpdatePhoneType)
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CPhoneTypeView::DeletePhoneType)
-	ON_COMMAND(ID_CONTEXT_MANU_DATA_FIND, &CPhoneTypeView::FindPhoneType)
-	ON_COMMAND(ID_CONTEXT_MENU_DATA_RELOAD, &CPhoneTypeView::ReloadPhoneTypes)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_INSERT, &CPersonTypesView::InsertPersonType)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_UPDATE, &CPersonTypesView::UpdatePersonType)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_DELETE, &CPersonTypesView::DeletePersonType)
+	ON_COMMAND(ID_CONTEXT_MANU_DATA_FIND, &CPersonTypesView::FindPersonType)
+	ON_COMMAND(ID_CONTEXT_MENU_DATA_RELOAD, &CPersonTypesView::ReloadPersonTypes)
 END_MESSAGE_MAP()
 
 
 // Constructor / Destructor
 // ----------------
-CPhoneTypeView::CPhoneTypeView()
+CPersonTypesView::CPersonTypesView()
 {
 
 }
 
-CPhoneTypeView::~CPhoneTypeView()
+CPersonTypesView::~CPersonTypesView()
 {
 }
 
 // Overrides
 // ----------------
 
-CPhoneTypesDoc* CPhoneTypeView::GetDocument() const
+CPersonTypesDoc* CPersonTypesView::GetDocument() const
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CPhoneTypesDoc)));
-	return (CPhoneTypesDoc*)m_pDocument;
+	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CPersonTypesDoc)));
+	return (CPersonTypesDoc*)m_pDocument;
 }
 
-BOOL CPhoneTypeView::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CPersonTypesView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// Задаваме тип репорт на лист контролата
 	cs.style |= LVS_REPORT | LVS_SINGLESEL;
@@ -48,16 +48,16 @@ BOOL CPhoneTypeView::PreCreateWindow(CREATESTRUCT& cs)
 	return CListView::PreCreateWindow(cs);
 }
 
-void CPhoneTypeView::OnInitialUpdate()
+void CPersonTypesView::OnInitialUpdate()
 {
 	//Достъп до лист контролата
-	CListCtrl& lscPhonetypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Добавяне на допълнителни стилове за лист контролата
-	lscPhonetypes.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
+	lscPersonTypes.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_ONECLICKACTIVATE | LVS_EX_TRACKSELECT | LVS_EX_UNDERLINEHOT | LVS_EX_GRIDLINES);
 
 	//Добавяме колони в лист контролата с ляво подравяване и размер на полето
-	lscPhonetypes.InsertColumn(PHONE_TYPES_LIST_STR_COLUMN_PHONE_TYPES, PHONE_TYPES_LIST_CTRL_COLUMN_PHONE_TYPE_TITLE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
+	lscPersonTypes.InsertColumn(PERSON_TYPES_LIST_STR_COLUMN_PERSON_TYPES, PERSON_TYPES_LIST_CTRL_COLUMN_PERSON_TYPE_TITLE, LVCFMT_LEFT, LIST_CTR_COLUMN_WIDTH);
 
 	//Зареждане на данните от документа
 	if (!LoadDataInListCtrFromDoc())
@@ -75,28 +75,28 @@ void CPhoneTypeView::OnInitialUpdate()
 
 }
 
-void CPhoneTypeView::OnLButtonDblClk(UINT nFlags, CPoint point)
+void CPersonTypesView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CView::OnLButtonDblClk(nFlags, point);
 
 	//Извършване на операция селект
-	ViewPhoneType();
+	ViewPersonType();
 }
 
-void CPhoneTypeView::OnRButtonUp(UINT /* nFlags */, CPoint point)
+void CPersonTypesView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 {
 	//Отваряне на контекстно меню
 	ClientToScreen(&point);
 	OnContextMenu(this, point);
 }
 
-void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+void CPersonTypesView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	switch (nChar)
 	{
@@ -104,7 +104,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		//При натискане на бутон Ctrl + I да се добави нов запис
 	case 'I':
 	{
-		InsertPhoneType();
+		InsertPersonType();
 		return;
 	}
 	break;
@@ -112,7 +112,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	//При натискане на бутон Ctrl + F да се търси запис
 	case 'F':
 	{
-		FindPhoneType();
+		FindPersonType();
 		return;
 	}
 	break;
@@ -120,14 +120,14 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	//При натискане на бутон Ctrl + R да се презаредят записите
 	case 'R':
 	{
-		ReloadPhoneTypes();
+		ReloadPersonTypes();
 		return;
 	}
 	break;
 	}
 
 	//Другите опрерации са вързможни само ако има избран елемент
-	if (oListCtrManager.GetIndexSelectedItem(lscPhoneTypes) == -1)
+	if (oListCtrManager.GetIndexSelectedItem(lscPersonTypes) == -1)
 	{
 		return;
 	}
@@ -137,7 +137,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		//При натискане на бутон Delete да се изтрие записа
 	case VK_DELETE:
 	{
-		DeletePhoneType();
+		DeletePersonType();
 		return;
 	}
 	break;
@@ -145,7 +145,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	//При натискане на бутона Enter да се изведе в режим преглед записа
 	case VK_RETURN:
 	{
-		ViewPhoneType();
+		ViewPersonType();
 		return;
 	}
 	break;
@@ -153,7 +153,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	//При натискане на Ctrl + U да се редактира селектирания запис
 	case 'U':
 	{
-		UpdatePhoneType();
+		UpdatePersonType();
 		return;
 	}
 	break;
@@ -162,7 +162,7 @@ void CPhoneTypeView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
-void CPhoneTypeView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
+void CPersonTypesView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 	//Инстнация на контекстно меню
 	CMenu oMenu;
@@ -173,13 +173,13 @@ void CPhoneTypeView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 		return;
 	}
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Индекс на селектирания запис
-	int nSelectedIndex = oListCtrManager.GetIndexSelectedItem(lscPhoneTypes);
+	int nSelectedIndex = oListCtrManager.GetIndexSelectedItem(lscPersonTypes);
 
 	//Проверка за селектиран елемент 
 	if (nSelectedIndex == -1)
@@ -204,7 +204,7 @@ void CPhoneTypeView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 }
 
-void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+void CPersonTypesView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
 	//Проверка, при първоначално извикване на метода
 	if (lHint == NULL)
@@ -213,10 +213,10 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Обект, който ще се обработва
 	if (pHint == nullptr)
@@ -225,15 +225,15 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 
 	//Елемент
-	PHONE_TYPES& oPhoneType = *(PHONE_TYPES*)pHint;
+	PERSON_TYPES& oPersonType = *(PERSON_TYPES*)pHint;
 
 	//Достъпваме индекса, на избрания елемент, в лист контролата
-	int nIndexItem = oListCtrManager.GetIndexSelectedItem(lscPhoneTypes);
+	int nIndexItem = oListCtrManager.GetIndexSelectedItem(lscPersonTypes);
 
 	if (lHint == OPERATIONS_WITH_DATA_FLAGS_DELETE)
 	{
 		//Изтриваме ред по поданен индекс
-		if (!oListCtrManager.RemoveElement(lscPhoneTypes, nIndexItem))
+		if (!oListCtrManager.RemoveElement(lscPersonTypes, nIndexItem))
 		{
 			AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		}
@@ -241,8 +241,8 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 
 	//Превръщаме типа телефон в масив със стрингови данни, които ще се презентират в лист контролата
-	CRowDataListCtrl <PHONE_TYPES> oRowData;
-	oRowData.SetData(oPhoneType);
+	CRowDataListCtrl <PERSON_TYPES> oRowData;
+	oRowData.SetData(oPersonType);
 	if (!SetColumnDisplayData(oRowData))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
@@ -250,7 +250,7 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 
 	//Редактираме, по открития индекс, данните или добавяме елемент при липса на индекс
-	if (!oListCtrManager.AddOrEditElement(lscPhoneTypes, oRowData, nIndexItem))
+	if (!oListCtrManager.AddOrEditElement(lscPersonTypes, oRowData, nIndexItem))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
@@ -270,38 +270,38 @@ void CPhoneTypeView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 // Generated message map functions
 // ---------------
 
-void CPhoneTypeView::ViewPhoneType()
+void CPersonTypesView::ViewPersonType()
 {
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Достъпваме данните от лист контролата
-	PHONE_TYPES* pPhoneTypes = oListCtrManager.GetSelectedItem(lscPhoneTypes);
+	PERSON_TYPES* pPersonTypes = oListCtrManager.GetSelectedItem(lscPersonTypes);
 
 	//Проверка за открит елемент
-	if (pPhoneTypes == nullptr)
+	if (pPersonTypes == nullptr)
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Достъпваме диалога и задаваме стойности на контролите му, както и че искаме контролите му да са неактивни за модификация
-	CPhoneTypesDialog oDialog(*pPhoneTypes, ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
+	CPersonTypesDialog oDialog(*pPersonTypes, ENABLE_DIALOG_CITIES_CTR_FLAG_NONE);
 
 	//Визуализираме диалога
 	oDialog.DoModal();
 }
 
-void CPhoneTypeView::InsertPhoneType()
+void CPersonTypesView::InsertPersonType()
 {
 	//Достъпваме диалога
-	CPhoneTypesDialog oDialog;
+	CPersonTypesDialog oDialog;
 
 	//Нова структура, която ще съдържа данни за новия запис
-	PHONE_TYPES oPhoneTypes;
+	PERSON_TYPES oPersonTypes;
 
 	//При натиснат бутон ОК в диалога
 	if (oDialog.DoModal() != IDOK)
@@ -310,43 +310,43 @@ void CPhoneTypeView::InsertPhoneType()
 	}
 
 	//Вземаме данните от контролите от диалога
-	if (!oDialog.GetControlsData(oPhoneTypes))
+	if (!oDialog.GetControlsData(oPersonTypes))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
 	//Добавяме данните в документа
-	if (!GetDocument() || !GetDocument()->InsertPhoneType(oPhoneTypes))
+	if (!GetDocument() || !GetDocument()->InsertPersonType(oPersonTypes))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
 
-void CPhoneTypeView::UpdatePhoneType()
+void CPersonTypesView::UpdatePersonType()
 {
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Инстанция на обект от тип структура с градове, със стойности селектирания запис от лист контролата
-	PHONE_TYPES* pPhoneType = oListCtrManager.GetSelectedItem(lscPhoneTypes);
+	PERSON_TYPES* pPersonType = oListCtrManager.GetSelectedItem(lscPersonTypes);
 
 	//Проверка за открит елемент
-	if (pPhoneType == nullptr)
+	if (pPersonType == nullptr)
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Запазваме ид-то на записа
-	long lId = pPhoneType->lId;
+	long lId = pPersonType->lId;
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CPhoneTypesDialog oDialog(*pPhoneType);
+	CPersonTypesDialog oDialog(*pPersonType);
 
 	//Проверка за натиснат бутон OK в диалога
 	if (oDialog.DoModal() != IDOK)
@@ -355,23 +355,23 @@ void CPhoneTypeView::UpdatePhoneType()
 	}
 
 	//Присвояваме ноивте данни от контролите в диалога със старото ид
-	if (!oDialog.GetControlsData(*pPhoneType))
+	if (!oDialog.GetControlsData(*pPersonType))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 		return;
 	}
 
-	pPhoneType->lId = lId;
+	pPersonType->lId = lId;
 
 	//Редактираме данните в документа като подаваме стуртура с обновени данни
-	if (!GetDocument() || !GetDocument()->UpdatePhoneType(*pPhoneType))
+	if (!GetDocument() || !GetDocument()->UpdatePersonType(*pPersonType))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
 
-void CPhoneTypeView::DeletePhoneType()
+void CPersonTypesView::DeletePersonType()
 {
 	//Допълнително потвърждение за изтриване
 	int nResult = AfxMessageBox(WARNING_MSG_DELETE_DATA, MB_YESNO | MB_ICONQUESTION);
@@ -383,30 +383,30 @@ void CPhoneTypeView::DeletePhoneType()
 	}
 
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Достъпваме селектирания запис
-	PHONE_TYPES* pPhoneType = oListCtrManager.GetSelectedItem(lscPhoneTypes);
+	PERSON_TYPES* pPersonType = oListCtrManager.GetSelectedItem(lscPersonTypes);
 
 	//Проверка за открит елемент
-	if (pPhoneType == nullptr)
+	if (pPersonType == nullptr)
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_SELECT_ITEM_LIST_CTRL);
 		return;
 	}
 
 	//Изтриваме данните в документа по намереното ИД
-	if (!GetDocument() || !GetDocument()->DeletePhoneType(*pPhoneType))
+	if (!GetDocument() || !GetDocument()->DeletePersonType(*pPersonType))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 		return;
 	}
 }
 
-void CPhoneTypeView::FindPhoneType()
+void CPersonTypesView::FindPersonType()
 {
 
 	//Проверка дали всички данни от документа са налични
@@ -419,7 +419,7 @@ void CPhoneTypeView::FindPhoneType()
 	}
 
 	//Задаваме стойности на контролите в диалога да са тези от селектирания запис
-	CPhoneTypesDialog oDialog;
+	CPersonTypesDialog oDialog;
 
 	//Проверка за натиснат бутон OK в диалога
 	if (oDialog.DoModal() != IDOK)
@@ -427,10 +427,10 @@ void CPhoneTypeView::FindPhoneType()
 		return;
 	}
 
-	PHONE_TYPES recPhoneType;
+	PERSON_TYPES recPersonType;
 
 	//Присвояваме ноивте данни от контролите в диалога със старото ид
-	if (!oDialog.GetControlsData(recPhoneType))
+	if (!oDialog.GetControlsData(recPersonType))
 	{
 		AfxMessageBox(ERROR_MSG_FAIL_PROCESS_DATA_DIALOG);
 
@@ -438,18 +438,18 @@ void CPhoneTypeView::FindPhoneType()
 	}
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
-	int nListCrtCountItems = lscPhoneTypes.GetItemCount();
+	int nListCrtCountItems = lscPersonTypes.GetItemCount();
 
 	//Премахва всички елементи, които не са с елемент, като подадения
 	for (int nIndex = nListCrtCountItems - 1; nIndex >= 0; --nIndex)
 	{
-		CString strCurrentPhoneType = lscPhoneTypes.GetItemText(nIndex, PHONE_ISO_CODES_LIST_STR_COLUMN_ISO_CODE);
+		CString strCurrentPersonType = lscPersonTypes.GetItemText(nIndex, PERSON_TYPES_LIST_STR_COLUMN_PERSON_TYPES);
 
-		if (_tcscmp(recPhoneType.czPhoneType, strCurrentPhoneType) != 0)
+		if (_tcscmp(recPersonType.czPersonType, strCurrentPersonType) != 0)
 		{
-			if (!lscPhoneTypes.DeleteItem(nIndex))
+			if (!lscPersonTypes.DeleteItem(nIndex))
 			{
 				AfxMessageBox(ERROR_MSG_FAIL_DO_OPERATION_LIST_CTRL);
 				return;
@@ -459,7 +459,7 @@ void CPhoneTypeView::FindPhoneType()
 	}
 }
 
-void CPhoneTypeView::ReloadPhoneTypes()
+void CPersonTypesView::ReloadPersonTypes()
 {
 	//Зареждане на всички данни
 	if (!LoadDataInListCtrFromDoc())
@@ -479,33 +479,33 @@ void CPhoneTypeView::ReloadPhoneTypes()
 
 // Methods
 // ---------------
-BOOL CPhoneTypeView::LoadDataInListCtrFromDoc()
+BOOL CPersonTypesView::LoadDataInListCtrFromDoc()
 {
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Достъпваме документа
-	CPhoneTypesDoc* pPhoneTypesDoc = GetDocument();
-	if (pPhoneTypesDoc == nullptr)
+	CPersonTypesDoc* pPersonTypesDoc = GetDocument();
+	if (pPersonTypesDoc == nullptr)
 	{
 		return FALSE;
 	}
 
-	const CPhoneTypesArray& oPhoneTypesArray = pPhoneTypesDoc->GetPhoneTypesArray();
+	const CPersonTypesArray& oPersonTypesArray = pPersonTypesDoc->GetPersonTypesArray();
 
 	//Запълваме масив с всички презентационни данни на всички елементи
-	CTypedPtrDataArray<CRowDataListCtrl<PHONE_TYPES>> oRowsDataListCtrlArray;
+	CTypedPtrDataArray<CRowDataListCtrl<PERSON_TYPES>> oRowsDataListCtrlArray;
 
-	if (!SetColumnDisplayDataArray(oPhoneTypesArray, oRowsDataListCtrlArray))
+	if (!SetColumnDisplayDataArray(oPersonTypesArray, oRowsDataListCtrlArray))
 	{
 		return FALSE;
 	}
 
 	//Зареждаме данните от масива в лист контролата
-	if (!oListCtrManager.LoadDataFromResource(lscPhoneTypes, oRowsDataListCtrlArray))
+	if (!oListCtrManager.LoadDataFromResource(lscPersonTypes, oRowsDataListCtrlArray))
 	{
 		return FALSE;
 	}
@@ -513,24 +513,24 @@ BOOL CPhoneTypeView::LoadDataInListCtrFromDoc()
 	return TRUE;
 }
 
-BOOL CPhoneTypeView::IsAllDataLoadFromDoc()
+BOOL CPersonTypesView::IsAllDataLoadFromDoc()
 {
 	//Променлива от тип клас, който управлява елементите в лист контролата
-	CListCtrlManager<PHONE_TYPES> oListCtrManager;
+	CListCtrlManager<PERSON_TYPES> oListCtrManager;
 
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Достъпваме документа
-	CPhoneTypesDoc* pPhoneTypesDoc = GetDocument();
+	CPersonTypesDoc* pPersonTypesDoc = GetDocument();
 
-	if (pPhoneTypesDoc == nullptr)
+	if (pPersonTypesDoc == nullptr)
 	{
 		return FALSE;
 	}
 
 	//връщаме резултата за успех или не
-	if (!oListCtrManager.IsAllDataLoadFromResourse(lscPhoneTypes, pPhoneTypesDoc->GetPhoneTypesArrayCount()))
+	if (!oListCtrManager.IsAllDataLoadFromResourse(lscPersonTypes, pPersonTypesDoc->GetPersonTypesArrayCount()))
 	{
 		return FALSE;
 	}
@@ -538,40 +538,40 @@ BOOL CPhoneTypeView::IsAllDataLoadFromDoc()
 	return TRUE;
 }
 
-BOOL CPhoneTypeView::SortItemsListCtr()
+BOOL CPersonTypesView::SortItemsListCtr()
 {
 	//Инстанция на лист контролата
-	CListCtrl& lscPhoneTypes = GetListCtrl();
+	CListCtrl& lscPersonTypes = GetListCtrl();
 
 	//Изпълняваме метод за сортиране по азбучен ред
-	lscPhoneTypes.SortItems(CompareFunc, 0);
+	lscPersonTypes.SortItems(CompareFunc, 0);
 
 	return TRUE;
 }
 
-int CALLBACK CPhoneTypeView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+int CALLBACK CPersonTypesView::CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 {
 	// Достъпваме указателите от подадените параметри
-	PHONE_TYPES* pPhoneType1 = (PHONE_TYPES*)lParam1;
-	PHONE_TYPES* pPhoneType2 = (PHONE_TYPES*)lParam2;
+	PERSON_TYPES* pPersonType1 = (PERSON_TYPES*)lParam1;
+	PERSON_TYPES* pPersonType2 = (PERSON_TYPES*)lParam2;
 
 	//Проверяваме дали указателите за нулеви
-	if (pPhoneType1 == nullptr || pPhoneType2 == nullptr) {
+	if (pPersonType1 == nullptr || pPersonType2 == nullptr) {
 		return 0;
 	}
 
 	// Първо сравняваме първите им имена 
-	int nResult = _tcscmp(pPhoneType1->czPhoneType, pPhoneType2->czPhoneType);
+	int nResult = _tcscmp(pPersonType1->czPersonType, pPersonType2->czPersonType);
 
 	//Връщаме резултата от сравнението
 	return nResult;
 }
 
-BOOL CPhoneTypeView::SetColumnDisplayData(CRowDataListCtrl<PHONE_TYPES>& oRowData)
+BOOL CPersonTypesView::SetColumnDisplayData(CRowDataListCtrl<PERSON_TYPES>& oRowData)
 {
-	const PHONE_TYPES& recPhoneType = oRowData.GetData();
+	const PERSON_TYPES& recPersonType = oRowData.GetData();
 	//Добавяме първи елемент, който ще се презентира
-	if (oRowData.AddElementToDisplayData(recPhoneType.czPhoneType) == -1)
+	if (oRowData.AddElementToDisplayData(recPersonType.czPersonType) == -1)
 	{
 		return FALSE;
 	}
@@ -579,21 +579,21 @@ BOOL CPhoneTypeView::SetColumnDisplayData(CRowDataListCtrl<PHONE_TYPES>& oRowDat
 	return TRUE;
 }
 
-BOOL CPhoneTypeView::SetColumnDisplayDataArray(const CPhoneTypesArray& oPhoneTypesArray, CTypedPtrDataArray<CRowDataListCtrl<PHONE_TYPES>>& oRowsDataArray)
+BOOL CPersonTypesView::SetColumnDisplayDataArray(const CPersonTypesArray& oPersonTypesArray, CTypedPtrDataArray<CRowDataListCtrl<PERSON_TYPES>>& oRowsDataArray)
 {
 	//Преминаваме през висчки елементи на масива с данни 
-	for (INT_PTR nIndex = 0; nIndex < oPhoneTypesArray.GetCount(); nIndex++)
+	for (INT_PTR nIndex = 0; nIndex < oPersonTypesArray.GetCount(); nIndex++)
 	{
 		//Достъпваме информацията за един тип телефон от масива
-		PHONE_TYPES* pPhoneType = oPhoneTypesArray.GetAt(nIndex);
-		if (pPhoneType == nullptr)
+		PERSON_TYPES* pPersonType = oPersonTypesArray.GetAt(nIndex);
+		if (pPersonType == nullptr)
 		{
 			return FALSE;
 		}
 
 		//Инициализираме масив, който ще съдържа данните от елемента, който ще се презентира
-		CRowDataListCtrl<PHONE_TYPES> oRowData;
-		oRowData.SetData(*pPhoneType);
+		CRowDataListCtrl<PERSON_TYPES> oRowData;
+		oRowData.SetData(*pPersonType);
 		if (!SetColumnDisplayData(oRowData))
 		{
 			return FALSE;
@@ -609,16 +609,16 @@ BOOL CPhoneTypeView::SetColumnDisplayDataArray(const CPhoneTypesArray& oPhoneTyp
 }
 
 
-// CPhoneTypeView diagnostics
+// CPersonTypeView diagnostics
 
 #ifdef _DEBUG
-void CPhoneTypeView::AssertValid() const
+void CPersonTypesView::AssertValid() const
 {
 	CListView::AssertValid();
 }
 
 #ifndef _WIN32_WCE
-void CPhoneTypeView::Dump(CDumpContext& dc) const
+void CPersonTypesView::Dump(CDumpContext& dc) const
 {
 	CListView::Dump(dc);
 }

@@ -15,6 +15,7 @@ IMPLEMENT_DYNCREATE(CPhoneTypesDoc, CDocument)
 BEGIN_MESSAGE_MAP(CPhoneTypesDoc, CDocument)
 END_MESSAGE_MAP()
 
+
 // Constructor / Destructor
 // ----------------
 
@@ -31,7 +32,9 @@ CPhoneTypesDoc::~CPhoneTypesDoc()
 // ----------------
 BOOL CPhoneTypesDoc::OnNewDocument()
 {
-	SetTitle(_T("Phone types"));
+	CString strDocName;
+	strDocName.Format(_T("Phone types %d"), ++nPhoneTypeDocCounter);
+	SetTitle(strDocName);
 
 	if (!CDocument::OnNewDocument())
 	{
@@ -44,6 +47,12 @@ BOOL CPhoneTypesDoc::OnNewDocument()
 	}
 
 	return TRUE;
+}
+
+void CPhoneTypesDoc::OnCloseDocument()
+{
+	nPhoneTypeDocCounter--;
+	CDocument::OnCloseDocument();
 }
 
 #ifndef _WIN32_WCE

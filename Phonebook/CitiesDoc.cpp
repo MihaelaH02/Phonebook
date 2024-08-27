@@ -41,7 +41,9 @@ CCitiesDoc::~CCitiesDoc()
 
 BOOL CCitiesDoc::OnNewDocument()
 {
-	SetTitle(_T("Cities"));
+	CString strDocName;
+	strDocName.Format(_T("Cities %d"), ++nCitiesDocCounter);
+	SetTitle(strDocName);
 
 	if (!CDocument::OnNewDocument())
 	{
@@ -55,6 +57,12 @@ BOOL CCitiesDoc::OnNewDocument()
 	}
 
 	return TRUE;
+}
+
+void CCitiesDoc::OnCloseDocument()
+{
+	nCitiesDocCounter--;
+	CDocument::OnCloseDocument();
 }
 
 // CCitiesDoc serialization

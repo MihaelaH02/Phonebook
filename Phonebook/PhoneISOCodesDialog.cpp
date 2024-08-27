@@ -1,49 +1,50 @@
-// PhoneTypes.cpp : implementation file
+// PhoneISOCodesDialog.cpp : implementation file
 //
 
 #include "pch.h"
 #include "Phonebook.h"
 #include "afxdialogex.h"
-#include "PhoneTypesDialog.h"
+#include "PhoneISOCodesDialog.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CPhoneTypesDialog 
+// CPhoneISOCodesDialog 
 
-IMPLEMENT_DYNAMIC(CPhoneTypesDialog, CDialog)
+IMPLEMENT_DYNAMIC(CPhoneISOCodesDialog, CDialogEx)
+
 
 // Constructor / Destructor
 // ----------------
 
-CPhoneTypesDialog::CPhoneTypesDialog(LPARAM lEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_PHONE_TYPES_DIALOG, pParent), m_lEnableControlsParam(lEnableControls)
+CPhoneISOCodesDialog::CPhoneISOCodesDialog(LPARAM lEnableControls /*= ENABLE_CONTROLS_FLAG_ALL*/, CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_ISO_CODES, pParent), m_lEnableControlsParam(lEnableControls)
 {
 }
 
-CPhoneTypesDialog::CPhoneTypesDialog(const PHONE_TYPES& recPhoneTypes, LPARAM lEnableControls /*= ENABLE_DIALOG_CTR_FLAG_ALL*/, CWnd* pParent /*= nullptr*/)
-	: CDialog(IDD_PHONE_TYPES_DIALOG, pParent), m_recPhoneType(recPhoneTypes), m_lEnableControlsParam(lEnableControls)
+CPhoneISOCodesDialog::CPhoneISOCodesDialog(const PHONE_ISO_CODES& recPhoneISOCode, LPARAM lEnableControls /*= ENABLE_DIALOG_CTR_FLAG_ALL*/, CWnd* pParent /*= nullptr*/)
+	: CDialogEx(IDD_ISO_CODES, pParent), m_recPhoneISOCodes(recPhoneISOCode), m_lEnableControlsParam(lEnableControls)
 {
 }
 
-CPhoneTypesDialog::~CPhoneTypesDialog()
+CPhoneISOCodesDialog::~CPhoneISOCodesDialog()
 {
 }
 
-BOOL CPhoneTypesDialog::OnInitDialog()
+BOOL CPhoneISOCodesDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
 	//Задаване на максимална дължина на полетата
-	m_edbPhoneType.SetLimitText(DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_STRING);
+	m_edbPhoneISOCodes.SetLimitText(DIALOG_CTR_TEXT_BOX_MAX_LENGTH_ENTERED_ISO_CODE);
 
 	//Задаване на стойности за контролите
-	m_edbPhoneType.SetWindowTextW(m_recPhoneType.czPhoneType);
+	m_edbPhoneISOCodes.SetWindowTextW(m_recPhoneISOCodes.czPhoneISOCode);
 
 	//Проверка дали са били поданени стойности
-	if (_tcscmp(_T(""), m_recPhoneType.czPhoneType) != 0)
+	if (_tcscmp(_T(""), m_recPhoneISOCodes.czPhoneISOCode) != 0)
 	{
 		//Задаване на начална празна стойност на контролите за съобщения за грешки  
-		SetDlgItemText(IDC_STT_PHONE_TYPES_ERROR_MSG, _T(""));
+		SetDlgItemText(IDC_STT_PHONE_ISO_CODES_ERROR_MSG, _T(""));
 	}
 
 	//Промяна на активността на контролите, според подадения параметър
@@ -52,39 +53,39 @@ BOOL CPhoneTypesDialog::OnInitDialog()
 	return TRUE;
 }
 
-void CPhoneTypesDialog::DoDataExchange(CDataExchange* pDX)
+void CPhoneISOCodesDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EDB_PHONE_TYPES, m_edbPhoneType);
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDB_PHONE_ISO_CODE, m_edbPhoneISOCodes);
 }
 
 
-BEGIN_MESSAGE_MAP(CPhoneTypesDialog, CDialog)
-	ON_BN_CLICKED(IDOK, &CPhoneTypesDialog::OnBnClickedOk)
-	ON_BN_CLICKED(IDCANCEL, &CPhoneTypesDialog::OnBnClickedCancel)
-	ON_EN_CHANGE(IDC_EDB_PHONE_TYPES, &CPhoneTypesDialog::OnEnChangeEdbPhoneTypes)
+BEGIN_MESSAGE_MAP(CPhoneISOCodesDialog, CDialogEx)
+	ON_EN_CHANGE(IDC_EDB_PHONE_ISO_CODE, &CPhoneISOCodesDialog::OnEnChangePhoneISOCode)
+	ON_BN_CLICKED(IDOK, &CPhoneISOCodesDialog::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CPhoneISOCodesDialog::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
-void CPhoneTypesDialog::OnBnClickedOk()
+void CPhoneISOCodesDialog::OnBnClickedOk()
 {
 	//Проверка за визуализирано съобщение за грешка
 	if (!HasErrorMsg())
 	{
 		//Превръщаме въведените данни в коректни с валидатора, ако контролата е активна за писане
-		if (m_edbPhoneType.IsWindowEnabled())
+		if (m_edbPhoneISOCodes.IsWindowEnabled())
 		{
-			CString strEnteredPhoneType = m_recPhoneType.czPhoneType;
+			CString strEnteredPhoneType = m_recPhoneISOCodes.czPhoneISOCode;
 			m_oValidateStringData.ValidateDataUpperLetter(strEnteredPhoneType);
-			_tcscpy_s(m_recPhoneType.czPhoneType, strEnteredPhoneType);
+			_tcscpy_s(m_recPhoneISOCodes.czPhoneISOCode, strEnteredPhoneType);
 		}
 
 		CDialog::OnOK();
 	}
 }
 
-void CPhoneTypesDialog::OnBnClickedCancel()
+void CPhoneISOCodesDialog::OnBnClickedCancel()
 {
-	CDialog::OnCancel();
+	CDialogEx::OnCancel();
 }
 
 
@@ -95,49 +96,49 @@ void CPhoneTypesDialog::OnBnClickedCancel()
 // Methods
 // ---------------
 
-void CPhoneTypesDialog::EnableControls(LPARAM oEnableControls)
+void CPhoneISOCodesDialog::EnableControls(LPARAM oEnableControls)
 {
 	//В зависимост от поданета стойност от тип енъм, се активират/деактивират контролите за писане
 	switch (oEnableControls)
 	{
 	case ENABLE_DIALOG_CITIES_CTR_FLAG_ALL:
 	{
-		m_edbPhoneType.EnableWindow(TRUE);
+		m_edbPhoneISOCodes.EnableWindow(TRUE);
 	}
 	break;
 
 	case ENABLE_DIALOG_CITIES_CTR_FLAG_NONE:
 	{
-		m_edbPhoneType.EnableWindow(FALSE);
+		m_edbPhoneISOCodes.EnableWindow(FALSE);
 	}
 	break;
 	}
 }
 
-BOOL CPhoneTypesDialog::GetControlsData(PHONE_TYPES& recPhoneType)
+BOOL CPhoneISOCodesDialog::GetControlsData(PHONE_ISO_CODES& recPhoneISOCode)
 {
-	recPhoneType = m_recPhoneType;
+	recPhoneISOCode = m_recPhoneISOCodes;
 	return TRUE;
 }
 
-void CPhoneTypesDialog::OnEnChangeEdbPhoneTypes()
+void CPhoneISOCodesDialog::OnEnChangePhoneISOCode()
 {
 	//Проверка за фокус на контролата
-	if (!IsControlOnFocus(m_edbPhoneType))
+	if (!IsControlOnFocus(m_edbPhoneISOCodes))
 	{
 		return;
 	}
 
 	//Времаме данните от котролата
 	CString strControlText;
-	m_edbPhoneType.GetWindowTextW(strControlText);
-	_tcscpy_s(m_recPhoneType.czPhoneType, strControlText);
+	m_edbPhoneISOCodes.GetWindowTextW(strControlText);
+	_tcscpy_s(m_recPhoneISOCodes.czPhoneISOCode, strControlText);
 
 	//Извеждаме подходящо съобщение за грешка
-	PrintErrorMsg(m_recPhoneType.czPhoneType, IDC_STT_PHONE_TYPES_ERROR_MSG);
+	PrintErrorMsg(m_recPhoneISOCodes.czPhoneISOCode, IDC_STT_PHONE_ISO_CODES_ERROR_MSG);
 }
 
-BOOL CPhoneTypesDialog::IsControlOnFocus(CWnd& oControla)
+BOOL CPhoneISOCodesDialog::IsControlOnFocus(CWnd& oControla)
 {
 	//Проверка дали контролата е на фокус
 	if (GetFocus()->m_hWnd != oControla.m_hWnd)
@@ -148,10 +149,10 @@ BOOL CPhoneTypesDialog::IsControlOnFocus(CWnd& oControla)
 	return TRUE;
 }
 
-void CPhoneTypesDialog::PrintErrorMsg(const CString& strText, int nControlaID)
+void CPhoneISOCodesDialog::PrintErrorMsg(const CString& strText, int nControlaID)
 {
 	//Визуализираме съобщение за грешка, ако е намерена такава с класа валидатор
-	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidFormat(strText, FALSE);
+	CString strResivedMgs = m_oValidateStringData.SendStatusMsgForValidFormat(strText);
 
 	//Задаване на съобщението, като текст в подадената контрола
 	SetDlgItemText(nControlaID, strResivedMgs);
@@ -160,20 +161,20 @@ void CPhoneTypesDialog::PrintErrorMsg(const CString& strText, int nControlaID)
 	GetDlgItem(nControlaID)->ShowWindow(SW_SHOW);
 }
 
-BOOL CPhoneTypesDialog::HasErrorMsg()
+BOOL CPhoneISOCodesDialog::HasErrorMsg()
 {
 	//Стренгови променливи, които съдържат празни низове(липса на открита грешка)
-	CString strPhoneType;
+	CString strPhoneISOCode;
 
 	//Визуализация на контролите, съдържащи грешки, само ако са активни, като се присвоява съобещението от променливите
-	if (m_edbPhoneType.IsWindowEnabled())
+	if (m_edbPhoneISOCodes.IsWindowEnabled())
 	{
-		GetDlgItem(IDC_STT_PHONE_TYPES_ERROR_MSG)->ShowWindow(SW_SHOW);
-		GetDlgItemText(IDC_STT_PHONE_TYPES_ERROR_MSG, strPhoneType);
+		GetDlgItem(IDC_STT_PHONE_ISO_CODES_ERROR_MSG)->ShowWindow(SW_SHOW);
+		GetDlgItemText(IDC_STT_PHONE_ISO_CODES_ERROR_MSG, strPhoneISOCode);
 	}
 
 	//Проверка за празни контроли, съдържащи грешки
-	if (strPhoneType.IsEmpty())
+	if (strPhoneISOCode.IsEmpty())
 	{
 		return FALSE;
 	}

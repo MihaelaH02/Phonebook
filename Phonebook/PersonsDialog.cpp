@@ -42,6 +42,7 @@ void CPersonsDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDB_PERSONS_EGN, m_edbEGN);
 	DDX_Control(pDX, IDC_CMB_PERSONS_CITIES, m_cmbCities);
 	DDX_Control(pDX, IDC_EDB_PERSONS_ADDRESS, m_edbAddress);
+	DDX_Control(pDX, IDC_CMB_PERSONS_TYPES, m_cmbTypes);
 	DDX_Control(pDX, IDC_LSC_PHONE_NUMBERS, m_lscPhoneNumbers);
 }
 
@@ -65,6 +66,12 @@ BOOL CPersonsDialog::OnInitDialog()
 
 	//Запълваме комбо бокса с градове
 	if (!AddItemsInCmbCities())
+	{
+		return FALSE;
+	}
+
+	//Запълваме комбо бокса с градове
+	if (!AddItemsInCmbTypes())
 	{
 		return FALSE;
 	}
@@ -252,6 +259,7 @@ BEGIN_MESSAGE_MAP(CPersonsDialog, CDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_LSC_PHONE_NUMBERS, &CPersonsDialog::OnDblRButtonListCtrl)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_LSC_PHONE_NUMBERS, &CPersonsDialog::OnKeyDownListCtrl)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LSC_PHONE_NUMBERS, &CPersonsDialog::OnChangeItemListCtrl)
+	ON_CBN_SELCHANGE(IDC_CMB_PERSONS_TYPES, &CPersonsDialog::OnCbnSelchangePersonsTypes)
 END_MESSAGE_MAP()
 
 
@@ -653,6 +661,24 @@ void CPersonsDialog::OnEnChangeAddress()
 	DoOnEnChangeStringEdbControla(m_edbAddress, strControlText, IDC_STT_PERSONS_ADDRESS_ERROR_MSG);
 }
 
+
+void CPersonsDialog::OnCbnSelchangePersonsTypes()
+{
+	//Проверка за фокус на контролата
+	if (!IsControlOnFocus(m_cmbTypes))
+	{
+		return;
+	}
+
+	int nSelectedIndex = m_cmbTypes.GetCurSel();
+	int nSelectedData = (long)m_cmbTypes.GetItemData(nSelectedIndex);
+	m_recPerson.lIdPersonType = nSelectedData;
+
+	CString strSelectedItem;
+	strSelectedItem.Format(_T("%d"), nSelectedData);
+	PrintErrorMsg(IDC_STT_PERSONS_TYPES_ERROR_MSG, strSelectedItem, NULL);
+}
+
 void CPersonsDialog::DoOnEnChangeStringEdbControla(CWnd& oControla, CString& strText, int nControlaIDWithError)
 {
 	//Проверка за фокус на контролата
@@ -712,6 +738,7 @@ BOOL CPersonsDialog::EnableControls(LPARAM lEnableControls)
 		m_edbEGN.EnableWindow(FALSE);
 		m_edbAddress.EnableWindow(FALSE);
 		m_cmbCities.EnableWindow(FALSE);
+		m_cmbTypes.EnableWindow(FALSE);
 		m_lscPhoneNumbers.EnableWindow(FALSE);
 	}
 	else if(lEnableControls == ENABLE_DIALOG_PERSON_CTR_FLAG_ALL)
@@ -722,6 +749,7 @@ BOOL CPersonsDialog::EnableControls(LPARAM lEnableControls)
 		m_edbEGN.EnableWindow(TRUE);
 		m_edbAddress.EnableWindow(TRUE);
 		m_cmbCities.EnableWindow(TRUE);
+		m_cmbTypes.EnableWindow(TRUE);
 		m_lscPhoneNumbers.EnableWindow(TRUE);
 	}
 	return TRUE;
@@ -729,7 +757,7 @@ BOOL CPersonsDialog::EnableControls(LPARAM lEnableControls)
 
 BOOL CPersonsDialog::AddItemsInCmbCities()
 {
-	int nIndexRow = m_cmbCities.AddString(_T("Select city - region..."));
+	int nIndexRow = m_cmbCities.AddString(_T("Select region - city..."));
 	if (nIndexRow == CB_ERR)
 	{
 		return FALSE;
@@ -771,6 +799,54 @@ BOOL CPersonsDialog::AddItemsInCmbCities()
 		if (pCities->lId == m_recPerson.lIdCity)
 		{
 			m_cmbCities.SetCurSel(nIndexRow);
+		}
+	}
+	return TRUE;
+}
+
+BOOL CPersonsDialog::AddItemsInCmbTypes()
+{
+	int nIndexRow = m_cmbTypes.AddString(_T("Select type..."));
+	if (nIndexRow == CB_ERR)
+	{
+		return FALSE;
+	}
+
+	//Добавяне на дата към елемента и го селектираме
+	m_cmbTypes.SetItemData(nIndexRow, nIndexRow);
+	m_cmbTypes.SetCurSel(nIndexRow);
+
+	//Променлива с всички градове
+	CPersonTypesArray oPersonTypesArray = m_oAdditionalModels.GetPersonTypes();
+
+	//Обход на масива
+	for (INT_PTR nIndex = 0; nIndex < oPersonTypesArray.GetCount(); nIndex++)
+	{
+		//Променлива, която съдържа настоящия град от масива
+		PERSON_TYPES* pPersonType = oPersonTypesArray.GetAt(nIndex);
+
+		//Проверка за открит елемент
+		if (pPersonType == nullptr)
+		{
+			return FALSE;
+		}
+
+		//Променлива, която ще съдържа визуалните данни за комбо бокса с градове
+		CString strTextToAdd = pPersonType->czPersonType;
+
+		//Добавяне на елемент и сответно ид за data към комбо бокса с градове
+		int nIndexRow = m_cmbTypes.AddString(strTextToAdd);
+		if (nIndexRow == CB_ERR)
+		{
+			return FALSE;
+		}
+
+		//Задаване дата на текущия елемент, ако в данните на клиента за град е същия го селектираме
+		m_cmbTypes.SetItemData(nIndexRow, pPersonType->lId);
+
+		if (pPersonType->lId == m_recPerson.lIdPersonType)
+		{
+			m_cmbTypes.SetCurSel(nIndexRow);
 		}
 	}
 	return TRUE;
@@ -911,6 +987,15 @@ BOOL CPersonsDialog::SetColumnDisplayData(CRowDataListCtrl<PHONE_NUMBERS>& oRowD
 		return FALSE;
 	}
 
+	//Променлива, която съдржа открит обект от код ва държава по подадено ид
+	PHONE_ISO_CODES* pPhoneISOCode = m_oAdditionalModels.GetPhoneISOCodeById(recPhoneNumberData.lIdPhoneISOCode);
+
+	//Проверка за откритост
+	if (pPhoneISOCode == nullptr)
+	{
+		return FALSE;
+	}
+
 	//Добавяме типа телефонен номер към масива с данни за визуализация
 	if (oRowDataListCtrl.AddElementToDisplayData(pPhoneType->czPhoneType) == -1)
 	{
@@ -923,6 +1008,11 @@ BOOL CPersonsDialog::SetColumnDisplayData(CRowDataListCtrl<PHONE_NUMBERS>& oRowD
 		return FALSE;
 	}
 
+	//Добавяме телефонен номер към масива с данни за визуализация
+	if (oRowDataListCtrl.AddElementToDisplayData(pPhoneISOCode->czPhoneISOCode) == -1)
+	{
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -1002,11 +1092,18 @@ void CPersonsDialog::ManageErrorMsgControlsInitValues()
 		SetDlgItemText(IDC_STT_PERSONS_ADDRESS_ERROR_MSG, _T(""));
 	}
 
-	int nIndexSel = m_cmbCities.GetCurSel();
-	if (m_cmbCities.GetItemData(nIndexSel) != 0)
+	int nIndexSelCity = m_cmbCities.GetCurSel();
+	if (m_cmbCities.GetItemData(nIndexSelCity) != 0)
 	{
 		//Задаване на начална празна стойност на контролите за съобщения за грешки  
 		SetDlgItemText(IDC_STT_PERSONS_CITY_ERROR_MSG, _T(""));
+	}
+
+	int nIndexSelType = m_cmbTypes.GetCurSel();
+	if (m_cmbTypes.GetItemData(nIndexSelType) != 0)
+	{
+		//Задаване на начална празна стойност на контролите за съобщения за грешки  
+		SetDlgItemText(IDC_STT_PERSONS_TYPES_ERROR_MSG, _T(""));
 	}
 
 	if (m_lscPhoneNumbers.GetItemCount() != 0)
@@ -1068,6 +1165,11 @@ BOOL CPersonsDialog::HasErrorMsg()
 	}
 
 	if (HasErrorInOneControla(IDC_STT_PERSONS_CITY_ERROR_MSG))
+	{
+		bFlagFoundError = true;
+	}
+
+	if (HasErrorInOneControla(IDC_STT_PERSONS_TYPES_ERROR_MSG))
 	{
 		bFlagFoundError = true;
 	}

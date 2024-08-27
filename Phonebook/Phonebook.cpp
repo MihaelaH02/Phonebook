@@ -17,6 +17,10 @@
 #include "DatabaseConnection.h"
 #include "PhoneTypesDoc.h"
 #include "PhoneTypeView.h"
+#include "PhoneISOCodesDoc.h"
+#include "PhoneIOSCodesView.h"
+#include "PersonTypesDoc.h"
+#include "PersonTypesView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,6 +33,8 @@ BEGIN_MESSAGE_MAP(CPhonebookApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &CPhonebookApp::OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW_CITIES, &CPhonebookApp::OnFileNewCities)
 	ON_COMMAND(ID_FILE_NEW_PHONETYPES, &CPhonebookApp::OnFileNewPhoneTypes)
+	ON_COMMAND(ID_FILE_NEW_PHONEISOCODES, &CPhonebookApp::OnFileNewPhoneISOCodes)
+	ON_COMMAND(ID_FILE_NEW_PERSONTYPES, &CPhonebookApp::OnFileNewPersonTypes)
 	ON_COMMAND(ID_FILE_NEW_CLIENTS, &CPhonebookApp::OnFileNewClients)
 
 	// Standard file based document commands
@@ -61,7 +67,8 @@ CPhonebookApp theApp;
 CMultiDocTemplate* pCitiesDocTemplate = nullptr;
 CMultiDocTemplate* pPhoneTypesDocTemplate = nullptr;
 CMultiDocTemplate* pPersonsDocTemplate = nullptr;
-
+CMultiDocTemplate* pPersonTypesDocTemplate = nullptr;
+CMultiDocTemplate* pPhoneISOCodesDocTemplate = nullptr;
 
 
 // CPhonebookApp initialization
@@ -129,7 +136,7 @@ BOOL CPhonebookApp::InitInstance()
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
 
-	pCitiesDocTemplate = new CMultiDocTemplate(IDR_CITIES_DOC,
+	pCitiesDocTemplate = new CMultiDocTemplate(IDR_CitiesTYPE,
 		RUNTIME_CLASS(CCitiesDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CCitiesView));
@@ -137,7 +144,7 @@ BOOL CPhonebookApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pCitiesDocTemplate);
 
-	pPhoneTypesDocTemplate = new CMultiDocTemplate(IDR_PHONE_TYPES_DOC,
+	pPhoneTypesDocTemplate = new CMultiDocTemplate(IDR_PhoneTypesTYPE,
 		RUNTIME_CLASS(CPhoneTypesDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CPhoneTypeView));
@@ -145,7 +152,23 @@ BOOL CPhonebookApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pPhoneTypesDocTemplate);
 
-	pPersonsDocTemplate = new CMultiDocTemplate(IDR_PhonebookTYPE,
+	pPhoneISOCodesDocTemplate = new CMultiDocTemplate(IDR_PhoneISOCodesTYPE,
+		RUNTIME_CLASS(CPhoneISOCodesDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CPhoneIOSCodesView));
+	if (!pPhoneISOCodesDocTemplate)
+		return FALSE;
+	AddDocTemplate(pPhoneISOCodesDocTemplate);
+
+	pPersonTypesDocTemplate = new CMultiDocTemplate(IDR_PersonTypesTYPE,
+		RUNTIME_CLASS(CPersonTypesDoc),
+		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CPersonTypesView));
+	if (!pPersonTypesDocTemplate)
+		return FALSE;
+	AddDocTemplate(pPersonTypesDocTemplate);
+
+	pPersonsDocTemplate = new CMultiDocTemplate(IDR_PersonsTYPE,
 		RUNTIME_CLASS(CPersonsDoc),
 		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
 		RUNTIME_CLASS(CPersonsView));
@@ -257,7 +280,6 @@ void CPhonebookApp::SaveCustomState()
 
 // CPhonebookApp message handlers
 
-
 void CPhonebookApp::OnFileNewCities()
 {
 	if (pCitiesDocTemplate) 
@@ -266,7 +288,6 @@ void CPhonebookApp::OnFileNewCities()
 	}
 }
 
-
 void CPhonebookApp::OnFileNewPhoneTypes()
 {
 	if (pPhoneTypesDocTemplate)
@@ -274,6 +295,23 @@ void CPhonebookApp::OnFileNewPhoneTypes()
 		pPhoneTypesDocTemplate->OpenDocumentFile(NULL);
 	}
 }
+
+void CPhonebookApp::OnFileNewPhoneISOCodes()
+{
+	if (pPhoneISOCodesDocTemplate)
+	{
+		pPhoneISOCodesDocTemplate->OpenDocumentFile(NULL);
+	}
+}
+
+void CPhonebookApp::OnFileNewPersonTypes()
+{
+	if (pPersonTypesDocTemplate)
+	{
+		pPersonTypesDocTemplate->OpenDocumentFile(NULL);
+	}
+}
+
 void CPhonebookApp::OnFileNewClients()
 {
 	if (pPersonsDocTemplate)

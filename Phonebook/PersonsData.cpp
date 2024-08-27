@@ -276,7 +276,12 @@ BOOL CPersonsData::LoadAdditionalModels(CAdditionalDBModelsPersons& oAdditionalM
 		AfxMessageBox(_T("Failed to select all cities from doc!\n Try to reload."));
 		return FALSE;
 	}
+<<<<<<< Updated upstream
 
+=======
+	oAdditionalModels.SetCities(oCitiesArray);
+	
+>>>>>>> Stashed changes
 	CPhoneTypesData oPhoneTypesData;
 	CPhoneTypesArray oPhoneTypesArray;
 	if (!(oPhoneTypesData.SelectAllPhoneTypes(oPhoneTypesArray)))
@@ -286,6 +291,30 @@ BOOL CPersonsData::LoadAdditionalModels(CAdditionalDBModelsPersons& oAdditionalM
 	}
 	oAdditionalModels.SetCities(oCitiesArray);
 	oAdditionalModels.SetPhoneTypes(oPhoneTypesArray);
+<<<<<<< Updated upstream
+=======
+
+	CPhoneISOCodesData oPhoneISOCodes;
+	CPhoneISOCodesArray oPhoneISOCodesArray;
+
+	if (!(oPhoneISOCodes.SelectAllPhoneISOCodes(oPhoneISOCodesArray)))
+	{
+		AfxMessageBox(_T("Failed to select all ISO codes!\n Try to reload."));
+		return FALSE;
+	}
+	oAdditionalModels.SetPhoneISOCodes(oPhoneISOCodesArray);
+
+	CPersonTypesData oPersonTypesData;
+	CPersonTypesArray oPersonTypesArray;
+
+	if (!(oPersonTypesData.SelectAllPersonTypes(oPersonTypesArray)))
+	{
+		AfxMessageBox(_T("Failed to select all person types!\n Try to reload."));
+		return FALSE;
+	}
+	oAdditionalModels.SetPersonTypes(oPersonTypesArray);
+
+>>>>>>> Stashed changes
 	return TRUE;
 }
 

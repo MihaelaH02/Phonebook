@@ -25,6 +25,11 @@ void CAdditionalDBModelsPersons::SetCities(const CCitiesArray& oCitiesArray)
 	m_oCitiesArray.AddAllElements(oCitiesArray);
 }
 
+void CAdditionalDBModelsPersons::SetPersonTypes(const CPersonTypesArray& oPersonTypesArray)
+{
+	m_oPersonTypesArray.AddAllElements(oPersonTypesArray);
+}
+
 void CAdditionalDBModelsPersons::SetPhoneTypes(const CPhoneTypesArray& oPhoneTypesArray)
 {
 	m_oPhoneTypesArray.AddAllElements(oPhoneTypesArray);
@@ -40,6 +45,19 @@ const CPhoneTypesArray& CAdditionalDBModelsPersons::GetPhoneTypes()
 	return m_oPhoneTypesArray;
 }
 
+<<<<<<< Updated upstream
+=======
+const CPersonTypesArray& CAdditionalDBModelsPersons::GetPersonTypes()
+{
+	return m_oPersonTypesArray;
+}
+
+const CPhoneISOCodesArray& CAdditionalDBModelsPersons::GetPhoneISOCodes()
+{
+	return m_oPhoneISOCodeArray;
+}
+
+>>>>>>> Stashed changes
 CITIES* CAdditionalDBModelsPersons::GetCityById(const int lId)
 {
 	//Обхождаме всчки градове
@@ -55,6 +73,25 @@ CITIES* CAdditionalDBModelsPersons::GetCityById(const int lId)
 		}
 	}
 	//Не е  открит град по подаденото ид
+	return nullptr;
+}
+
+PERSON_TYPES* CAdditionalDBModelsPersons::GetPersonTypeById(const int lId)
+{
+	//Обхождаме всчки клиентки типове
+	for (INT_PTR nIndex = 0; nIndex < m_oPersonTypesArray.GetCount(); nIndex++)
+	{
+		//Променлива за текущ елемент от масива с данни
+		PERSON_TYPES* pPersonTypes = m_oPersonTypesArray.GetAt(nIndex);
+
+		//При открит тип по подаденот ид връщаме обект от тип клиент
+		if (pPersonTypes->lId == lId)
+		{
+			return pPersonTypes;
+		}
+	}
+
+	//Не е  открит тип тилифонен номер по подаденото ид
 	return nullptr;
 }
 

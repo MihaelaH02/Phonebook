@@ -1,14 +1,16 @@
 #pragma once
 
 #include "ListCtrlColumnsInfo.h"
-#include "PhonetypesDialog.h"
+#include "PhoneISOCodesDialog.h"
 #include "ManageListCtr.h"
-#include "PhoneTypesDoc.h"
+#include "PhoneISOCodesDoc.h"
+#include "Messages.h"
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CPhoneTypeView view
 
-class CPhoneTypeView : public CListView
+class CPhoneIOSCodesView : public CListView
 {
 
 // Constants
@@ -18,16 +20,15 @@ class CPhoneTypeView : public CListView
 // Macros
 // ----------------
 protected:
-	DECLARE_DYNCREATE(CPhoneTypeView)
+	DECLARE_DYNCREATE(CPhoneIOSCodesView)
 	DECLARE_MESSAGE_MAP()
 
 
 // Constructor / Destructor
 // ----------------
-
 protected:
-	CPhoneTypeView();         
-	virtual ~CPhoneTypeView();
+	CPhoneIOSCodesView();    
+	virtual ~CPhoneIOSCodesView();
 
 
 // Methods
@@ -38,7 +39,7 @@ public:
 	/// Метод за достъп до документа
 	/// </summary>
 	/// <returns>Връща указател към документа</returns>
-	CPhoneTypesDoc* GetDocument() const;
+	CPhoneISOCodesDoc* GetDocument() const;
 
 private:
 	/// <summary>
@@ -68,20 +69,19 @@ private:
 	int static CALLBACK CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
 	/// <summary>
-	/// Метод, който записва всички презентационни данни от всички елементи тип клиент в нов масив
+	/// Метод, който записва всички презентационни данни от всички елементи в нов масив
 	/// </summary>
 	/// <param name="oPhonetypesArray">Масив с типове телефони</param>
-	/// <param name="oRowsDataArray">Масив с презентационни данни на всички типове телефони</param>
+	/// <param name="oRowsDataArray">Масив с презентационни данни на всички кодове на държави</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SetColumnDisplayDataArray(const CPhoneTypesArray& oPhoneTypesArray, CTypedPtrDataArray<CRowDataListCtrl<PHONE_TYPES>>& oRowsDataArray);
+	BOOL SetColumnDisplayDataArray(const CPhoneISOCodesArray& oPhoneISOCodesArray, CTypedPtrDataArray<CRowDataListCtrl<PHONE_ISO_CODES>>& oRowsDataArray);
 
 	/// <summary>
-	/// Метод, който записва презентационните данни на един елемент тип телефон в нов масив
+	/// Метод, който записва презентационните данни на един елемент код на държава в нов масив
 	/// </summary>
 	/// <param name="oRowData">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SetColumnDisplayData(CRowDataListCtrl<PHONE_TYPES>& oRowData);
-
+	BOOL SetColumnDisplayData(CRowDataListCtrl<PHONE_ISO_CODES>& oRowData);
 
 
 // Overrides
@@ -105,8 +105,8 @@ protected:
 	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
 
 
-	// Generated message map functions
-	// ----------------
+// Generated message map functions
+// ----------------
 
 public:
 	/// <summary>
@@ -134,43 +134,45 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void ViewPhoneType();
+	afx_msg void ViewPhoneISOCode();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void InsertPhoneType();
+	afx_msg void InsertPhoneISOCode();
 
 	/// <summary>
 	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void UpdatePhoneType();
+	afx_msg void UpdatePhoneISOCode();
 
 	/// <summary>
 	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void DeletePhoneType();
+	afx_msg void DeletePhoneISOCode();
 
 	/// <summary>
 	/// Метод, който търси даден тип телефон
 	/// </summary>
-	afx_msg void FindPhoneType();
+	afx_msg void FindPhoneISOCode();
 
 	/// <summary>
 	/// Метод за зареждане на всички градове
 	/// </summary>
-	afx_msg void ReloadPhoneTypes();
+	afx_msg void ReloadPhoneISOCodes();
 
 
 // Members
 // ----------------
 
 public:
+	virtual void OnDraw(CDC* pDC); 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 #ifndef _WIN32_WCE
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 #endif
-
 };
+
+

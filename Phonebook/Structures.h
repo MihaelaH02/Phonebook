@@ -98,7 +98,97 @@ struct PHONE_TYPES
 ///<summary> Псевдоним на  CTypePtrDataArray<PHONE_TYPES> с тип PHONE_TYPES</summary> 
 typedef CTypedPtrDataArray<PHONE_TYPES> CPhoneTypesArray;
 
+<<<<<<< Updated upstream
+=======
+
 /// <summary> 
+/// Дискова структура по таблица Код на държава
+/// </summary>
+struct PHONE_ISO_CODES
+{
+	/// <summary> Ид член променлива </summary>
+	long lId;
+	/// <summary> Брояч за модификация член променлива </summary>
+	long lUpdateCounter;
+	/// <summary> Код на държава номер член променлива </summary>
+	TCHAR czPhoneISOCode[STRUCT_MEMBER_SIZE_TYPE_TCHAR_FOR_PHONE_ISO_CODES];
+
+	/// <summary> Конструктор </summary>
+	PHONE_ISO_CODES()
+	{
+		SecureZeroMemory(this, sizeof(*this));
+	}
+
+	/// <summary>
+	/// Копи констурктор по всички полета
+	/// </summary>
+	PHONE_ISO_CODES(const PHONE_ISO_CODES& recPhoneISOCode)
+	{
+		lId = recPhoneISOCode.lId;
+		lUpdateCounter = recPhoneISOCode.lUpdateCounter;
+		_tcscpy_s(czPhoneISOCode, recPhoneISOCode.czPhoneISOCode);
+	}
+
+	BOOL CompareAll(const PHONE_ISO_CODES& recPhoneISOCode) const
+	{
+		if (_tcscmp(czPhoneISOCode, recPhoneISOCode.czPhoneISOCode) != 0)
+		{
+			return 1;
+		}
+
+		return 0;
+	}
+};
+
+///<summary> Псевдоним на  CTypePtrDataArray<PHONE_ISO_CODES> с тип PHONE_ISO_CODES</summary> 
+typedef CTypedPtrDataArray<PHONE_ISO_CODES> CPhoneISOCodesArray;
+
+
+>>>>>>> Stashed changes
+/// <summary> 
+/// Дискова структура по таблица Типове клиенти
+/// </summary>
+struct PERSON_TYPES
+{
+	/// <summary> Ид член променлива </summary>
+	long lId;
+	/// <summary> Брояч за модификация член променлива </summary>
+	long lUpdateCounter;
+	/// <summary> Тип клиент член променлива </summary>
+	TCHAR czPersonType[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
+
+	/// <summary> Конструктор </summary>
+	PERSON_TYPES()
+	{
+		SecureZeroMemory(this, sizeof(*this));
+	}
+
+	/// <summary>
+	/// Параметризиран констурктор по всички полета
+	/// </summary>
+	PERSON_TYPES(const PERSON_TYPES& recPersonTypes)
+	{
+		lId = recPersonTypes.lId;
+		lUpdateCounter = recPersonTypes.lUpdateCounter;
+		_tcscpy_s(czPersonType, recPersonTypes.czPersonType);
+	}
+
+	BOOL CompareAll(const PERSON_TYPES& recPersonTypes) const
+	{
+		if (_tcscmp(czPersonType, recPersonTypes.czPersonType) != 0)
+		{
+			return 1;
+		}
+
+		return 0;
+	}
+};
+
+///<summary> Псевдоним на  CTypePtrDataArray<PERSON_TYPES> с тип PERSON_TYPES</summary> 
+typedef CTypedPtrDataArray<PERSON_TYPES> CPersonTypesArray;
+/// <summary> 
+
+
 /// Дискова структура по таблица Клиенти 
 /// </summary>
 struct PERSONS
@@ -117,6 +207,8 @@ struct PERSONS
 	TCHAR szEGN[STRUCT_MEMBER_SIZE_TYPE_TCHAR_FOR_PERSON_EGN];
 	/// <summary> Град член променлива </summary>
 	long lIdCity;
+	/// <summary> Тип клиент член променлива </summary>
+	long lIdPersonType;
 	/// <summary> Адрес член променлива </summary>
 	TCHAR szAddress[STRUCT_MEMBER_SIZE_TYPE_TCHAR];
 
@@ -138,6 +230,7 @@ struct PERSONS
 		_tcscpy_s(szLastName, recPersons.szLastName);
 		_tcscpy_s(szEGN, recPersons.szEGN);
 		lIdCity = recPersons.lIdCity;
+		lIdPersonType = recPersons.lIdPersonType;
 		_tcscpy_s(szAddress, recPersons.szAddress);
 	}
 
@@ -169,6 +262,11 @@ struct PERSONS
 		}
 
 		if (lIdCity != recPerson.lIdCity)
+		{
+			return 1;
+		}
+
+		if (lIdPersonType != recPerson.lIdPersonType)
 		{
 			return 1;
 		}

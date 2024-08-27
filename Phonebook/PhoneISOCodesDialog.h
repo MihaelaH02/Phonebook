@@ -6,51 +6,48 @@
 #include "DefinesDialogCtrInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CPhoneTypesDialog dialog
+// CPhoneISOCodesDialog dialog
 
-class CPhoneTypesDialog : public CDialog
+class CPhoneISOCodesDialog : public CDialogEx
 {
 // Macros
 // ----------------
 
-	DECLARE_DYNAMIC(CPhoneTypesDialog)
+protected:
+	DECLARE_DYNAMIC(CPhoneISOCodesDialog)
 	DECLARE_MESSAGE_MAP()
-
 
 // Constants
 // ----------------
-
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_PHONE_TYPES_DIALOG };
+	enum { IDD = IDD_ISO_CODES };
 #endif
-
 
 // Constructor / Destructor
 // ----------------
-
 public:
 	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPhoneTypesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneISOCodesDialog(LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
 	/// <param name="recPhoneType">Параметър клас с данни, чиито стойности ще се визуализират в контролите на диалога</param>
 	/// <param name="lEnableControls">Параметър, който приема стойност от енюм за това кои от контролите да са активни за писане</param>
-	CPhoneTypesDialog(const PHONE_TYPES& recPhoneType, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
+	CPhoneISOCodesDialog(const PHONE_ISO_CODES& recPhoneType, LPARAM lEnableControls = ENABLE_DIALOG_CITIES_CTR_FLAG_ALL, CWnd* pParent = nullptr);
 
-	virtual ~CPhoneTypesDialog();
-
+	virtual ~CPhoneISOCodesDialog();
 
 // MFC Overrides
 // ----------------	
 private:
-	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
-	virtual BOOL OnInitDialog() override;
+	virtual void DoDataExchange(CDataExchange* pDX) override;
+	virtual BOOL OnInitDialog();
 
-
-// MFC Message Handlers
-// ----------------
-private:
+public:
 	/// <summary>
-	/// Метод, който упрвлява натискането на бутон ОК
+	/// Метод за следене на промени по контрола за типове телефони
+	/// </summary>
+	afx_msg void OnEnChangePhoneISOCode();
+	/// <summary>
+	/// Метод, който управлява натискането на бутон OK
 	/// </summary>
 	afx_msg void OnBnClickedOk();
 
@@ -58,11 +55,6 @@ private:
 	/// Метод, който управлява натискането на бутон Cancel
 	/// </summary>
 	afx_msg void OnBnClickedCancel();
-
-	/// <summary>
-	/// Метод за следене на промени по контрола за типове телефони
-	/// </summary>
-	afx_msg void OnEnChangeEdbPhoneTypes();
 
 
 // Overrides
@@ -76,8 +68,7 @@ public:
 	/// <summary>
 	/// Достъп до стойности за стринговите член променливи
 	/// </summary>
-	/// <returns>Връща структура от тип градове</returns>
-	BOOL GetControlsData(PHONE_TYPES& recPhoneType);
+	BOOL GetControlsData(PHONE_ISO_CODES& recPhoneISOCode);
 
 	/// <summary>
 	/// Метод за забрана за писане по контролите
@@ -103,19 +94,20 @@ public:
 	/// </summary>
 	BOOL HasErrorMsg();
 
+
 // Members
 // ----------------
 
 private:
 	/// <summary>
-	/// Член променлива за текстова контрола с тип телефонен номер
+	/// Член променлива за текстова контрола с код на държава
 	/// </summary>
-	CEdit m_edbPhoneType;
+	CEdit m_edbPhoneISOCodes;
 
 	/// <summary>
-	/// Член променлива тип телефон
+	/// Член променлива телефонен код за държава
 	/// </summary>
-	PHONE_TYPES m_recPhoneType;
+	PHONE_ISO_CODES m_recPhoneISOCodes;
 
 	/// <summary>
 	/// Член променлива, която съдържа параметъра за активност на контролите

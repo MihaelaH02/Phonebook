@@ -1,14 +1,14 @@
 #pragma once
 
 #include "ListCtrlColumnsInfo.h"
-#include "PhonetypesDialog.h"
+#include "PersonTypesDialog.h"
 #include "ManageListCtr.h"
-#include "PhoneTypesDoc.h"
+#include "PersonTypesDoc.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CPhoneTypeView view
+// CPersonTypesView view
 
-class CPhoneTypeView : public CListView
+class CPersonTypesView : public CListView
 {
 
 // Constants
@@ -18,7 +18,7 @@ class CPhoneTypeView : public CListView
 // Macros
 // ----------------
 protected:
-	DECLARE_DYNCREATE(CPhoneTypeView)
+	DECLARE_DYNCREATE(CPersonTypesView)
 	DECLARE_MESSAGE_MAP()
 
 
@@ -26,8 +26,8 @@ protected:
 // ----------------
 
 protected:
-	CPhoneTypeView();         
-	virtual ~CPhoneTypeView();
+	CPersonTypesView();
+	virtual ~CPersonTypesView();
 
 
 // Methods
@@ -38,7 +38,7 @@ public:
 	/// Метод за достъп до документа
 	/// </summary>
 	/// <returns>Връща указател към документа</returns>
-	CPhoneTypesDoc* GetDocument() const;
+	CPersonTypesDoc* GetDocument() const;
 
 private:
 	/// <summary>
@@ -70,22 +70,22 @@ private:
 	/// <summary>
 	/// Метод, който записва всички презентационни данни от всички елементи тип клиент в нов масив
 	/// </summary>
-	/// <param name="oPhonetypesArray">Масив с типове телефони</param>
+	/// <param name="oPersonTypesArray">Масив с типове клиенти</param>
 	/// <param name="oRowsDataArray">Масив с презентационни данни на всички типове телефони</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SetColumnDisplayDataArray(const CPhoneTypesArray& oPhoneTypesArray, CTypedPtrDataArray<CRowDataListCtrl<PHONE_TYPES>>& oRowsDataArray);
+	BOOL SetColumnDisplayDataArray(const CPersonTypesArray& oPersonTypesArray, CTypedPtrDataArray<CRowDataListCtrl<PERSON_TYPES>>& oRowsDataArray);
 
 	/// <summary>
 	/// Метод, който записва презентационните данни на един елемент тип телефон в нов масив
 	/// </summary>
 	/// <param name="oRowData">Масив с презентационни данни за този елемент</param>
 	/// <returns>Връща TRUE при успех и FALSE при неуспех</returns>
-	BOOL SetColumnDisplayData(CRowDataListCtrl<PHONE_TYPES>& oRowData);
+	BOOL SetColumnDisplayData(CRowDataListCtrl<PERSON_TYPES>& oRowData);
 
 
 
-// Overrides
-// ----------------
+	// Overrides
+	// ----------------
 
 public:
 	/// <summary>
@@ -134,36 +134,36 @@ public:
 	/// <summary>
 	/// Метод за селект на елемент от лест контролата
 	/// </summary>
-	afx_msg void ViewPhoneType();
+	afx_msg void ViewPersonType();
 
 	/// <summary>
 	/// Метод за добавяне на елемент в лист контролата
 	/// </summary>
-	afx_msg void InsertPhoneType();
+	afx_msg void InsertPersonType();
 
 	/// <summary>
 	/// Метод за редакция на елемент в лист контролата
 	/// </summary>
-	afx_msg void UpdatePhoneType();
+	afx_msg void UpdatePersonType();
 
 	/// <summary>
 	/// Метод за изтриване на елемент в лист контролата
 	/// </summary>
-	afx_msg void DeletePhoneType();
+	afx_msg void DeletePersonType();
 
 	/// <summary>
 	/// Метод, който търси даден тип телефон
 	/// </summary>
-	afx_msg void FindPhoneType();
+	afx_msg void FindPersonType();
 
 	/// <summary>
 	/// Метод за зареждане на всички градове
 	/// </summary>
-	afx_msg void ReloadPhoneTypes();
+	afx_msg void ReloadPersonTypes();
 
 
-// Members
-// ----------------
+	// Members
+	// ----------------
 
 public:
 #ifdef _DEBUG
@@ -174,3 +174,4 @@ public:
 #endif
 
 };
+
